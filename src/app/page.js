@@ -11,7 +11,7 @@ export default function BasicCard() {
   const [currentSong, setCurrentSong] = React.useState(null);
   return (
     <main>
-      <script src="https://cdn.jsdelivr.net/npm/axios@0.21.1/dist/axios.min.js"></script>
+      <link rel="icon" href="./favicon.ico" />
       <meta name="viewport" content="initial-scale=1, width=device-width" />
       <AppBar />
       <Advertisement />
