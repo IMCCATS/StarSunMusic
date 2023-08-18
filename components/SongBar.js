@@ -18,7 +18,6 @@ import {
   Typography,
 } from "@mui/material";
 const playlists = [
-  { name: "热歌榜", id: "3778678" },
   { name: "短视频各样卡点/热血音乐-燃到极致！", id: "5335051744" },
   { name: "纯爱硬曲 高燃漫剪BGM", id: "8550146295" },
   { name: "精神乌托邦 | 电音如烟花般绽放希望与美好", id: "8400492541" },
