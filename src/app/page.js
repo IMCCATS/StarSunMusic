@@ -7,6 +7,7 @@ import MusicCard from "../../components/MusicCard";
 import * as React from "react";
 import TopBar from "../../components/TopBar";
 import TopBarBS from "../../components/TopBarBS";
+import SongBar from "../../components/SongBar";
 export const CurrentSongContext = React.createContext(null);
 export default function BasicCard() {
   const [currentSong, setCurrentSong] = React.useState(null);
@@ -22,6 +23,7 @@ export default function BasicCard() {
           <SongSearchTable />
           <TopBar />
           <TopBarBS />
+          <SongBar />
         </div>
       </CurrentSongContext.Provider>
       <About />
