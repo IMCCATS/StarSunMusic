@@ -80,7 +80,7 @@ const MusicCard = ({ currentSong }) => {
   }, [currentSong]);
 
   React.useEffect(() => {
-    if (lyrics.length > 0) {
+    if (lyrics && lyrics.length > 0) {
       audioRef.current.src = currentSong.url;
       audioRef.current.play();
 
@@ -93,11 +93,31 @@ const MusicCard = ({ currentSong }) => {
           audioRef.current.currentTime = 0;
         }
       };
+    } else if (currentSong) {
+      audioRef.current.src = currentSong.url;
+      audioRef.current.play();
+
+      audioRef.current.addEventListener("ended", () => setIsPlaying(false));
+
+      return () => {
+        if (audioRef.current) {
+          audioRef.current.pause();
+          audioRef.current.currentTime = 0;
+        }
+      };
+    } else {
+      setIsPlaying(false);
+      return () => {
+        if (audioRef.current) {
+          audioRef.current.src = "";
+          audioRef.current.currentTime = 0;
+        }
+      };
     }
-  }, [lyrics]);
+  }, [lyrics, currentSong]);
 
   const formatLyrics = () => {
-    if (lyrics.length > 0) {
+    if (lyrics && lyrics.length > 0) {
       return (
         <Typography
           key={lyrics[currentLyricIndex].time}
@@ -110,7 +130,7 @@ const MusicCard = ({ currentSong }) => {
     } else {
       return (
         <Typography variant="body1">
-          <span>无歌词信息，该歌曲可能不支持播放。</span>
+          <span>暂无歌词信息哦！如果没有播放的话就是不支持播放哦~</span>
         </Typography>
       );
     }

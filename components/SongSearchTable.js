@@ -66,7 +66,7 @@ export default function SongSearchTable() {
       if (xhr.readyState === 4) {
         var res = JSON.parse(xhr.responseText);
         if (res.code == 200) {
-          console.log(res.data);
+          //console.log(res.data);
           setSongs(res.data);
           setIsLoading(false);
         } else {
