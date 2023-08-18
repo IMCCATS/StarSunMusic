@@ -16,7 +16,16 @@ export default function Advertisement() {
           <span>一款由中学生自制的音乐欣赏系统</span>
         </Typography>
         <Typography variant="body2">
-          <span>版本：1.0.0_202308180126</span>
+          <span>版本：1.0.0_202308181416</span>
+          <br />
+          <span>
+            更新日志：
+            <br />
+            1.0.0_202308180126：全新发布；
+            <br />
+            1.0.0_202308181416：新增飙升榜单区
+          </span>
+          <br />
           <br />
           <span>开发者：小研同学</span>
           <br />

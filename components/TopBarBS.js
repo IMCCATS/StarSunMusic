@@ -26,7 +26,7 @@ export default function TopBar() {
   const fetchMusicList = () => {
     const xhr = new XMLHttpRequest();
     const url =
-      "https://api.gmit.vip/Api/MusicList?format=json&url=https://music.163.com/playlist?id=3778678";
+      "https://api.gmit.vip/Api/MusicList?format=json&url=https://music.163.com/playlist?id=19723756";
 
     xhr.open("GET", url, true);
 
@@ -92,7 +92,7 @@ export default function TopBar() {
                   <TableHead>
                     <TableRow>
                       <TableCell>
-                        <span>热歌榜 · 排名</span>
+                        <span>飙升榜 · 排名</span>
                       </TableCell>
                       <TableCell>
                         <span>歌曲图片</span>
