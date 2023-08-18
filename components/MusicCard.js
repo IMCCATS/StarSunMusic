@@ -110,7 +110,7 @@ const MusicCard = ({ currentSong }) => {
     } else {
       return (
         <Typography variant="body1">
-          <span>无歌词信息</span>
+          <span>无歌词信息，该歌曲可能不支持播放。</span>
         </Typography>
       );
     }

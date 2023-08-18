@@ -13,11 +13,14 @@ import {
   CardContent,
   Card,
   CircularProgress,
+  Pagination,
 } from "@mui/material";
 export default function TopBar() {
   const { setCurrentSong } = React.useContext(CurrentSongContext);
   const [isLoading, setIsLoading] = React.useState(true);
   const [songs, setSongs] = React.useState([]);
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const itemsPerPage = 10;
 
   React.useEffect(() => {
     fetchMusicList();
@@ -65,6 +68,15 @@ export default function TopBar() {
     xhr.send();
   };
 
+  const lastIndex = currentPage * itemsPerPage;
+  const firstIndex = lastIndex - itemsPerPage;
+  const currentSongs = songs.slice(firstIndex, lastIndex);
+  const numPages = Math.ceil(songs.length / itemsPerPage);
+
+  const handlePaginationChange = (event, value) => {
+    setCurrentPage(value);
+  };
+
   return (
     <main>
       <Card sx={{ minWidth: 275 }} style={{ marginTop: "15px" }}>
@@ -109,10 +121,10 @@ export default function TopBar() {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {songs.map((song, index) => (
+                    {currentSongs.map((song, index) => (
                       <TableRow key={song.song_id}>
                         <TableCell>
-                          <span>{index + 1}</span>
+                          <span>{firstIndex + index + 1}</span>
                         </TableCell>
                         <TableCell>
                           <img src={song.cover} alt="Thumbnail" height="64" />
@@ -138,6 +150,22 @@ export default function TopBar() {
               )}
             </TableContainer>
           </Paper>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              marginTop: "20px",
+            }}
+          >
+            <Pagination
+              count={numPages}
+              page={currentPage}
+              onChange={handlePaginationChange}
+              variant="outlined"
+              shape="rounded"
+              color="primary"
+            />
+          </div>
         </CardContent>
       </Card>
     </main>
