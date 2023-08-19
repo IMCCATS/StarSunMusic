@@ -63,7 +63,12 @@ export default function SongSearchTable() {
       const response = await fetch(
         `/api/search?searchTerm=${encodeURIComponent(
           searchTerm
-        )}&PT=${encodeURIComponent(PT)}`
+        )}&PT=${encodeURIComponent(PT)}`,
+        {
+          headers: {
+            Referer: "https://music.lcahy.cn", // 替换为你的程序域名
+          },
+        }
       );
       const data = await response.json();
 

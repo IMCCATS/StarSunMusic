@@ -39,7 +39,12 @@ const PlaylistComponent = ({ playlist }) => {
     const playlistId = playlist.id;
     try {
       const response = await fetch(
-        `/api/fetch-music-list?playlistId=${playlistId}`
+        `/api/fetch-music-list?playlistId=${playlistId}`,
+        {
+          headers: {
+            Referer: "https://music.lcahy.cn",
+          },
+        }
       );
       const data = await response.json();
 

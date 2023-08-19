@@ -28,7 +28,11 @@ export default function TopBar() {
 
   const fetchMusicList = async () => {
     try {
-      const response = await fetch(`/api/fetch-music-list?playlistId=3778678`);
+      const response = await fetch(`/api/fetch-music-list?playlistId=3778678`, {
+        headers: {
+          Referer: "https://music.lcahy.cn",
+        },
+      });
       const data = await response.json();
 
       if (response.ok) {

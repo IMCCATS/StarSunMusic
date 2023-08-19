@@ -3,6 +3,22 @@ import https from "https";
 export default (req, res) => {
   const { searchTerm, PT } = req.query;
 
+  // 替换为你期望的域名数组
+  const expectedReferers = [
+    "https://music.lcahy.cn",
+    "https://musictest.lcahy.cn",
+  ];
+
+  // 检查 Referer 是否在期望的域名数组中
+  const isRefererValid = expectedReferers.some((expectedReferer) =>
+    referer.includes(expectedReferer)
+  );
+
+  // 如果 Referer 不在期望的域名数组中，返回错误响应
+  if (!isRefererValid) {
+    return res.status(404).json({ error: "页面未找到" });
+  }
+
   if (!searchTerm) {
     return res.status(400).json({ error: "搜索条件不能为空。" });
   }
