@@ -242,14 +242,14 @@ const MusicCard = ({ currentSong }) => {
                   : "无时间信息"}
               </span>
             </Typography>
+            <IconButton
+              onClick={handleTogglePlay}
+              disabled={isAudioPlayable === false}
+            >
+              {isPlaying ? <PauseIcon /> : <PlayArrowIcon />}
+            </IconButton>
           </>
         )}
-        <IconButton
-          onClick={handleTogglePlay}
-          disabled={isAudioPlayable === false}
-        >
-          {isPlaying ? <PauseIcon /> : <PlayArrowIcon />}
-        </IconButton>
       </CardContent>
     </Card>
   );
