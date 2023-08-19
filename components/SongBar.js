@@ -85,7 +85,9 @@ const PlaylistComponent = ({ playlist }) => {
   return (
     <Accordion key={playlist.id}>
       <AccordionSummary>
-        <Typography>{playlist.name}</Typography>
+        <Typography>
+          <span>{playlist.name}</span>
+        </Typography>
       </AccordionSummary>
       <AccordionDetails>
         {/* 此处是动态渲染的具体表单内容 */}
