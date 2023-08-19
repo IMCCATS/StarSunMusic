@@ -26,46 +26,33 @@ export default function TopBar() {
     fetchMusicList();
   }, []);
 
-  const fetchMusicList = () => {
-    const xhr = new XMLHttpRequest();
-    const url =
-      "https://api.gmit.vip/Api/MusicList?format=json&url=https://music.163.com/playlist?id=3778678";
+  const fetchMusicList = async () => {
+    try {
+      const response = await fetch(`/api/fetch-music-list?playlistId=3778678`);
+      const data = await response.json();
 
-    xhr.open("GET", url, true);
-
-    xhr.onreadystatechange = () => {
-      if (xhr.readyState === XMLHttpRequest.DONE) {
-        if (xhr.status === 200) {
-          const data = JSON.parse(xhr.responseText);
-          setSongs(data.data);
-          setIsLoading(false);
-        } else {
-          console.log(xhr.responseText); // 处理错误情况
-        }
+      if (response.ok) {
+        setSongs(data.song);
+        setIsLoading(false);
       }
-    };
-
-    xhr.send();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const handleListenClick = (songId) => {
-    const xhr = new XMLHttpRequest();
-    const url = `https://api.gmit.vip/Api/Netease?format=json&id=${songId}`;
+  const handleListenClick = async (songId) => {
+    try {
+      const response = await fetch(
+        `https://api.gmit.vip/Api/Netease?format=json&id=${songId}`
+      );
+      const data = await response.json();
 
-    xhr.open("GET", url, true);
-
-    xhr.onreadystatechange = () => {
-      if (xhr.readyState === XMLHttpRequest.DONE) {
-        if (xhr.status === 200) {
-          const data = JSON.parse(xhr.responseText);
-          setCurrentSong(data.data);
-        } else {
-          console.log(xhr.responseText); // 处理错误情况
-        }
+      if (response.ok) {
+        setCurrentSong(data.song);
       }
-    };
-
-    xhr.send();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const lastIndex = currentPage * itemsPerPage;

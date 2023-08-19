@@ -2,7 +2,6 @@
 import * as React from "react";
 import { CurrentSongContext } from "../src/app/page";
 import FormatAlignLeftIcon from "@mui/icons-material/FormatAlignLeft";
-import FormatAlignRightIcon from "@mui/icons-material/FormatAlignRight";
 import FormatAlignCenterIcon from "@mui/icons-material/FormatAlignCenter";
 import {
   Button,
@@ -27,6 +26,9 @@ export default function SongSearchTable() {
   const [isLoading, setIsLoading] = React.useState(true);
   const [songs, setSongs] = React.useState([]);
   const [PT, setPT] = React.useState("netease");
+  const [jzwz, setwz] = React.useState(
+    "请搜索歌曲，搜索完成后会自动停止加载。"
+  );
   const [searchTerm, setSearchTerm] = React.useState("");
 
   var isEnterPressed = false;
@@ -48,33 +50,34 @@ export default function SongSearchTable() {
   const handleListenClick = (song) => {
     setCurrentSong(song);
   };
-  const handleSearch = () => {
+  const handleSearch = async () => {
     if (!searchTerm) {
       return;
     }
+
+    setwz("搜索歌曲中");
+    setIsLoading(true);
     console.log("搜索关键字:", searchTerm);
-    var xhr = new XMLHttpRequest();
-    var url =
-      "https://api.gmit.vip/Api/Music?text=" +
-      encodeURIComponent(searchTerm) +
-      "&format=" +
-      encodeURIComponent("json") +
-      "&site=" +
-      encodeURIComponent(PT);
-    xhr.open("GET", url);
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState === 4) {
-        var res = JSON.parse(xhr.responseText);
-        if (res.code == 200) {
-          //console.log(res.data);
-          setSongs(res.data);
-          setIsLoading(false);
-        } else {
-          console.log(res.data);
-        }
+
+    try {
+      const response = await fetch(
+        `/api/search?searchTerm=${encodeURIComponent(
+          searchTerm
+        )}&PT=${encodeURIComponent(PT)}`
+      );
+      const data = await response.json();
+
+      if (response.ok) {
+        setSongs(data.songs);
+        setIsLoading(false);
+      } else {
+        console.log(data.error);
+        setwz("搜索歌曲失败，请更换搜索词或搜索方式。");
       }
-    };
-    xhr.send();
+    } catch (error) {
+      console.log(error);
+      setwz("发生错误，请稍后再试。");
+    }
   };
 
   const handleChangec = (event, newPT) => {
@@ -134,8 +137,8 @@ export default function SongSearchTable() {
                   }}
                 >
                   <CircularProgress />
-                  <p style={{ marginLeft: "10px" }}>
-                    请搜索歌曲，搜索完成后会自动停止加载。
+                  <p style={{ marginLeft: "10px", whiteSpace: "pre" }}>
+                    {jzwz}
                   </p>
                 </div>
               ) : songs.length === 0 ? (
