@@ -40,16 +40,20 @@ export default function TopBar() {
     }
   };
 
+  const [disabled, setdisabled] = React.useState(false);
   const handleListenClick = async (songId) => {
+    setdisabled(true);
     try {
       const response = await fetch(`/api/get-song?songId=${songId}`);
       const data = await response.json();
 
       if (response.ok) {
         setCurrentSong(data.song);
+        setdisabled(false);
       }
     } catch (error) {
       console.log(error);
+      setdisabled(false);
     }
   };
 
@@ -124,6 +128,7 @@ export default function TopBar() {
                           <Button
                             onClick={() => handleListenClick(song.song_id)}
                             variant="contained"
+                            disabled={disabled}
                           >
                             <span>听</span>
                           </Button>
