@@ -42,9 +42,7 @@ export default function TopBar() {
 
   const handleListenClick = async (songId) => {
     try {
-      const response = await fetch(
-        `https://api.gmit.vip/Api/Netease?format=json&id=${songId}`
-      );
+      const response = await fetch(`/api/get-song?songId=${songId}`);
       const data = await response.json();
 
       if (response.ok) {
