@@ -2,21 +2,10 @@ import https from "https";
 
 export default async (req, res) => {
   const songId = req.query.songId;
-  const referer = req.headers.referer;
+  const expectedReferer = "https://music.lcahy.cn";
 
-  // 替换为你期望的域名数组
-  const expectedReferers = [
-    "https://music.lcahy.cn",
-    "https://musictest.lcahy.cn",
-  ];
-
-  // 检查 Referer 是否在期望的域名数组中
-  const isRefererValid = expectedReferers.some((expectedReferer) =>
-    referer.includes(expectedReferer)
-  );
-
-  // 如果 Referer 不在期望的域名数组中，返回错误响应
-  if (!isRefererValid) {
+  // 如果 Referer 不是期望的域名，返回错误响应
+  if (req.headers.referer !== expectedReferer) {
     return res.status(404).json({ error: "页面未找到" });
   }
 
