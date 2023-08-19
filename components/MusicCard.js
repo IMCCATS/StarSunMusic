@@ -10,6 +10,7 @@ import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
 
 const MusicCard = ({ currentSong }) => {
+  const [isAudioPlayable, setIsAudioPlayable] = React.useState(true);
   const [isPlaying, setIsPlaying] = React.useState(false);
   const [progress, setProgress] = React.useState(0);
   const [lyrics, setLyrics] = React.useState([]);
@@ -75,8 +76,26 @@ const MusicCard = ({ currentSong }) => {
         }
       }
     };
-
     updateLyrics();
+    const handleCanPlay = () => {
+      setIsAudioPlayable(true);
+    };
+
+    const handleError = () => {
+      setIsAudioPlayable(false);
+    };
+
+    if (audioRef.current) {
+      audioRef.current.addEventListener("canplay", handleCanPlay);
+      audioRef.current.addEventListener("error", handleError);
+    }
+
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.removeEventListener("canplay", handleCanPlay);
+        audioRef.current.removeEventListener("error", handleError);
+      }
+    };
   }, [currentSong]);
 
   React.useEffect(() => {
@@ -117,22 +136,30 @@ const MusicCard = ({ currentSong }) => {
   }, [lyrics, currentSong]);
 
   const formatLyrics = () => {
-    if (lyrics && lyrics.length > 0) {
+    if (!isAudioPlayable) {
       return (
-        <Typography
-          key={lyrics[currentLyricIndex].time}
-          variant="body1"
-          style={{ whiteSpace: "pre-line" }}
-        >
-          <span>{lyrics[currentLyricIndex].text}</span>
+        <Typography variant="body1">
+          <span>本歌曲暂不支持播放哦~</span>
         </Typography>
       );
     } else {
-      return (
-        <Typography variant="body1">
-          <span>暂无歌词信息哦！如果没有播放的话就是不支持播放哦~</span>
-        </Typography>
-      );
+      if (lyrics && lyrics.length > 0) {
+        return (
+          <Typography
+            key={lyrics[currentLyricIndex].time}
+            variant="body1"
+            style={{ whiteSpace: "pre-line" }}
+          >
+            <span>{lyrics[currentLyricIndex].text}</span>
+          </Typography>
+        );
+      } else {
+        return (
+          <Typography variant="body1">
+            <span>暂无歌词信息哦！</span>
+          </Typography>
+        );
+      }
     }
   };
 
@@ -169,6 +196,14 @@ const MusicCard = ({ currentSong }) => {
     setIsPlaying(!isPlaying); // 切换播放状态
   };
 
+  const formatTime = (timeInSeconds) => {
+    const minutes = Math.floor(timeInSeconds / 60);
+    const seconds = Math.floor(timeInSeconds % 60);
+    return `${minutes.toString().padStart(2, "0")}:${seconds
+      .toString()
+      .padStart(2, "0")}`;
+  };
+
   return (
     <Card style={{ marginTop: "15px" }}>
       <CardContent>
@@ -192,10 +227,27 @@ const MusicCard = ({ currentSong }) => {
               value={progress}
               onChange={handleSliderChange}
               onDragEnd={handleSliderDragEnd}
+              disabled={isAudioPlayable === false}
             />
+            <Typography variant="caption" style={{ margin: "8px 0" }}>
+              <span>
+                {audioRef.current &&
+                typeof audioRef.current.currentTime === "number" &&
+                !isNaN(audioRef.current.currentTime) &&
+                typeof audioRef.current.duration === "number" &&
+                !isNaN(audioRef.current.duration)
+                  ? `${formatTime(audioRef.current.currentTime)} / ${formatTime(
+                      audioRef.current.duration
+                    )}`
+                  : "无时间信息"}
+              </span>
+            </Typography>
           </>
         )}
-        <IconButton onClick={handleTogglePlay}>
+        <IconButton
+          onClick={handleTogglePlay}
+          disabled={isAudioPlayable === false}
+        >
           {isPlaying ? <PauseIcon /> : <PlayArrowIcon />}
         </IconButton>
       </CardContent>

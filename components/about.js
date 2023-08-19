@@ -16,7 +16,7 @@ export default function Advertisement() {
           <span>一款由中学生自制的音乐欣赏系统</span>
         </Typography>
         <Typography variant="body2">
-          <span>版本：1.0.0_202308182341</span>
+          <span>版本：1.0.0_202308192022</span>
           <br />
           <span>
             更新日志：
@@ -25,9 +25,11 @@ export default function Advertisement() {
             <br />
             1.0.0_202308181416：新增飙升榜单区；
             <br />
-            1.0.0_202308181910：新增分页功能，缩小页面体积。
+            1.0.0_202308181910：新增分页功能，缩小页面体积；
             <br />
-            1.0.0_202308182341：新增歌单区。
+            1.0.0_202308182341：新增歌单区；
+            <br />
+            1.0.0_202308192022：修复了部分Bug，新增歌曲时间显示，优化了歌曲播放逻辑；
           </span>
           <br />
           <br />
