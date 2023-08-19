@@ -1,3 +1,5 @@
+import https from "https";
+
 export default (req, res) => {
   const { searchTerm, PT } = req.query;
 
@@ -8,28 +10,30 @@ export default (req, res) => {
   const url = `https://api.gmit.vip/Api/Music?text=${encodeURIComponent(
     searchTerm
   )}&format=${encodeURIComponent("json")}&site=${encodeURIComponent(PT)}`;
-  const xhr = new XMLHttpRequest();
 
-  xhr.open("GET", url);
-  xhr.onreadystatechange = function () {
-    if (xhr.readyState === 4) {
-      if (xhr.status === 200) {
-        const data = JSON.parse(xhr.responseText);
+  https
+    .get(url, (response) => {
+      let data = "";
 
-        if (data.code === 200) {
-          res.status(200).json({ songs: data.data });
+      response.on("data", (chunk) => {
+        data += chunk;
+      });
+
+      response.on("end", () => {
+        const responseData = JSON.parse(data);
+
+        if (responseData.code === 200) {
+          res.status(200).json({ songs: responseData.data });
         } else {
-          console.log(data.data);
+          console.log(responseData.data);
           res
             .status(400)
             .json({ error: "搜索歌曲失败，请更换搜索词或搜索方式。" });
         }
-      } else {
-        console.log(xhr.responseText);
-        res.status(500).json({ error: "发生错误，请稍后再试。" });
-      }
-    }
-  };
-
-  xhr.send();
+      });
+    })
+    .on("error", (error) => {
+      console.log(error);
+      res.status(500).json({ error: "发生错误，请稍后再试。" });
+    });
 };
