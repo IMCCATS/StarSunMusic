@@ -32,7 +32,7 @@ export default function TopBar() {
       const data = await response.json();
 
       if (response.ok) {
-        setSongs(data.song);
+        setSongs(data.songs);
         setIsLoading(false);
       }
     } catch (error) {
