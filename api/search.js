@@ -2,7 +2,7 @@ import https from "https";
 
 export default (req, res) => {
   const { searchTerm, PT } = req.query;
-  const expectedReferer = "https://music.lcahy.cn";
+  const expectedReferer = "https://music.lcahy.cn/";
 
   // 如果 Referer 不是期望的域名，返回错误响应
   if (req.headers.referer !== expectedReferer) {
