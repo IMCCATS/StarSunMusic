@@ -45,6 +45,8 @@ export default function Advertisement() {
           <br />
           <span>音乐版权归属音乐原版权方所有。</span>
           <br />
+          <span>应用程序可能响应较慢或无响应，烦请耐心等待，多次尝试~</span>
+          <br />
           <span>如有侵权，请联系public@singtech.top删除。</span>
         </Typography>
       </CardContent>
