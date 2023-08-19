@@ -36,6 +36,7 @@ const PlaylistComponent = ({ playlist }) => {
   }, []);
 
   const fetchMusicList = async () => {
+    const playlistId = playlist.id;
     try {
       const response = await fetch(
         `/api/fetch-music-list?playlistId=${playlistId}`
