@@ -38,7 +38,7 @@ const PlaylistComponent = ({ playlist }) => {
     const xhr = new XMLHttpRequest();
     const playlistId = playlist.id;
     const url = `https://api.gmit.vip/Api/MusicList?format=json&url=https://music.163.com/playlist?id=${playlistId}`;
-
+    xhr.setRequestHeader('Referer', 'https://api.gmit.vip/');
     xhr.open("GET", url, true);
     xhr.onreadystatechange = () => {
       if (xhr.readyState === XMLHttpRequest.DONE) {
@@ -58,7 +58,7 @@ const PlaylistComponent = ({ playlist }) => {
     setdisabled(true);
     const xhr = new XMLHttpRequest();
     const url = `https://api.gmit.vip/Api/Netease?format=json&id=${songId}`;
-
+    xhr.setRequestHeader('Referer', 'https://api.gmit.vip/');
     xhr.open("GET", url, true);
     xhr.onreadystatechange = () => {
       if (xhr.readyState === XMLHttpRequest.DONE) {

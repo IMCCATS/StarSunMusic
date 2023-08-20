@@ -63,6 +63,7 @@ export default function SongSearchTable() {
       encodeURIComponent("json") +
       "&site=" +
       encodeURIComponent(PT);
+      xhr.setRequestHeader('Referer', 'https://api.gmit.vip/');
     xhr.open("GET", url);
     xhr.onreadystatechange = function () {
       if (xhr.readyState === 4) {
