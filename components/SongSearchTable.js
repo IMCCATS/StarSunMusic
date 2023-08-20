@@ -61,7 +61,7 @@ export default function SongSearchTable() {
 
     try {
       const response = await fetch(
-        `/api/search?searchTerm=${encodeURIComponent(
+        `https://music.lcahy.cn/api/search?searchTerm=${encodeURIComponent(
           searchTerm
         )}&PT=${encodeURIComponent(PT)}`,
         {

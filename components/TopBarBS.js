@@ -29,7 +29,7 @@ export default function TopBar() {
   const fetchMusicList = async () => {
     try {
       const response = await fetch(
-        `/api/fetch-music-list?playlistId=19723756`,
+        `https://music.lcahy.cn/api/fetch-music-list?playlistId=19723756`,
         {
           headers: {
             Referer: "https://music.lcahy.cn",
@@ -51,7 +51,7 @@ export default function TopBar() {
   const handleListenClick = async (songId) => {
     setdisabled(true);
     try {
-      const response = await fetch(`/api/get-song?songId=${songId}`);
+      const response = await fetch(`https://music.lcahy.cn/api/get-song?songId=${songId}`);
       const data = await response.json();
 
       if (response.ok) {
