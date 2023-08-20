@@ -55,6 +55,7 @@ export default function SongSearchTable() {
       return;
     }
     console.log("搜索关键字:", searchTerm);
+    setwz("正在搜索中");
     $.ajax({
       url: "https://api.gumengya.com/Api/Music",
       type: "post",
@@ -149,7 +150,19 @@ export default function SongSearchTable() {
                 </div>
               ) : songs.length === 0 ? (
                 <div style={{ textAlign: "center", padding: "20px" }}>
-                  <span>搜索无内容返回</span>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      height: "200px",
+                    }}
+                  >
+                    <CircularProgress />
+                    <p style={{ marginLeft: "10px", whiteSpace: "pre" }}>
+                      搜索无内容返回，请重新搜索~
+                    </p>
+                  </div>
                 </div>
               ) : (
                 <Table>

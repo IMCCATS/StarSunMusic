@@ -15,7 +15,7 @@
     "@mui/icons-material": "^5.14.3",
     "@mui/material": "^5.14.5",
     "lrc-parser": "^1.0.1",
-    "next": "13.4.16",
+    "next": "latest",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   }
