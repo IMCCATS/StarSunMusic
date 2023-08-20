@@ -4,9 +4,12 @@ export default async (req, res) => {
   const playlistId = req.query.playlistId;
 
   const expectedReferer = "https://music.lcahy.cn/";
+  const expectedReferer2 = "http://localhost:3000/";
 
-  // 如果 Referer 不是期望的域名，返回错误响应
-  if (req.headers.referer !== expectedReferer) {
+  if (
+    req.headers.referer !== expectedReferer &&
+    req.headers.referer !== expectedReferer2
+  ) {
     return res.status(404).json({ error: "页面未找到" });
   }
 
