@@ -55,29 +55,38 @@ export default function SongSearchTable() {
       return;
     }
     console.log("搜索关键字:", searchTerm);
-    var xhr = new XMLHttpRequest();
-    var url =
-      "https://api.gmit.vip/Api/Music?text=" +
-      encodeURIComponent(searchTerm) +
-      "&format=" +
-      encodeURIComponent("json") +
-      "&site=" +
-      encodeURIComponent(PT);
-      xhr.setRequestHeader('Referer', 'https://api.gmit.vip/');
-    xhr.open("GET", url);
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState === 4) {
-        var res = JSON.parse(xhr.responseText);
-        if (res.code == 200) {
+    $.ajax({
+      url: "https://api.gumengya.com/Api/Music",
+      type: "post",
+      dataType: "json",
+      async: false,
+      data: {
+        format: "json",
+        text: searchTerm,
+        site: PT,
+      },
+      beforeSend: function () {
+        //请求中执行的代码
+      },
+      complete: function () {
+        //请求完成执行的代码
+      },
+      error: function () {
+        //请求成功失败执行的代码
+      },
+      success: function (res) {
+        // 状态码 200 表示请求成功
+        if (res.code === 200) {
+          console.log(res);
           //console.log(res.data);
           setSongs(res.data);
           setIsLoading(false);
         } else {
-          console.log(res.data);
+          console.log(res);
+          setIsLoading(false);
         }
-      }
-    };
-    xhr.send();
+      },
+    });
   };
 
   const handleChangec = (event, newPT) => {
@@ -90,10 +99,7 @@ export default function SongSearchTable() {
   };
 
   const children = [
-    <ToggleButton value="netease" key="left">
-      <FormatAlignLeftIcon />
-    </ToggleButton>,
-    <ToggleButton value="kugou" key="center">
+    <ToggleButton value="netease" key="center">
       <FormatAlignCenterIcon />
     </ToggleButton>,
   ];
@@ -143,7 +149,7 @@ export default function SongSearchTable() {
                 </div>
               ) : songs.length === 0 ? (
                 <div style={{ textAlign: "center", padding: "20px" }}>
-                  <span>还没有进行搜索操作</span>
+                  <span>搜索无内容返回</span>
                 </div>
               ) : (
                 <Table>

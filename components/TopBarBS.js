@@ -27,48 +27,70 @@ export default function TopBar() {
   }, []);
 
   const fetchMusicList = () => {
-    const xhr = new XMLHttpRequest();
-    const url =
-      "https://api.gmit.vip/Api/MusicList?format=json&url=https://music.163.com/playlist?id=19723756";
-    xhr.setRequestHeader("Referer", "https://api.gmit.vip/");
-    xhr.open("GET", url, true);
-
-    xhr.onreadystatechange = () => {
-      if (xhr.readyState === XMLHttpRequest.DONE) {
-        if (xhr.status === 200) {
-          const data = JSON.parse(xhr.responseText);
-          setSongs(data.data);
+    $.ajax({
+      url: "https://api.gumengya.com/Api/MusicList",
+      type: "post",
+      dataType: "json",
+      async: false,
+      data: {
+        format: "json",
+        url: `https://music.163.com/playlist?id=19723756`,
+      },
+      beforeSend: function () {
+        //请求中执行的代码
+      },
+      complete: function () {
+        //请求完成执行的代码
+      },
+      error: function () {
+        //请求成功失败执行的代码
+      },
+      success: function (res) {
+        // 状态码 200 表示请求成功
+        if (res.code === "200") {
+          console.log(res);
+          setSongs(res.data);
           setIsLoading(false);
         } else {
-          console.log(xhr.responseText); // 处理错误情况
+          console.log(res);
+          setIsLoading(false);
         }
-      }
-    };
-
-    xhr.send();
+      },
+    });
   };
   const [disabled, setdisabled] = React.useState(false);
   const handleListenClick = (songId) => {
     setdisabled(true);
-    const xhr = new XMLHttpRequest();
-    const url = `https://api.gmit.vip/Api/Netease?format=json&id=${songId}`;
-
-    xhr.open("GET", url, true);
-
-    xhr.onreadystatechange = () => {
-      if (xhr.readyState === XMLHttpRequest.DONE) {
-        if (xhr.status === 200) {
-          const data = JSON.parse(xhr.responseText);
-          setCurrentSong(data.data);
+    $.ajax({
+      url: "https://api.gumengya.com/Api/Netease",
+      type: "post",
+      dataType: "json",
+      async: false,
+      data: {
+        format: "json",
+        id: `${songId}`,
+      },
+      beforeSend: function () {
+        //请求中执行的代码
+      },
+      complete: function () {
+        //请求完成执行的代码
+      },
+      error: function () {
+        //请求成功失败执行的代码
+      },
+      success: function (res) {
+        // 状态码 200 表示请求成功
+        if (res.code === 200) {
+          console.log(res);
+          setCurrentSong(res.data);
           setdisabled(false);
         } else {
-          console.log(xhr.responseText); // 处理错误情况
+          console.log(res);
           setdisabled(false);
         }
-      }
-    };
-
-    xhr.send();
+      },
+    });
   };
 
   const lastIndex = currentPage * itemsPerPage;

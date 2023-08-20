@@ -21,7 +21,8 @@ export default function Advertisement() {
         <Typography variant="body2">
           <span>
             开发者：小研同学 <br />
-            运营：内蒙古畅哥计算机科技工作室
+            运营：内蒙古畅哥计算机科技工作室 <br />
+            版本：1.2.0
           </span>
         </Typography>
       </CardContent>
