@@ -29,7 +29,7 @@ export default (req, res) => {
       });
 
       response.on("end", () => {
-        //const responseData = JSON.parse(data);
+        const responseData = JSON.parse(data);
 
         if (responseData.code === 200) {
           res.status(200).json({ songs: responseData.data });

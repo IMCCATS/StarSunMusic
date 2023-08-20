@@ -23,7 +23,7 @@ export default async (req, res) => {
       });
 
       response.on("end", () => {
-        //const responseData = JSON.parse(data);
+        const responseData = JSON.parse(data);
         res.status(200).json({ song: responseData.data });
       });
     })
