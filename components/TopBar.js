@@ -26,39 +26,50 @@ export default function TopBar() {
     fetchMusicList();
   }, []);
 
-  const fetchMusicList = async () => {
-    try {
-      const response = await fetch(`https://music.lcahy.cn/api/fetch-music-list?playlistId=3778678`, {
-        headers: {
-          Referer: "https://music.lcahy.cn",
-        },
-      });
-      const data = await response.json();
+  const fetchMusicList = () => {
+    const xhr = new XMLHttpRequest();
+    const url =
+      "https://api.gmit.vip/Api/MusicList?format=json&url=https://music.163.com/playlist?id=3778678";
 
-      if (response.ok) {
-        setSongs(data.songs);
-        setIsLoading(false);
+    xhr.open("GET", url, true);
+
+    xhr.onreadystatechange = () => {
+      if (xhr.readyState === XMLHttpRequest.DONE) {
+        if (xhr.status === 200) {
+          const data = JSON.parse(xhr.responseText);
+          setSongs(data.data);
+          setIsLoading(false);
+        } else {
+          console.log(xhr.responseText); // 处理错误情况
+        }
       }
-    } catch (error) {
-      console.log(error);
-    }
+    };
+
+    xhr.send();
   };
 
   const [disabled, setdisabled] = React.useState(false);
-  const handleListenClick = async (songId) => {
+  const handleListenClick = (songId) => {
     setdisabled(true);
-    try {
-      const response = await fetch(`https://music.lcahy.cn/api/get-song?songId=${songId}`);
-      const data = await response.json();
+    const xhr = new XMLHttpRequest();
+    const url = `https://api.gmit.vip/Api/Netease?format=json&id=${songId}`;
 
-      if (response.ok) {
-        setCurrentSong(data.song);
-        setdisabled(false);
+    xhr.open("GET", url, true);
+
+    xhr.onreadystatechange = () => {
+      if (xhr.readyState === XMLHttpRequest.DONE) {
+        if (xhr.status === 200) {
+          const data = JSON.parse(xhr.responseText);
+          setCurrentSong(data.data);
+          setdisabled(false);
+        } else {
+          console.log(xhr.responseText); // 处理错误情况
+          setdisabled(false);
+        }
       }
-    } catch (error) {
-      console.log(error);
-      setdisabled(false);
-    }
+    };
+
+    xhr.send();
   };
 
   const lastIndex = currentPage * itemsPerPage;

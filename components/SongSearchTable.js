@@ -50,39 +50,33 @@ export default function SongSearchTable() {
   const handleListenClick = (song) => {
     setCurrentSong(song);
   };
-  const handleSearch = async () => {
+  const handleSearch = () => {
     if (!searchTerm) {
       return;
     }
-
-    setwz("搜索歌曲中");
-    setIsLoading(true);
     console.log("搜索关键字:", searchTerm);
-
-    try {
-      const response = await fetch(
-        `https://music.lcahy.cn/api/search?searchTerm=${encodeURIComponent(
-          searchTerm
-        )}&PT=${encodeURIComponent(PT)}`,
-        {
-          headers: {
-            Referer: "https://music.lcahy.cn", // 替换为你的程序域名
-          },
+    var xhr = new XMLHttpRequest();
+    var url =
+      "https://api.gmit.vip/Api/Music?text=" +
+      encodeURIComponent(searchTerm) +
+      "&format=" +
+      encodeURIComponent("json") +
+      "&site=" +
+      encodeURIComponent(PT);
+    xhr.open("GET", url);
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4) {
+        var res = JSON.parse(xhr.responseText);
+        if (res.code == 200) {
+          //console.log(res.data);
+          setSongs(res.data);
+          setIsLoading(false);
+        } else {
+          console.log(res.data);
         }
-      );
-      const data = await response.json();
-
-      if (response.ok) {
-        setSongs(data.songs);
-        setIsLoading(false);
-      } else {
-        console.log(data.error);
-        setwz("搜索歌曲失败，请更换搜索词或搜索方式。");
       }
-    } catch (error) {
-      console.log(error);
-      setwz("发生错误，请稍后再试。");
-    }
+    };
+    xhr.send();
   };
 
   const handleChangec = (event, newPT) => {

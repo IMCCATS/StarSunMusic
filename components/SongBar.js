@@ -34,43 +34,45 @@ const PlaylistComponent = ({ playlist }) => {
   React.useEffect(() => {
     fetchMusicList();
   }, []);
-
-  const fetchMusicList = async () => {
+  const fetchMusicList = () => {
+    const xhr = new XMLHttpRequest();
     const playlistId = playlist.id;
-    try {
-      const response = await fetch(
-        `https://music.lcahy.cn/api/fetch-music-list?playlistId=${playlistId}`,
-        {
-          headers: {
-            Referer: "https://music.lcahy.cn",
-          },
+    const url = `https://api.gmit.vip/Api/MusicList?format=json&url=https://music.163.com/playlist?id=${playlistId}`;
+
+    xhr.open("GET", url, true);
+    xhr.onreadystatechange = () => {
+      if (xhr.readyState === XMLHttpRequest.DONE) {
+        if (xhr.status === 200) {
+          const data = JSON.parse(xhr.responseText);
+          setSongs(data.data);
+          setIsLoading(false);
+        } else {
+          console.log(xhr.responseText);
         }
-      );
-      const data = await response.json();
-
-      if (response.ok) {
-        setSongs(data.songs);
-        setIsLoading(false);
       }
-    } catch (error) {
-      console.log(error);
-    }
+    };
+    xhr.send();
   };
-  const [disabled, setdisabled] = React.useState(false);
-  const handleListenClick = async (songId) => {
-    setdisabled(true);
-    try {
-      const response = await fetch(`https://music.lcahy.cn/api/get-song?songId=${songId}`);
-      const data = await response.json();
 
-      if (response.ok) {
-        setCurrentSong(data.song);
-        setdisabled(false);
+  const handleListenClick = (songId) => {
+    setdisabled(true);
+    const xhr = new XMLHttpRequest();
+    const url = `https://api.gmit.vip/Api/Netease?format=json&id=${songId}`;
+
+    xhr.open("GET", url, true);
+    xhr.onreadystatechange = () => {
+      if (xhr.readyState === XMLHttpRequest.DONE) {
+        if (xhr.status === 200) {
+          const data = JSON.parse(xhr.responseText);
+          setCurrentSong(data.data);
+          setdisabled(false);
+        } else {
+          console.log(xhr.responseText);
+          setdisabled(false);
+        }
       }
-    } catch (error) {
-      console.log(error);
-      setdisabled(false);
-    }
+    };
+    xhr.send();
   };
 
   const lastIndex = currentPage * itemsPerPage;
