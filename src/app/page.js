@@ -14,7 +14,6 @@ export default function BasicCard() {
   return (
     <main>
       <link rel="icon" href="./favicon.ico" />
-      <script src="./jquery.min.js"></script>
       <meta name="viewport" content="initial-scale=1, width=device-width" />
       <AppBar />
       <Advertisement />

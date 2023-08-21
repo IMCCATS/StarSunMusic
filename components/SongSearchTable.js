@@ -1,7 +1,7 @@
 "use client";
 import * as React from "react";
+import $ from "jquery";
 import { CurrentSongContext } from "../src/app/page";
-import FormatAlignLeftIcon from "@mui/icons-material/FormatAlignLeft";
 import FormatAlignCenterIcon from "@mui/icons-material/FormatAlignCenter";
 import {
   Button,
@@ -55,39 +55,39 @@ export default function SongSearchTable() {
       return;
     }
     console.log("搜索关键字:", searchTerm);
-    setwz("正在搜索中");
-    $.ajax({
-      url: "https://api.gumengya.com/Api/Music",
-      type: "post",
-      dataType: "json",
-      async: false,
-      data: {
-        format: "json",
-        text: searchTerm,
-        site: PT,
-      },
-      beforeSend: function () {
-        //请求中执行的代码
-      },
-      complete: function () {
-        //请求完成执行的代码
-      },
-      error: function () {
-        //请求成功失败执行的代码
-      },
-      success: function (res) {
-        // 状态码 200 表示请求成功
-        if (res.code === 200) {
-          console.log(res);
-          //console.log(res.data);
-          setSongs(res.data);
-          setIsLoading(false);
-        } else {
-          console.log(res);
-          setIsLoading(false);
-        }
-      },
-    });
+    setwz("搜索功能维护中");
+    // $.ajax({
+    //   url: "https://api.gumengya.com/Api/Music",
+    //   type: "post",
+    //   dataType: "json",
+    //   async: false,
+    //   data: {
+    //     format: "json",
+    //     text: searchTerm,
+    //     site: PT,
+    //   },
+    //   beforeSend: function () {
+    //     //请求中执行的代码
+    //   },
+    //   complete: function () {
+    //     //请求完成执行的代码
+    //   },
+    //   error: function () {
+    //     //请求成功失败执行的代码
+    //   },
+    //   success: function (res) {
+    //     // 状态码 200 表示请求成功
+    //     if (res) {
+    //       console.log(res);
+    //       //console.log(res.data);
+    //       setSongs(res.data);
+    //       setIsLoading(false);
+    //     } else {
+    //       console.log(res);
+    //       setIsLoading(false);
+    //     }
+    //   },
+    // });
   };
 
   const handleChangec = (event, newPT) => {

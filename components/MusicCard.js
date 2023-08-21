@@ -64,7 +64,7 @@ const MusicCard = ({ currentSong }) => {
     const updateLyrics = async () => {
       if (currentSong) {
         setIsPlaying(true);
-        const lrcss = await parseLrcString(currentSong.lrc);
+        const lrcss = await parseLrcString(currentSong.lyric);
         setLyrics(lrcss);
       } else {
         setIsPlaying(false);
@@ -100,7 +100,7 @@ const MusicCard = ({ currentSong }) => {
 
   React.useEffect(() => {
     if (lyrics && lyrics.length > 0) {
-      audioRef.current.src = currentSong.url;
+      audioRef.current.src = currentSong.link;
       audioRef.current.play();
 
       audioRef.current.addEventListener("timeupdate", handleAudioTimeUpdate);
@@ -113,7 +113,7 @@ const MusicCard = ({ currentSong }) => {
         }
       };
     } else if (currentSong) {
-      audioRef.current.src = currentSong.url;
+      audioRef.current.src = currentSong.link;
       audioRef.current.play();
 
       audioRef.current.addEventListener("ended", () => setIsPlaying(false));
@@ -218,9 +218,9 @@ const MusicCard = ({ currentSong }) => {
               <span>{currentSong.title}</span>
             </Typography>
             <Typography variant="subtitle1">
-              <span>{currentSong.author}</span>
+              <span>{currentSong.artist}</span>
             </Typography>
-            <img src={currentSong.pic} alt="Thumbnail" height="64" />
+            <img src={currentSong.cover} alt="Thumbnail" height="64" />
             <div>{formatLyrics()}</div>
             <audio ref={audioRef} />
             <Slider

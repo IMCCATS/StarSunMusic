@@ -1,5 +1,6 @@
 "use client";
 import * as React from "react";
+import $ from "jquery";
 import { CurrentSongContext } from "../src/app/page";
 import {
   Button,
@@ -28,13 +29,13 @@ export default function TopBar() {
 
   const fetchMusicList = () => {
     $.ajax({
-      url: "https://api.gumengya.com/Api/MusicList",
-      type: "post",
+      url: "https://api.yimian.xyz/msc/",
+      type: "get",
       dataType: "json",
       async: false,
       data: {
-        format: "json",
-        url: `https://music.163.com/playlist?id=19723756`,
+        type: "playlist",
+        id: `19723756`,
       },
       beforeSend: function () {
         //请求中执行的代码
@@ -47,9 +48,9 @@ export default function TopBar() {
       },
       success: function (res) {
         // 状态码 200 表示请求成功
-        if (res.code === "200") {
-          console.log(res);
-          setSongs(res.data);
+        if (res) {
+          // console.log(res);
+          setSongs(res);
           setIsLoading(false);
         } else {
           console.log(res);
@@ -62,12 +63,11 @@ export default function TopBar() {
   const handleListenClick = (songId) => {
     setdisabled(true);
     $.ajax({
-      url: "https://api.gumengya.com/Api/Netease",
-      type: "post",
+      url: "https://api.paugram.com/netease/",
+      type: "get",
       dataType: "json",
       async: false,
       data: {
-        format: "json",
         id: `${songId}`,
       },
       beforeSend: function () {
@@ -81,9 +81,9 @@ export default function TopBar() {
       },
       success: function (res) {
         // 状态码 200 表示请求成功
-        if (res.code === 200) {
-          console.log(res);
-          setCurrentSong(res.data);
+        if (res) {
+          // console.log(res);
+          setCurrentSong(res);
           setdisabled(false);
         } else {
           console.log(res);
@@ -147,7 +147,7 @@ export default function TopBar() {
                   </TableHead>
                   <TableBody>
                     {currentSongs.map((song, index) => (
-                      <TableRow key={song.song_id}>
+                      <TableRow key={song.id}>
                         <TableCell>
                           <span>{firstIndex + index + 1}</span>
                         </TableCell>
@@ -162,7 +162,7 @@ export default function TopBar() {
                         </TableCell>
                         <TableCell>
                           <Button
-                            onClick={() => handleListenClick(song.song_id)}
+                            onClick={() => handleListenClick(song.id)}
                             variant="contained"
                             disabled={disabled}
                           >

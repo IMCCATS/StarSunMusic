@@ -1,5 +1,6 @@
 "use client";
 import * as React from "react";
+import $ from "jquery";
 import { CurrentSongContext } from "../src/app/page";
 import {
   Button,
@@ -37,13 +38,13 @@ const PlaylistComponent = ({ playlist }) => {
   const fetchMusicList = () => {
     const playlistId = playlist.id;
     $.ajax({
-      url: "https://api.gumengya.com/Api/MusicList",
-      type: "post",
+      url: "https://api.yimian.xyz/msc/",
+      type: "get",
       dataType: "json",
       async: false,
       data: {
-        format: "json",
-        url: `https://music.163.com/playlist?id=${playlistId}`,
+        type: "playlist",
+        id: `${playlistId}`,
       },
       beforeSend: function () {
         //请求中执行的代码
@@ -56,9 +57,9 @@ const PlaylistComponent = ({ playlist }) => {
       },
       success: function (res) {
         // 状态码 200 表示请求成功
-        if (res.code === "200") {
-          console.log(res);
-          setSongs(res.data);
+        if (res) {
+          // console.log(res);
+          setSongs(res);
           setIsLoading(false);
         } else {
           console.log(res);
@@ -71,12 +72,11 @@ const PlaylistComponent = ({ playlist }) => {
   const handleListenClick = (songId) => {
     setdisabled(true);
     $.ajax({
-      url: "https://api.gumengya.com/Api/Netease",
-      type: "post",
+      url: "https://api.paugram.com/netease/",
+      type: "get",
       dataType: "json",
       async: false,
       data: {
-        format: "json",
         id: `${songId}`,
       },
       beforeSend: function () {
@@ -90,9 +90,9 @@ const PlaylistComponent = ({ playlist }) => {
       },
       success: function (res) {
         // 状态码 200 表示请求成功
-        if (res.code === 200) {
-          console.log(res);
-          setCurrentSong(res.data);
+        if (res) {
+          // console.log(res);
+          setCurrentSong(res);
           setdisabled(false);
         } else {
           console.log(res);
@@ -159,7 +159,7 @@ const PlaylistComponent = ({ playlist }) => {
             </TableHead>
             <TableBody>
               {currentSongs.map((song, index) => (
-                <TableRow key={song.song_id}>
+                <TableRow key={song.id}>
                   <TableCell>
                     <span>{firstIndex + index + 1}</span>
                   </TableCell>
@@ -167,14 +167,14 @@ const PlaylistComponent = ({ playlist }) => {
                     <img src={song.cover} alt="Thumbnail" height="64" />
                   </TableCell>
                   <TableCell>
-                    <span>{song.name}</span>
+                    <span>{song.album}</span>
                   </TableCell>
                   <TableCell>
                     <span>{song.artist}</span>
                   </TableCell>
                   <TableCell>
                     <Button
-                      onClick={() => handleListenClick(song.song_id)}
+                      onClick={() => handleListenClick(song.id)}
                       variant="contained"
                       disabled={disabled}
                     >
