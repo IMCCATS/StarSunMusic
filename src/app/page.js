@@ -11,6 +11,16 @@ import SongBar from "../../components/SongBar";
 export const CurrentSongContext = React.createContext(null);
 export default function BasicCard() {
   const [currentSong, setCurrentSong] = React.useState(null);
+  const AddBaiDuTJ = () => {
+    var _hmt = _hmt || [];
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?68cb9d0aa571714fd6cb36083949f31e";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  };
+  React.useEffect(() => {
+    AddBaiDuTJ();
+  }, []);
   return (
     <main>
       <link rel="icon" href="./favicon.ico" />
