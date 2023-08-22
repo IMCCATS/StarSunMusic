@@ -1,7 +1,7 @@
 "use client";
 import * as React from "react";
 import $ from "jquery";
-import { CurrentSongContext } from "../src/app/page";
+import { CurrentSongContext } from "../src/app/dashboard/page";
 import FormatAlignCenterIcon from "@mui/icons-material/FormatAlignCenter";
 import {
   Button,

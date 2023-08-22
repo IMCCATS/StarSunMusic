@@ -16,7 +16,7 @@ export default function Advertisement() {
           <span>一款由中学生自制的音乐欣赏系统</span>
         </Typography>
         <Typography variant="body2">
-          <span>版本：1.0.0_202308221336</span>
+          <span>版本：1.0.0_202308230043</span>
           <br />
           <span>
             更新日志：
@@ -36,6 +36,8 @@ export default function Advertisement() {
             1.0.0_202308202259：修复无法显示数据、播放慢等问题，移除无效内容，优化逻辑，应用安全性优化；
             <br />
             1.0.0_202308221336：重写逻辑，修复无法显示数据、播放慢等问题，应用安全性优化；
+            <br/>
+            1.0.0_202308230043：优化逻辑，新增起始页，应用合规化处理；
           </span>
           <br />
           <br />
@@ -47,7 +49,7 @@ export default function Advertisement() {
           <br />
           <span>©2020-2023 内蒙古畅哥计算机科技工作室 版权所有. </span>
           <br />
-          <span>音乐版权归属音乐原版权方所有。</span>
+          <span>音乐资源来自于网络，其版权归属音乐原版权方所有。</span>
           <br />
           <span>应用程序可能响应较慢或无响应，烦请耐心等待，多次尝试~</span>
           <br />
