@@ -83,7 +83,7 @@ export default function TopBar() {
       success: function (res) {
         // 状态码 200 表示请求成功
         if (res) {
-          // console.log(res);
+          console.log(res);
           setCurrentSong(res);
           setdisabled(false);
         } else {

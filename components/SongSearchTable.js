@@ -47,47 +47,74 @@ export default function SongSearchTable() {
   const handleChange = (event) => {
     setSearchTerm(event.target.value);
   };
-  const handleListenClick = (song) => {
-    setCurrentSong(song);
+  const [disabled, setdisabled] = React.useState(false);
+  const handleListenClick = (songId) => {
+    setdisabled(true);
+    $.ajax({
+      url: "https://api.paugram.com/netease/",
+      type: "get",
+      dataType: "json",
+      async: false,
+      data: {
+        id: `${songId}`,
+      },
+      beforeSend: function () {
+        //请求中执行的代码
+      },
+      complete: function () {
+        //请求完成执行的代码
+      },
+      error: function () {
+        //请求成功失败执行的代码
+      },
+      success: function (res) {
+        // 状态码 200 表示请求成功
+        if (res) {
+          //console.log(res);
+          setCurrentSong(res);
+          setdisabled(false);
+        } else {
+          console.log(res);
+          setdisabled(false);
+        }
+      },
+    });
   };
   const handleSearch = () => {
     if (!searchTerm) {
       return;
     }
     console.log("搜索关键字:", searchTerm);
-    setwz("搜索功能维护中");
-    // $.ajax({
-    //   url: "https://api.gumengya.com/Api/Music",
-    //   type: "post",
-    //   dataType: "json",
-    //   async: false,
-    //   data: {
-    //     format: "json",
-    //     text: searchTerm,
-    //     site: PT,
-    //   },
-    //   beforeSend: function () {
-    //     //请求中执行的代码
-    //   },
-    //   complete: function () {
-    //     //请求完成执行的代码
-    //   },
-    //   error: function () {
-    //     //请求成功失败执行的代码
-    //   },
-    //   success: function (res) {
-    //     // 状态码 200 表示请求成功
-    //     if (res) {
-    //       console.log(res);
-    //       //console.log(res.data);
-    //       setSongs(res.data);
-    //       setIsLoading(false);
-    //     } else {
-    //       console.log(res);
-    //       setIsLoading(false);
-    //     }
-    //   },
-    // });
+    setwz("正在搜索中");
+    $.ajax({
+      url: "https://anywherecors.lcahy.cn/cloudsearch",
+      type: "post",
+      dataType: "json",
+      async: false,
+      data: {
+        keywords: `${searchTerm}`,
+      },
+      beforeSend: function () {
+        //请求中执行的代码
+      },
+      complete: function () {
+        //请求完成执行的代码
+      },
+      error: function () {
+        //请求成功失败执行的代码
+      },
+      success: function (res) {
+        // 状态码 200 表示请求成功
+        if (res) {
+          //console.log(res);
+          setSongs(res.result.songs);
+          setIsLoading(false);
+        } else {
+          console.log(res);
+          setIsLoading(false);
+        }
+      },
+    });
   };
 
   const handleChangec = (event, newPT) => {
@@ -169,9 +196,6 @@ export default function SongSearchTable() {
                   <TableHead>
                     <TableRow>
                       <TableCell>
-                        <span>歌曲图片</span>
-                      </TableCell>
-                      <TableCell>
                         <span>标题</span>
                       </TableCell>
                       <TableCell>
@@ -184,20 +208,18 @@ export default function SongSearchTable() {
                   </TableHead>
                   <TableBody>
                     {songs.map((song) => (
-                      <TableRow key={song.songid}>
+                      <TableRow key={song.id}>
                         <TableCell>
-                          <img src={song.pic} alt="Thumbnail" height="64" />
+                          <span>{song.name}</span>
                         </TableCell>
                         <TableCell>
-                          <span>{song.title}</span>
-                        </TableCell>
-                        <TableCell>
-                          <span>{song.author}</span>
+                          <span>{song.ar[0].name}</span>
                         </TableCell>
                         <TableCell>
                           <Button
-                            onClick={() => handleListenClick(song)}
+                            onClick={() => handleListenClick(song.id)}
                             variant="contained"
+                            disabled={disabled}
                           >
                             <span>听</span>
                           </Button>
