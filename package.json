@@ -14,7 +14,6 @@
     "@fontsource/roboto": "^5.0.8",
     "@mui/icons-material": "^5.14.3",
     "@mui/material": "^5.14.5",
-    "@mui/styles": "^5.14.5",
     "jquery": "^3.7.0",
     "lrc-parser": "^1.0.1",
     "next": "latest",
