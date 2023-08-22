@@ -40,7 +40,6 @@ const HomePage = () => {
         ) : (
           <Button
             variant="contained"
-            className={classes.button}
             startIcon={<DashboardIcon />}
             onClick={handleClick}
             style={{
