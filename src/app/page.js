@@ -16,8 +16,6 @@ const HomePage = () => {
     }, 1000);
   };
 
-  const classes = useStyles();
-
   return (
     <Container>
       <div
