@@ -12,6 +12,7 @@ import PauseIcon from "@mui/icons-material/Pause";
 const MusicCard = ({ currentSong }) => {
   const [isAudioPlayable, setIsAudioPlayable] = React.useState(true);
   const [isPlaying, setIsPlaying] = React.useState(false);
+  const [volume, setVolume] = React.useState(100);
   const [progress, setProgress] = React.useState(0);
   const [lyrics, setLyrics] = React.useState([]);
   const [currentLyricIndex, setCurrentLyricIndex] = React.useState(0);
@@ -187,6 +188,7 @@ const MusicCard = ({ currentSong }) => {
   };
 
   const handleTogglePlay = () => {
+    audioRef.current.volume = volume / 100;
     if (isPlaying) {
       audioRef.current.pause(); // 暂停音频
     } else {
@@ -194,6 +196,11 @@ const MusicCard = ({ currentSong }) => {
     }
 
     setIsPlaying(!isPlaying); // 切换播放状态
+  };
+
+  const handleVolumeChange = (event, newValue) => {
+    setVolume(newValue);
+    audioRef.current.volume = newValue / 100;
   };
 
   const formatTime = (timeInSeconds) => {
@@ -248,6 +255,14 @@ const MusicCard = ({ currentSong }) => {
             >
               {isPlaying ? <PauseIcon /> : <PlayArrowIcon />}
             </IconButton>
+            <Slider
+              value={volume}
+              onChange={handleVolumeChange}
+              disabled={isAudioPlayable === false}
+            />
+            <Typography variant="caption" style={{ margin: "8px 0" }}>
+              <span>音量: {volume}%</span>
+            </Typography>
           </>
         )}
       </CardContent>
