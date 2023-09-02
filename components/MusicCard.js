@@ -1,13 +1,19 @@
 import * as React from "react";
 import {
   Card,
+  Button,
   CardContent,
   Typography,
   IconButton,
   Slider,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogActions,
 } from "@mui/material";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
+import FileIcon from "@mui/icons-material/Article";
 
 const MusicCard = ({ currentSong }) => {
   const [isAudioPlayable, setIsAudioPlayable] = React.useState(true);
@@ -17,6 +23,15 @@ const MusicCard = ({ currentSong }) => {
   const [lyrics, setLyrics] = React.useState([]);
   const [currentLyricIndex, setCurrentLyricIndex] = React.useState(0);
   const audioRef = React.useRef(null);
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   const handleAudioTimeUpdate = () => {
     const currentTime = audioRef.current.currentTime;
@@ -157,7 +172,7 @@ const MusicCard = ({ currentSong }) => {
       } else {
         return (
           <Typography variant="body1">
-            <span>暂无歌词信息哦！</span>
+            <span>暂无歌词信息哦，可尝试点击查看完整歌词~</span>
           </Typography>
         );
       }
@@ -221,6 +236,28 @@ const MusicCard = ({ currentSong }) => {
         )}
         {currentSong && (
           <>
+            <Dialog open={open} onClose={handleClose}>
+              <DialogTitle>
+                <span>歌曲歌词</span>
+              </DialogTitle>
+              <DialogContent>
+                {!currentSong && (
+                  <Typography variant="body1">
+                    <span>暂无歌词信息哦！</span>
+                  </Typography>
+                )}
+                {currentSong &&
+                  currentSong.lyric &&
+                  currentSong.lyric.split("\n").map((line, index) => {
+                    return <p key={index}>{line}</p>;
+                  })}
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={handleClose}>
+                  <span>好的</span>
+                </Button>
+              </DialogActions>
+            </Dialog>
             <Typography variant="h5">
               <span>{currentSong.title}</span>
             </Typography>
@@ -254,6 +291,13 @@ const MusicCard = ({ currentSong }) => {
               disabled={isAudioPlayable === false}
             >
               {isPlaying ? <PauseIcon /> : <PlayArrowIcon />}
+            </IconButton>
+            <IconButton
+              aria-label="file button"
+              onClick={handleClickOpen}
+              disabled={isAudioPlayable === false}
+            >
+              <FileIcon />
             </IconButton>
             <Slider
               value={volume}

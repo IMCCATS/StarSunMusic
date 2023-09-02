@@ -80,12 +80,15 @@ export default function SongSearchTable() {
       },
     });
   };
+
   const handleSearch = () => {
     if (!searchTerm) {
       return;
     }
-    console.log("搜索关键字:", searchTerm);
+    setSongs([]);
+    setIsLoading(true);
     setwz("正在搜索中");
+    console.log("搜索关键字:", searchTerm);
     $.ajax({
       url: "https://anywherecors.lcahy.cn/cloudsearch",
       type: "post",
@@ -175,59 +178,63 @@ export default function SongSearchTable() {
                     {jzwz}
                   </p>
                 </div>
-              ) : songs.length === 0 ? (
-                <div style={{ textAlign: "center", padding: "20px" }}>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      height: "200px",
-                    }}
-                  >
-                    <CircularProgress />
-                    <p style={{ marginLeft: "10px", whiteSpace: "pre" }}>
-                      搜索无内容返回，请重新搜索~
-                    </p>
-                  </div>
-                </div>
               ) : (
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>
-                        <span>标题</span>
-                      </TableCell>
-                      <TableCell>
-                        <span>作者</span>
-                      </TableCell>
-                      <TableCell>
-                        <span>链接</span>
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {songs.map((song) => (
-                      <TableRow key={song.id}>
-                        <TableCell>
-                          <span>{song.name}</span>
-                        </TableCell>
-                        <TableCell>
-                          <span>{song.ar[0].name}</span>
-                        </TableCell>
-                        <TableCell>
-                          <Button
-                            onClick={() => handleListenClick(song.id)}
-                            variant="contained"
-                            disabled={disabled}
-                          >
-                            <span>听</span>
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                <>
+                  {songs.length === 0 ? (
+                    <div style={{ textAlign: "center", padding: "20px" }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          height: "200px",
+                        }}
+                      >
+                        <CircularProgress />
+                        <p style={{ marginLeft: "10px", whiteSpace: "pre" }}>
+                          搜索无内容返回，请重新搜索~
+                        </p>
+                      </div>
+                    </div>
+                  ) : (
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>
+                            <span>标题</span>
+                          </TableCell>
+                          <TableCell>
+                            <span>作者</span>
+                          </TableCell>
+                          <TableCell>
+                            <span>操作</span>
+                          </TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {songs.map((song) => (
+                          <TableRow key={song.id}>
+                            <TableCell>
+                              <span>{song.name}</span>
+                            </TableCell>
+                            <TableCell>
+                              <span>{song.ar[0].name}</span>
+                            </TableCell>
+                            <TableCell>
+                              <Button
+                                onClick={() => handleListenClick(song.id)}
+                                variant="contained"
+                                disabled={disabled}
+                              >
+                                <span>听</span>
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  )}
+                </>
               )}
             </TableContainer>
           </Paper>
