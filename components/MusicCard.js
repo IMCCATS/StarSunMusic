@@ -176,7 +176,7 @@ const MusicCard = ({ currentSong }) => {
             lyrics[currentLyricIndex].text ? (
               <span>{lyrics[currentLyricIndex].text}</span>
             ) : (
-              <span>暂无歌词，可以查看完整歌词哦~</span>
+              <span></span>
             )}
           </Typography>
         );
