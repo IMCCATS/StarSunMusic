@@ -258,25 +258,37 @@ const MusicCard = ({ currentSong }) => {
                   </Typography>
                 )}
                 {currentSong &&
-                  currentSong.lyric.split("\n").map((line, index) => {
-                    if (
-                      line.startsWith("﻿[id:") ||
-                      line.startsWith("[id:") ||
-                      line.startsWith("[ar:") ||
-                      line.startsWith("[ti:") ||
-                      line.startsWith("[by:") ||
-                      line.startsWith("[hash:") ||
-                      line.startsWith("[al:") ||
-                      line.startsWith("[sign:") ||
-                      line.startsWith("[qq:") ||
-                      line.startsWith("[total:") ||
-                      line.startsWith("[offset:")
-                    ) {
-                      return null; // 返回 null 来忽略该行
-                    } else {
-                      return <p key={index}>{line}</p>;
-                    }
-                  })}
+                  currentSong.lyric
+                    .split("\n")
+                    .filter((line) => {
+                      return (
+                        !line.startsWith("﻿[id:") &&
+                        !line.startsWith("[id:") &&
+                        line !== "" &&
+                        !line.startsWith("[ar:") &&
+                        !line.startsWith("[ti:") &&
+                        !line.startsWith("[by:") &&
+                        !line.startsWith("[hash:") &&
+                        !line.startsWith("[al:") &&
+                        !line.startsWith("[sign:") &&
+                        !line.startsWith("[qq:") &&
+                        !line.startsWith("[total:") &&
+                        !line.startsWith("[offset:")
+                      );
+                    })
+                    .map((line, index) => {
+                      const isPlaying =
+                        currentLyricIndex >= 0 && index === currentLyricIndex;
+                      const fontSize = isPlaying ? "larger" : "smaller";
+                      return (
+                        <main>
+                          <span key={index} style={{ fontSize }}>
+                            {line}
+                          </span>
+                          <br />
+                        </main>
+                      );
+                    })}
               </DialogContent>
               <DialogActions>
                 <Button onClick={handleClose}>
