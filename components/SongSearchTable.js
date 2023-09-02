@@ -3,6 +3,7 @@ import * as React from "react";
 import $ from "jquery";
 import { CurrentSongContext } from "../src/app/dashboard/page";
 import FormatAlignCenterIcon from "@mui/icons-material/FormatAlignCenter";
+import FormatAlignLeftIcon from "@mui/icons-material/FormatAlignLeft";
 import {
   Button,
   TableRow,
@@ -25,7 +26,7 @@ export default function SongSearchTable() {
   const { setCurrentSong } = React.useContext(CurrentSongContext);
   const [isLoading, setIsLoading] = React.useState(true);
   const [songs, setSongs] = React.useState([]);
-  const [PT, setPT] = React.useState("netease");
+  const [PT, setPT] = React.useState("default");
   const [jzwz, setwz] = React.useState(
     "请搜索歌曲，搜索完成后会自动停止加载。"
   );
@@ -37,7 +38,11 @@ export default function SongSearchTable() {
       if (!isEnterPressed) {
         isEnterPressed = true;
         setTimeout(() => {
-          handleSearch();
+          if (PT === "default") {
+            handleSearch();
+          } else {
+            handleSearchKG();
+          }
           isEnterPressed = false;
         }, 1000);
       }
@@ -70,12 +75,129 @@ export default function SongSearchTable() {
       success: function (res) {
         // 状态码 200 表示请求成功
         if (res) {
-          //console.log(res);
+          console.log(res);
           setCurrentSong(res);
           setdisabled(false);
         } else {
           console.log(res);
           setdisabled(false);
+        }
+      },
+    });
+  };
+
+  const convertJson = function (serverJson) {
+    const data = serverJson;
+    const convertedJson = {
+      id: data.songid,
+      title: data.title,
+      artist: data.author,
+      cover: data.pic,
+      lyric: data.lrc,
+      link: data.url,
+    };
+
+    return convertedJson;
+  };
+
+  const CCJSONC = function (serverJson) {
+    const data = serverJson;
+    const convertedJsons = [];
+
+    for (let i = 0; i < data.length; i++) {
+      const convertedJson = {
+        id: data[i].songid,
+        title: data[i].title,
+        artist: data[i].author,
+        name: data[i].title,
+        ar: [{ name: data[i].author }],
+        cover: data[i].pic,
+        lyric: data[i].lrc,
+        link: data[i].url,
+      };
+      convertedJsons.push(convertedJson);
+    }
+
+    return convertedJsons;
+  };
+
+  const handleListenClickLinetwo = (songId) => {
+    setdisabled(true);
+    $.ajax({
+      url: "https://api.gumengya.com/Api/Netease",
+      type: "post",
+      dataType: "json",
+      async: false,
+      data: {
+        format: "json",
+        id: `${songId}`,
+      },
+      beforeSend: function () {
+        //请求中执行的代码
+      },
+      complete: function () {
+        //请求完成执行的代码
+      },
+      error: function () {
+        //请求成功失败执行的代码
+      },
+      success: function (res) {
+        // 状态码 200 表示请求成功
+        if (res) {
+          //console.log(res.data);
+          const convertedJson = convertJson(res.data);
+          //console.log(convertedJson);
+          setCurrentSong(convertedJson);
+          setdisabled(false);
+        } else {
+          console.log(res);
+          setdisabled(false);
+        }
+      },
+    });
+  };
+
+  const handleListenClickLinethree = (song) => {
+    setCurrentSong(song);
+  };
+
+  const handleSearchKG = () => {
+    if (!searchTerm) {
+      return;
+    }
+    setSongs([]);
+    setIsLoading(true);
+    setwz("正在搜索中");
+    console.log("搜索关键字:", searchTerm);
+    $.ajax({
+      url: "https://api.gumengya.com/Api/Music",
+      type: "post",
+      dataType: "json",
+      async: false,
+      data: {
+        format: "json",
+        text: `${searchTerm}`,
+        site: "kugou",
+      },
+      beforeSend: function () {
+        //请求中执行的代码
+      },
+      complete: function () {
+        //请求完成执行的代码
+      },
+      error: function () {
+        //请求成功失败执行的代码
+      },
+      success: function (res) {
+        // 状态码 200 表示请求成功
+        if (res) {
+          //console.log(res);
+          const CCJson = CCJSONC(res.data);
+          setSongs(CCJson);
+          setIsLoading(false);
+        } else {
+          console.log(res);
+          setIsLoading(false);
         }
       },
     });
@@ -130,7 +252,10 @@ export default function SongSearchTable() {
   };
 
   const children = [
-    <ToggleButton value="netease" key="center">
+    <ToggleButton value="default" key="left">
+      <FormatAlignLeftIcon />
+    </ToggleButton>,
+    <ToggleButton value="kg" key="center">
       <FormatAlignCenterIcon />
     </ToggleButton>,
   ];
@@ -224,9 +349,27 @@ export default function SongSearchTable() {
                               <Button
                                 onClick={() => handleListenClick(song.id)}
                                 variant="contained"
-                                disabled={disabled}
+                                disabled={PT !== "default" || disabled}
                               >
-                                <span>听</span>
+                                <span>线路1·听</span>
+                              </Button>
+                              <Button
+                                style={{ marginLeft: "10px" }}
+                                onClick={() =>
+                                  handleListenClickLinetwo(song.id)
+                                }
+                                variant="contained"
+                                disabled={PT !== "default" || disabled}
+                              >
+                                <span>线路2·听</span>
+                              </Button>
+                              <Button
+                                style={{ marginLeft: "10px" }}
+                                onClick={() => handleListenClickLinethree(song)}
+                                variant="contained"
+                                disabled={PT === "default" || disabled}
+                              >
+                                <span>线路3·听</span>
                               </Button>
                             </TableCell>
                           </TableRow>

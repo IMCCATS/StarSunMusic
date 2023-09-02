@@ -16,7 +16,7 @@ export default function Advertisement() {
           <span>一款由中学生自制的音乐欣赏系统</span>
         </Typography>
         <Typography variant="body2">
-          <span>版本：1.0.0_202309022056</span>
+          <span>版本：1.0.0_202309022222</span>
           <br />
           <span>
             更新日志：
@@ -42,8 +42,12 @@ export default function Advertisement() {
             1.0.0_202308262042：新增音量修改板块；
             <br />
             1.0.0_202309022056：优化代码逻辑，新增完整歌词查看功能，进行部分歌曲修复；
+            <br />
+            1.0.0_202309022222：优化代码逻辑，新增多重线路，进行部分歌曲修复；
           </span>
           <br />
+          <br />
+          <span>本工具音乐资源来自于网络，其版权归属音乐原版权方所有。</span>
           <br />
           <span>开发者：小研同学</span>
           <br />
@@ -53,9 +57,11 @@ export default function Advertisement() {
           <br />
           <span>©2020-2023 内蒙古畅哥计算机科技工作室 版权所有. </span>
           <br />
-          <span>音乐资源来自于网络，其版权归属音乐原版权方所有。</span>
-          <br />
           <span>应用程序可能响应较慢或无响应，烦请耐心等待，多次尝试~</span>
+          <br />
+          <span>
+            搜索时，若更改了搜索词但出现的仍是之前的内容，请等待一会重新搜索即可。
+          </span>
           <br />
           <span>如有侵权，请联系public@singtech.top删除。</span>
         </Typography>

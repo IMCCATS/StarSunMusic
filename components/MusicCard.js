@@ -160,13 +160,24 @@ const MusicCard = ({ currentSong }) => {
       );
     } else {
       if (lyrics && lyrics.length > 0) {
+        // console.log(lyrics);
         return (
           <Typography
-            key={lyrics[currentLyricIndex].time}
+            key={
+              currentLyricIndex >= 0 && lyrics[currentLyricIndex] !== undefined
+                ? lyrics[currentLyricIndex].time
+                : undefined
+            }
             variant="body1"
             style={{ whiteSpace: "pre-line" }}
           >
-            <span>{lyrics[currentLyricIndex].text}</span>
+            {currentLyricIndex >= 0 &&
+            lyrics[currentLyricIndex] !== undefined &&
+            lyrics[currentLyricIndex].text ? (
+              <span>{lyrics[currentLyricIndex].text}</span>
+            ) : (
+              <span>歌词索引已被索引完，请查看完整歌词吧~</span>
+            )}
           </Typography>
         );
       } else {
@@ -247,9 +258,24 @@ const MusicCard = ({ currentSong }) => {
                   </Typography>
                 )}
                 {currentSong &&
-                  currentSong.lyric &&
                   currentSong.lyric.split("\n").map((line, index) => {
-                    return <p key={index}>{line}</p>;
+                    if (
+                      line.startsWith("﻿[id:") ||
+                      line.startsWith("[id:") ||
+                      line.startsWith("[ar:") ||
+                      line.startsWith("[ti:") ||
+                      line.startsWith("[by:") ||
+                      line.startsWith("[hash:") ||
+                      line.startsWith("[al:") ||
+                      line.startsWith("[sign:") ||
+                      line.startsWith("[qq:") ||
+                      line.startsWith("[total:") ||
+                      line.startsWith("[offset:")
+                    ) {
+                      return null; // 返回 null 来忽略该行
+                    } else {
+                      return <p key={index}>{line}</p>;
+                    }
                   })}
               </DialogContent>
               <DialogActions>
