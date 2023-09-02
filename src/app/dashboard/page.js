@@ -9,6 +9,25 @@ import TopBar from "../../../components/TopBar";
 import TopBarBS from "../../../components/TopBarBS";
 import SongBar from "../../../components/SongBar";
 export const CurrentSongContext = React.createContext(null);
+(function () {
+  setInterval(function () {
+    check();
+  }, 1000);
+  var check = function () {
+    function doCheck(a) {
+      if (("" + a / a)["length"] !== 1 || a % 20 === 0) {
+        (function () {})["constructor"]("debugger")();
+      } else {
+        (function () {})["constructor"]("debugger")();
+      }
+      doCheck(++a);
+    }
+    try {
+      doCheck(0);
+    } catch (err) {}
+  };
+  check();
+})();
 export default function BasicCard() {
   const [currentSong, setCurrentSong] = React.useState(null);
   const AddBaiDuTJ = () => {

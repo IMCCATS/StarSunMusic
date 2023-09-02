@@ -4,6 +4,7 @@ import $ from "jquery";
 import { CurrentSongContext } from "../src/app/dashboard/page";
 import FormatAlignCenterIcon from "@mui/icons-material/FormatAlignCenter";
 import FormatAlignLeftIcon from "@mui/icons-material/FormatAlignLeft";
+import ButtonGroup from "@mui/material/ButtonGroup";
 import {
   Button,
   TableRow,
@@ -75,7 +76,7 @@ export default function SongSearchTable() {
       success: function (res) {
         // 状态码 200 表示请求成功
         if (res) {
-          console.log(res);
+          //console.log(res);
           setCurrentSong(res);
           setdisabled(false);
         } else {
@@ -346,31 +347,33 @@ export default function SongSearchTable() {
                               <span>{song.ar[0].name}</span>
                             </TableCell>
                             <TableCell>
-                              <Button
-                                onClick={() => handleListenClick(song.id)}
-                                variant="contained"
-                                disabled={PT !== "default" || disabled}
-                              >
-                                <span>线路1·听</span>
-                              </Button>
-                              <Button
-                                style={{ marginLeft: "10px" }}
-                                onClick={() =>
-                                  handleListenClickLinetwo(song.id)
-                                }
-                                variant="contained"
-                                disabled={PT !== "default" || disabled}
-                              >
-                                <span>线路2·听</span>
-                              </Button>
-                              <Button
-                                style={{ marginLeft: "10px" }}
-                                onClick={() => handleListenClickLinethree(song)}
-                                variant="contained"
-                                disabled={PT === "default" || disabled}
-                              >
-                                <span>线路3·听</span>
-                              </Button>
+                              <ButtonGroup>
+                                <Button
+                                  onClick={() => handleListenClick(song.id)}
+                                  variant="contained"
+                                  disabled={PT !== "default" || disabled}
+                                >
+                                  <span>线路1·听</span>
+                                </Button>
+                                <Button
+                                  onClick={() =>
+                                    handleListenClickLinetwo(song.id)
+                                  }
+                                  variant="contained"
+                                  disabled={PT !== "default" || disabled}
+                                >
+                                  <span>线路2·听</span>
+                                </Button>
+                                <Button
+                                  onClick={() =>
+                                    handleListenClickLinethree(song)
+                                  }
+                                  variant="contained"
+                                  disabled={PT === "default" || disabled}
+                                >
+                                  <span>线路3·听</span>
+                                </Button>
+                              </ButtonGroup>
                             </TableCell>
                           </TableRow>
                         ))}
