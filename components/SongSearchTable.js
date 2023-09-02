@@ -348,31 +348,36 @@ export default function SongSearchTable() {
                             </TableCell>
                             <TableCell>
                               <ButtonGroup>
-                                <Button
-                                  onClick={() => handleListenClick(song.id)}
-                                  variant="contained"
-                                  disabled={PT !== "default" || disabled}
-                                >
-                                  <span>线路1·听</span>
-                                </Button>
-                                <Button
-                                  onClick={() =>
-                                    handleListenClickLinetwo(song.id)
-                                  }
-                                  variant="contained"
-                                  disabled={PT !== "default" || disabled}
-                                >
-                                  <span>线路2·听</span>
-                                </Button>
-                                <Button
-                                  onClick={() =>
-                                    handleListenClickLinethree(song)
-                                  }
-                                  variant="contained"
-                                  disabled={PT === "default" || disabled}
-                                >
-                                  <span>线路3·听</span>
-                                </Button>
+                                {PT === "default" ? (
+                                  <main>
+                                    <Button
+                                      onClick={() => handleListenClick(song.id)}
+                                      variant="contained"
+                                      disabled={PT !== "default" || disabled}
+                                    >
+                                      <span>线路1·听</span>
+                                    </Button>
+                                    <Button
+                                      onClick={() =>
+                                        handleListenClickLinetwo(song.id)
+                                      }
+                                      variant="contained"
+                                      disabled={PT !== "default" || disabled}
+                                    >
+                                      <span>线路2·听</span>
+                                    </Button>
+                                  </main>
+                                ) : (
+                                  <Button
+                                    onClick={() =>
+                                      handleListenClickLinethree(song)
+                                    }
+                                    variant="contained"
+                                    disabled={PT === "default" || disabled}
+                                  >
+                                    <span>线路3·听</span>
+                                  </Button>
+                                )}
                               </ButtonGroup>
                             </TableCell>
                           </TableRow>

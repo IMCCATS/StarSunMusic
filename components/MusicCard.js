@@ -280,10 +280,15 @@ const MusicCard = ({ currentSong }) => {
                       const isPlaying =
                         currentLyricIndex >= 0 && index === currentLyricIndex;
                       const fontSize = isPlaying ? "larger" : "smaller";
+                      const color = isPlaying ? "#1976D2" : "black";
+                      const cleanedLine = line.replace(
+                        /\[(\d{2}):(\d{2}\.\d{2})\]/g,
+                        ""
+                      );
                       return (
                         <main>
-                          <span key={index} style={{ fontSize }}>
-                            {line}
+                          <span key={index} style={{ fontSize, color }}>
+                            {cleanedLine}
                           </span>
                           <br />
                         </main>
