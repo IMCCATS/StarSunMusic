@@ -59,7 +59,7 @@ const MusicCard = ({ currentSong }) => {
     const lyrics = [];
 
     lines.forEach((line) => {
-      const timeMatches = line.match(/\[(\d{2}):(\d{2}\.\d{3})\]/g);
+      const timeMatches = line.match(/\[(\d{2}):(\d{2}\.\d{2,3})\]/g);
       const textMatch = line.match(/](.*)/);
 
       if (timeMatches && textMatch) {
@@ -282,7 +282,7 @@ const MusicCard = ({ currentSong }) => {
                       const fontSize = isPlaying ? "larger" : "smaller";
                       const color = isPlaying ? "#1976D2" : "black";
                       const cleanedLine = line.replace(
-                        /\[(\d{2}):(\d{2}\.\d{3})\]/g,
+                        /\[(\d{2}):(\d{2}\.\d{2,3})\]/g,
                         ""
                       );
                       return (
