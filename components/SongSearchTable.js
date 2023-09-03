@@ -173,7 +173,7 @@ export default function SongSearchTable() {
     }
     setSongs([]);
     setIsLoading(true);
-    setwz("正在搜索中");
+    setwz("正在搜索中，搜索可能较慢，请耐心等待哦~");
     console.log("搜索关键字:", searchTerm);
     setTimeout(() => {
       $.ajax({
@@ -204,6 +204,7 @@ export default function SongSearchTable() {
             setIsLoading(false);
           } else {
             console.log(res);
+            setSongs([]);
             setIsLoading(false);
           }
         },
@@ -217,7 +218,7 @@ export default function SongSearchTable() {
     }
     setSongs([]);
     setIsLoading(true);
-    setwz("正在搜索中");
+    setwz("正在搜索中，搜索可能较慢，请耐心等待哦~");
     console.log("搜索关键字:", searchTerm);
     setTimeout(() => {
       $.ajax({
@@ -248,6 +249,7 @@ export default function SongSearchTable() {
             setIsLoading(false);
           } else {
             console.log(res);
+            setSongs([]);
             setIsLoading(false);
           }
         },
@@ -261,7 +263,7 @@ export default function SongSearchTable() {
     }
     setSongs([]);
     setIsLoading(true);
-    setwz("正在搜索中");
+    setwz("正在搜索中，搜索可能较慢，请耐心等待哦~");
     console.log("搜索关键字:", searchTerm);
     setTimeout(() => {
       let timestamp = Date.now();
@@ -292,6 +294,7 @@ export default function SongSearchTable() {
             setIsLoading(false);
           } else {
             console.log(res);
+            setSongs([]);
             setIsLoading(false);
           }
         },

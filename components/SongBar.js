@@ -9,6 +9,7 @@ import {
   TableCell,
   TableBody,
   Table,
+  TableContainer,
   CardContent,
   Card,
   CircularProgress,
@@ -17,6 +18,7 @@ import {
   AccordionSummary,
   AccordionDetails,
   Typography,
+  Paper,
 } from "@mui/material";
 const playlists = [
   { name: "短视频各样卡点/热血音乐-燃到极致！", id: "5335051744" },
@@ -123,73 +125,77 @@ const PlaylistComponent = ({ playlist }) => {
         </Typography>
       </AccordionSummary>
       <AccordionDetails>
-        {/* 此处是动态渲染的具体表单内容 */}
-        {isLoading ? (
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              height: "200px",
-            }}
-          >
-            <CircularProgress />
-            <p style={{ marginLeft: "10px" }}>加载中...</p>
-          </div>
-        ) : songs.length === 0 ? (
-          <div style={{ textAlign: "center", padding: "20px" }}>
-            <span>暂无数据</span>
-          </div>
-        ) : (
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>
-                  <span>序号</span>
-                </TableCell>
-                <TableCell>
-                  <span>歌曲图片</span>
-                </TableCell>
-                <TableCell>
-                  <span>标题</span>
-                </TableCell>
-                <TableCell>
-                  <span>作者</span>
-                </TableCell>
-                <TableCell>
-                  <span>操作</span>
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {currentSongs.map((song, index) => (
-                <TableRow key={song.id}>
-                  <TableCell>
-                    <span>{firstIndex + index + 1}</span>
-                  </TableCell>
-                  <TableCell>
-                    <img src={song.cover} alt="Thumbnail" height="64" />
-                  </TableCell>
-                  <TableCell>
-                    <span>{song.album}</span>
-                  </TableCell>
-                  <TableCell>
-                    <span>{song.artist}</span>
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                      onClick={() => handleListenClick(song.id)}
-                      variant="contained"
-                      disabled={disabled}
-                    >
-                      <span>听</span>
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        )}
+        <Paper>
+          <TableContainer>
+            {/* 此处是动态渲染的具体表单内容 */}
+            {isLoading ? (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: "200px",
+                }}
+              >
+                <CircularProgress />
+                <p style={{ marginLeft: "10px" }}>加载中...</p>
+              </div>
+            ) : songs.length === 0 ? (
+              <div style={{ textAlign: "center", padding: "20px" }}>
+                <span>暂无数据</span>
+              </div>
+            ) : (
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>
+                      <span>序号</span>
+                    </TableCell>
+                    <TableCell>
+                      <span>歌曲图片</span>
+                    </TableCell>
+                    <TableCell>
+                      <span>标题</span>
+                    </TableCell>
+                    <TableCell>
+                      <span>作者</span>
+                    </TableCell>
+                    <TableCell>
+                      <span>操作</span>
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {currentSongs.map((song, index) => (
+                    <TableRow key={song.id}>
+                      <TableCell>
+                        <span>{firstIndex + index + 1}</span>
+                      </TableCell>
+                      <TableCell>
+                        <img src={song.cover} alt="Thumbnail" height="64" />
+                      </TableCell>
+                      <TableCell>
+                        <span>{song.album}</span>
+                      </TableCell>
+                      <TableCell>
+                        <span>{song.artist}</span>
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          onClick={() => handleListenClick(song.id)}
+                          variant="contained"
+                          disabled={disabled}
+                        >
+                          <span>听</span>
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </TableContainer>
+        </Paper>
         {/* 此处是动态渲染的其他部分 */}
         <div
           style={{

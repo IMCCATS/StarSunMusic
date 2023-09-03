@@ -16,7 +16,7 @@ export default function Advertisement() {
           <span>一款由中学生自制的音乐欣赏系统</span>
         </Typography>
         <Typography variant="body2">
-          <span>版本：1.0.0_202309022222</span>
+          <span>版本：1.0.0_202309031343</span>
           <br />
           <span>
             更新日志：
@@ -44,6 +44,8 @@ export default function Advertisement() {
             1.0.0_202309022056：优化代码逻辑，新增完整歌词查看功能，进行部分歌曲修复；
             <br />
             1.0.0_202309022222：优化代码逻辑，新增多重线路，进行部分歌曲修复；
+            <br />
+            1.0.0_202309031343：修复了歌单区在移动端变形导致无法播放的Bug；
           </span>
           <br />
           <br />
