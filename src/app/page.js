@@ -50,7 +50,7 @@ const HomePage = () => {
               },
             }}
           >
-            点击进入
+            <span>点击进入</span>
           </Button>
         )}
         <div

@@ -56,35 +56,37 @@ export default function SongSearchTable() {
   const [disabled, setdisabled] = React.useState(false);
   const handleListenClick = (songId) => {
     setdisabled(true);
-    $.ajax({
-      url: "https://api.paugram.com/netease/",
-      type: "get",
-      dataType: "json",
-      async: false,
-      data: {
-        id: `${songId}`,
-      },
-      beforeSend: function () {
-        //请求中执行的代码
-      },
-      complete: function () {
-        //请求完成执行的代码
-      },
-      error: function () {
-        //请求成功失败执行的代码
-      },
-      success: function (res) {
-        // 状态码 200 表示请求成功
-        if (res) {
-          //console.log(res);
-          setCurrentSong(res);
-          setdisabled(false);
-        } else {
-          console.log(res);
-          setdisabled(false);
-        }
-      },
-    });
+    setTimeout(() => {
+      $.ajax({
+        url: "https://api.paugram.com/netease/",
+        type: "get",
+        dataType: "json",
+        async: false,
+        data: {
+          id: `${songId}`,
+        },
+        beforeSend: function () {
+          //请求中执行的代码
+        },
+        complete: function () {
+          //请求完成执行的代码
+        },
+        error: function () {
+          //请求成功失败执行的代码
+        },
+        success: function (res) {
+          // 状态码 200 表示请求成功
+          if (res) {
+            //console.log(res);
+            setCurrentSong(res);
+            setdisabled(false);
+          } else {
+            console.log(res);
+            setdisabled(false);
+          }
+        },
+      });
+    }, 1500);
   };
 
   const convertJson = function (serverJson) {
@@ -170,38 +172,40 @@ export default function SongSearchTable() {
     setIsLoading(true);
     setwz("正在搜索中");
     console.log("搜索关键字:", searchTerm);
-    $.ajax({
-      url: "https://api.gumengya.com/Api/Music",
-      type: "post",
-      dataType: "json",
-      async: false,
-      data: {
-        format: "json",
-        text: `${searchTerm}`,
-        site: "kugou",
-      },
-      beforeSend: function () {
-        //请求中执行的代码
-      },
-      complete: function () {
-        //请求完成执行的代码
-      },
-      error: function () {
-        //请求成功失败执行的代码
-      },
-      success: function (res) {
-        // 状态码 200 表示请求成功
-        if (res) {
-          //console.log(res);
-          const CCJson = CCJSONC(res.data);
-          setSongs(CCJson);
-          setIsLoading(false);
-        } else {
-          console.log(res);
-          setIsLoading(false);
-        }
-      },
-    });
+    setTimeout(() => {
+      $.ajax({
+        url: "https://api.gumengya.com/Api/Music",
+        type: "post",
+        dataType: "json",
+        async: false,
+        data: {
+          format: "json",
+          text: `${searchTerm}`,
+          site: "kugou",
+        },
+        beforeSend: function () {
+          //请求中执行的代码
+        },
+        complete: function () {
+          //请求完成执行的代码
+        },
+        error: function () {
+          //请求成功失败执行的代码
+        },
+        success: function (res) {
+          // 状态码 200 表示请求成功
+          if (res) {
+            //console.log(res);
+            const CCJson = CCJSONC(res.data);
+            setSongs(CCJson);
+            setIsLoading(false);
+          } else {
+            console.log(res);
+            setIsLoading(false);
+          }
+        },
+      });
+    }, 1500);
   };
 
   const handleSearch = () => {
@@ -212,35 +216,40 @@ export default function SongSearchTable() {
     setIsLoading(true);
     setwz("正在搜索中");
     console.log("搜索关键字:", searchTerm);
-    $.ajax({
-      url: "https://anywherecors.lcahy.cn/cloudsearch",
-      type: "post",
-      dataType: "json",
-      async: false,
-      data: {
-        keywords: `${searchTerm}`,
-      },
-      beforeSend: function () {
-        //请求中执行的代码
-      },
-      complete: function () {
-        //请求完成执行的代码
-      },
-      error: function () {
-        //请求成功失败执行的代码
-      },
-      success: function (res) {
-        // 状态码 200 表示请求成功
-        if (res) {
-          //console.log(res);
-          setSongs(res.result.songs);
-          setIsLoading(false);
-        } else {
-          console.log(res);
-          setIsLoading(false);
-        }
-      },
-    });
+    setTimeout(() => {
+      let timestamp = Date.now();
+      $.ajax({
+        url: "https://anywherecors.lcahy.cn/cloudsearch",
+        type: "get",
+        dataType: "json",
+        async: false,
+        data: {
+          keywords: `${searchTerm}`,
+          timestamp: timestamp,
+          realIP: "116.25.146.177",
+        },
+        beforeSend: function () {
+          //请求中执行的代码
+        },
+        complete: function () {
+          //请求完成执行的代码
+        },
+        error: function () {
+          //请求成功失败执行的代码
+        },
+        success: function (res) {
+          // 状态码 200 表示请求成功
+          if (res) {
+            //console.log(res);
+            setSongs(res.result.songs);
+            setIsLoading(false);
+          } else {
+            console.log(res);
+            setIsLoading(false);
+          }
+        },
+      });
+    }, 1500);
   };
 
   const handleChangec = (event, newPT) => {

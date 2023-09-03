@@ -307,7 +307,15 @@ const MusicCard = ({ currentSong }) => {
             <Typography variant="subtitle1">
               <span>{currentSong.artist}</span>
             </Typography>
-            <img src={currentSong.cover} alt="Thumbnail" height="64" />
+            {currentSong.cover && (
+              <img
+                src={currentSong.cover}
+                alt="Thumbnail"
+                height="64"
+                onError={() => {}} // 防止浏览器尝试加载原始图片
+              />
+            )}
+            {!currentSong.cover && "暂无图片哦~"}
             <div>{formatLyrics()}</div>
             <audio ref={audioRef} />
             <Slider
