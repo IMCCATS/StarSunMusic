@@ -62,35 +62,37 @@ export default function TopBar() {
   const [disabled, setdisabled] = React.useState(false);
   const handleListenClick = (songId) => {
     setdisabled(true);
-    $.ajax({
-      url: "https://api.paugram.com/netease/",
-      type: "get",
-      dataType: "json",
-      async: false,
-      data: {
-        id: `${songId}`,
-      },
-      beforeSend: function () {
-        //请求中执行的代码
-      },
-      complete: function () {
-        //请求完成执行的代码
-      },
-      error: function () {
-        //请求成功失败执行的代码
-      },
-      success: function (res) {
-        // 状态码 200 表示请求成功
-        if (res) {
-          // console.log(res);
-          setCurrentSong(res);
-          setdisabled(false);
-        } else {
-          console.log(res);
-          setdisabled(false);
-        }
-      },
-    });
+    setTimeout(() => {
+      $.ajax({
+        url: "https://api.paugram.com/netease/",
+        type: "get",
+        dataType: "json",
+        async: false,
+        data: {
+          id: `${songId}`,
+        },
+        beforeSend: function () {
+          //请求中执行的代码
+        },
+        complete: function () {
+          //请求完成执行的代码
+        },
+        error: function () {
+          //请求成功失败执行的代码
+        },
+        success: function (res) {
+          // 状态码 200 表示请求成功
+          if (res) {
+            // console.log(res);
+            setCurrentSong(res);
+            setdisabled(false);
+          } else {
+            console.log(res);
+            setdisabled(false);
+          }
+        },
+      });
+    }, 1500);
   };
 
   const lastIndex = currentPage * itemsPerPage;
