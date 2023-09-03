@@ -208,7 +208,6 @@ const PlaylistComponent = ({ playlist }) => {
             count={numPages}
             page={currentPage}
             onChange={handlePaginationChange}
-            variant="outlined"
             shape="rounded"
             color="primary"
           />

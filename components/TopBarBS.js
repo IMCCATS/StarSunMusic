@@ -189,7 +189,6 @@ export default function TopBar() {
               count={numPages}
               page={currentPage}
               onChange={handlePaginationChange}
-              variant="outlined"
               shape="rounded"
               color="primary"
             />
