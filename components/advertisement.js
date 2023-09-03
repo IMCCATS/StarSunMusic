@@ -4,6 +4,7 @@ import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
+import Link from "@mui/material/Link";
 export default function Advertisement() {
   return (
     <Card sx={{ minWidth: 275 }}>
@@ -19,16 +20,19 @@ export default function Advertisement() {
         </Typography>
         <Typography variant="body2">
           <span>
+            版本：1.2.1 <br />
             开发者：小研同学 <br />
             运营：内蒙古畅哥计算机科技工作室 <br />
-            2.0.0版本即将上线，目前版本正在维护，敬请期待！
+            2.0.0版本即将上线，敬请期待！
           </span>
         </Typography>
       </CardContent>
       <CardActions>
-        <Button size="small" disabled="true">
-          <span>敬请期待</span>
-        </Button>
+        <Link target="_blank" rel="noopener" href="https://appstudy.lcahy.cn/">
+          <Button size="small">
+            <span>点击前往</span>
+          </Button>
+        </Link>
       </CardActions>
     </Card>
   );
