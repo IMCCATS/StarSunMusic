@@ -4,6 +4,7 @@ import $ from "jquery";
 import { CurrentSongContext } from "../src/app/dashboard/page";
 import FormatAlignCenterIcon from "@mui/icons-material/FormatAlignCenter";
 import FormatAlignLeftIcon from "@mui/icons-material/FormatAlignLeft";
+import FormatAlignRightIcon from "@mui/icons-material/FormatAlignRight";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import {
   Button,
@@ -41,8 +42,10 @@ export default function SongSearchTable() {
         setTimeout(() => {
           if (PT === "default") {
             handleSearch();
-          } else {
+          } else if (PT === "kg") {
             handleSearchKG();
+          } else {
+            handleSearchMG();
           }
           isEnterPressed = false;
         }, 1000);
@@ -208,6 +211,50 @@ export default function SongSearchTable() {
     }, 1500);
   };
 
+  const handleSearchMG = () => {
+    if (!searchTerm) {
+      return;
+    }
+    setSongs([]);
+    setIsLoading(true);
+    setwz("正在搜索中");
+    console.log("搜索关键字:", searchTerm);
+    setTimeout(() => {
+      $.ajax({
+        url: "https://api.gumengya.com/Api/Music",
+        type: "post",
+        dataType: "json",
+        async: false,
+        data: {
+          format: "json",
+          text: `${searchTerm}`,
+          site: "migu",
+        },
+        beforeSend: function () {
+          //请求中执行的代码
+        },
+        complete: function () {
+          //请求完成执行的代码
+        },
+        error: function () {
+          //请求成功失败执行的代码
+        },
+        success: function (res) {
+          // 状态码 200 表示请求成功
+          if (res) {
+            //console.log(res);
+            const CCJson = CCJSONC(res.data);
+            setSongs(CCJson);
+            setIsLoading(false);
+          } else {
+            console.log(res);
+            setIsLoading(false);
+          }
+        },
+      });
+    }, 1500);
+  };
+
   const handleSearch = () => {
     if (!searchTerm) {
       return;
@@ -267,6 +314,9 @@ export default function SongSearchTable() {
     </ToggleButton>,
     <ToggleButton value="kg" key="center">
       <FormatAlignCenterIcon />
+    </ToggleButton>,
+    <ToggleButton value="mg" key="right">
+      <FormatAlignRightIcon />
     </ToggleButton>,
   ];
 
