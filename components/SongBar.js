@@ -27,6 +27,7 @@ const playlists = [
   { name: "电子·中国风 I 感受角徵宫商的荡气回肠", id: "316223640" },
   { name: "【流行伤感】还是会有遗憾对吧", id: "8187890892" },
   { name: "身法大佬素材曲", id: "3192057802" },
+  { name: "超燃战歌", id: "6791698520" },
 ];
 
 const PlaylistComponent = ({ playlist }) => {
