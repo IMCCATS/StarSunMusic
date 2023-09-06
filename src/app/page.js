@@ -10,9 +10,7 @@ const HomePage = () => {
   const [isLoading, setIsLoading] = React.useState(false);
   const handleClick = () => {
     setIsLoading(true);
-    setTimeout(() => {
       router.push("/dashboard");
-    }, 1000);
   };
 
   return (
