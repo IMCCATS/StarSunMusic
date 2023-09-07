@@ -280,7 +280,7 @@ const MusicCard = ({ currentSong }) => {
                       const isPlaying =
                         currentLyricIndex >= 0 && index === currentLyricIndex;
                       const fontSize = isPlaying ? "larger" : "smaller";
-                      const color = isPlaying ? "#1976D2" : "black";
+                      const color = isPlaying ? "#1976D2" : "#808080";
                       const cleanedLine = line.replace(
                         /\[(\d{2}):(\d{2}\.\d{2,3})\]/g,
                         ""
@@ -312,7 +312,7 @@ const MusicCard = ({ currentSong }) => {
                 src={currentSong.cover}
                 alt="Thumbnail"
                 height="64"
-                onError={() => {}} // 防止浏览器尝试加载原始图片
+                onError={() => {}}
               />
             )}
             {!currentSong.cover && "暂无图片哦~"}
