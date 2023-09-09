@@ -2,9 +2,6 @@
 import * as React from "react";
 import $ from "jquery";
 import { CurrentSongContext } from "../src/app/dashboard/page";
-import FormatAlignCenterIcon from "@mui/icons-material/FormatAlignCenter";
-import FormatAlignLeftIcon from "@mui/icons-material/FormatAlignLeft";
-import FormatAlignRightIcon from "@mui/icons-material/FormatAlignRight";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import {
   Button,
@@ -22,6 +19,11 @@ import {
   CircularProgress,
   ToggleButton,
   ToggleButtonGroup,
+  DialogContentText,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
 } from "@mui/material";
 
 export default function SongSearchTable() {
@@ -31,26 +33,37 @@ export default function SongSearchTable() {
   const [PT, setPT] = React.useState("default");
   const [jzwz, setwz] = React.useState("请搜索歌曲哦~");
   const [searchTerm, setSearchTerm] = React.useState("");
+  const [open, setOpen] = React.useState(false);
 
-  var isEnterPressed = false;
-  const handleKeyPress = (event) => {
-    if (event.key === "Enter") {
-      if (!isEnterPressed) {
-        isEnterPressed = true;
-        setTimeout(() => {
-          if (PT === "default") {
-            handleSearch();
-          } else if (PT === "kg") {
-            handleSearchKG();
-          } else {
-            handleSearchMG();
-          }
-          isEnterPressed = false;
-        }, 1000);
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const close1 = () => {
+    setOpen(false);
+    setPT("default");
+    handleSearch();
+  };
+  const close2 = () => {
+    setOpen(false);
+    setPT("kg");
+    handleSearchKG();
+  };
+  const close3 = () => {
+    setOpen(false);
+    setPT("mg");
+    handleSearchMG();
+  };
+  const searchOpen = () => {
+    if (searchTerm) {
+      if (searchTerm != "") {
+        handleClickOpen();
       }
     }
   };
-
   const handleChange = (event) => {
     setSearchTerm(event.target.value);
   };
@@ -300,53 +313,58 @@ export default function SongSearchTable() {
     }, 1500);
   };
 
-  const handleChangec = (event, newPT) => {
-    setPT(newPT);
-  };
-  const control = {
-    value: PT,
-    onChange: handleChangec,
-    exclusive: true,
-  };
-
-  const children = [
-    <ToggleButton value="default" key="left">
-      <FormatAlignLeftIcon />
-    </ToggleButton>,
-    <ToggleButton value="kg" key="center">
-      <FormatAlignCenterIcon />
-    </ToggleButton>,
-    <ToggleButton value="mg" key="right">
-      <FormatAlignRightIcon />
-    </ToggleButton>,
-  ];
-
   return (
     <main>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          <span>请选择搜索方式</span>
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            <span>
+              不同的搜索方式可能会有不同的搜索结果，请选择您要使用的搜索方式。
+            </span>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={close1}>
+            <span>方式1</span>
+          </Button>
+          <Button onClick={close2}>
+            <span>方式2</span>
+          </Button>
+          <Button onClick={close3}>
+            <span>方式3</span>
+          </Button>
+        </DialogActions>
+      </Dialog>
       <Card sx={{ minWidth: 275 }} style={{ marginTop: "15px" }}>
         <CardContent>
           <Box
             sx={{
-              "& > :not(style)": { m: 1, width: "25ch" },
+              "& > :not(style)": { m: 1 },
             }}
             noValidate
             autoComplete="off"
           >
             <TextField
-              fullWidth
-              label="搜点什么..."
+              label="搜索..."
               id="search"
               variant="outlined"
               onChange={handleChange}
-              onKeyDown={handleKeyPress}
             />
-            <ToggleButtonGroup
-              size="small"
-              {...control}
-              aria-label="Small sizes"
+            <Button
+              onClick={searchOpen}
+              variant="contained"
+              sx={{ height: "56px" }}
             >
-              {children}
-            </ToggleButtonGroup>
+              <span>搜索</span>
+            </Button>
           </Box>
           <Paper>
             <TableContainer>

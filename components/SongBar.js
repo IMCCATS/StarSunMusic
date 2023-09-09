@@ -32,14 +32,19 @@ const playlists = [
 
 const PlaylistComponent = ({ playlist }) => {
   const { setCurrentSong } = React.useContext(CurrentSongContext);
-  const [isLoading, setIsLoading] = React.useState(true);
+  const [isLoading, setIsLoading] = React.useState(false);
   const [songs, setSongs] = React.useState([]);
   const [currentPage, setCurrentPage] = React.useState(1);
   const itemsPerPage = 10;
+  const [jy, setjy] = React.useState(false);
+  const jzsj = () => {
+    setIsLoading(true);
+    setjy(true);
+    setTimeout(() => {
+      fetchMusicList();
+    }, 1000);
+  };
 
-  React.useEffect(() => {
-    fetchMusicList();
-  }, []);
   const fetchMusicList = () => {
     const playlistId = playlist.id;
     $.ajax({
@@ -126,6 +131,14 @@ const PlaylistComponent = ({ playlist }) => {
         </Typography>
       </AccordionSummary>
       <AccordionDetails>
+        <Button
+          onClick={jzsj}
+          disabled={jy}
+          variant="contained"
+          style={{ marginBottom: "10px" }}
+        >
+          加载数据
+        </Button>
         <Paper>
           <TableContainer>
             {/* 此处是动态渲染的具体表单内容 */}
@@ -143,7 +156,9 @@ const PlaylistComponent = ({ playlist }) => {
               </div>
             ) : songs.length === 0 ? (
               <div style={{ textAlign: "center", padding: "20px" }}>
-                <span>暂无数据</span>
+                <span>
+                  暂无数据哦~若您没有点击加载数据按钮的话，点击一下加载数据按钮~
+                </span>
               </div>
             ) : (
               <Table>
