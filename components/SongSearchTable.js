@@ -29,9 +29,7 @@ export default function SongSearchTable() {
   const [isLoading, setIsLoading] = React.useState(true);
   const [songs, setSongs] = React.useState([]);
   const [PT, setPT] = React.useState("default");
-  const [jzwz, setwz] = React.useState(
-    "请搜索歌曲，搜索完成后会自动停止加载。"
-  );
+  const [jzwz, setwz] = React.useState("请搜索歌曲哦~");
   const [searchTerm, setSearchTerm] = React.useState("");
 
   var isEnterPressed = false;
