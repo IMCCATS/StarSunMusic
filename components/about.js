@@ -66,6 +66,8 @@ export default function Advertisement() {
           <br />
           <span>本系统仅用作个人音乐欣赏、学习交流，不可用于商业用途。</span>
           <br />
+          <span>音乐版权归其版权方所有。</span>
+          <br />
           <span>
             &copy; 2020 - {new Date().getFullYear()} 内蒙古畅哥计算机科技工作室
             版权所有.
