@@ -1,20 +1,77 @@
 "use client";
 import * as React from "react";
-import { Button, Typography, Container } from "@mui/material";
+import {
+  Button,
+  Typography,
+  Container,
+  Dialog,
+  Paper,
+  Slide,
+  AppBar,
+  Toolbar,
+  IconButton,
+} from "@mui/material";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useRouter } from "next/navigation";
+import CloseIcon from "@mui/icons-material/Close";
+import UserAgreementAndPrivacyPolicy from "../../components/UserAgreementAndPrivacyPolicy";
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 const HomePage = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setIsLoading(false);
+    setOpen(false);
+  };
   const handleClick = () => {
     setIsLoading(true);
-      router.push("/dashboard");
+    setOpen(false);
+    router.push("/dashboard");
   };
 
   return (
     <Container>
+      <meta name="viewport" content="initial-scale=1, width=device-width" />
+      <Dialog
+        fullScreen
+        open={open}
+        onClose={handleClose}
+        TransitionComponent={Transition}
+      >
+        <AppBar sx={{ position: "relative" }}>
+          <Toolbar>
+            <IconButton
+              edge="start"
+              color="inherit"
+              onClick={handleClose}
+              aria-label="close"
+            >
+              <CloseIcon />
+            </IconButton>
+            <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+              <span>用户协议与隐私政策</span>
+            </Typography>
+            <Button autoFocus color="inherit" onClick={handleClick}>
+              <span>同意协议并进入</span>
+            </Button>
+          </Toolbar>
+        </AppBar>
+        <Paper elevation={3}>
+          <div style={{ margin: "20px" }}>
+            <UserAgreementAndPrivacyPolicy />
+          </div>
+        </Paper>
+      </Dialog>
       <div
         style={{
           display: "flex",
@@ -33,12 +90,24 @@ const HomePage = () => {
           <span>星阳音乐系统</span>
         </Typography>
         {isLoading ? (
-          <CircularProgress />
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "100%",
+            }}
+          >
+            <CircularProgress />
+            <p style={{ marginLeft: "10px", whiteSpace: "pre" }}>
+              正在进入系统
+            </p>
+          </div>
         ) : (
           <Button
             variant="contained"
             startIcon={<DashboardIcon />}
-            onClick={handleClick}
+            onClick={handleClickOpen}
             style={{
               marginTop: "2px",
               backgroundColor: "#2196f3",

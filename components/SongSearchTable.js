@@ -375,7 +375,7 @@ export default function SongSearchTable() {
                           display: "flex",
                           justifyContent: "center",
                           alignItems: "center",
-                          height: "200px",
+                          height: "100%",
                         }}
                       >
                         <CircularProgress />

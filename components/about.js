@@ -16,7 +16,7 @@ export default function Advertisement() {
           <span>一款由中学生自制的音乐欣赏系统</span>
         </Typography>
         <Typography variant="body2">
-          <span>版本：1.0.0_202309031343</span>
+          <span>版本：1.0.0_202309092136</span>
           <br />
           <span>
             更新日志：
@@ -46,6 +46,8 @@ export default function Advertisement() {
             1.0.0_202309022222：优化代码逻辑，新增多重线路，进行部分歌曲修复；
             <br />
             1.0.0_202309031343：修复了歌单区在移动端变形导致无法播放的Bug；
+            <br />
+            1.0.0_202309092136：应用合规化处理；
           </span>
           <br />
           <br />
@@ -57,7 +59,10 @@ export default function Advertisement() {
           <br />
           <span>运营：内蒙古畅哥计算机科技工作室</span>
           <br />
-          <span>特别致谢（无先后顺序）：故梦API；Ushio API；保罗 API以及其他为本工具提供技术支持的平台。</span>
+          <span>
+            特别致谢（无先后顺序）：故梦API；Ushio API；保罗
+            API以及其他为本工具提供技术支持的平台。
+          </span>
           <br />
           <span>本系统仅用作个人音乐欣赏、学习交流，不可用于商业用途。</span>
           <br />
