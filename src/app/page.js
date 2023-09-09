@@ -11,6 +11,7 @@ import {
   Toolbar,
   IconButton,
 } from "@mui/material";
+import cookie from "react-cookies";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useRouter } from "next/navigation";
@@ -34,6 +35,7 @@ const HomePage = () => {
     setOpen(false);
   };
   const handleClick = () => {
+    cookie.save('isAgreedPolicy', "1");
     setIsLoading(true);
     setOpen(false);
     router.push("/dashboard");
