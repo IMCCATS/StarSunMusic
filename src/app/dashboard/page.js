@@ -66,7 +66,7 @@ export default function BasicCard() {
   }, []);
   return (
     <main>
-      <script src="/gt4.js"></script>
+      <script src="https://static.geetest.com/v4/gt4.js"></script>
       <link rel="icon" href="./favicon.ico" />
       <meta name="viewport" content="initial-scale=1, width=device-width" />
       <Snackbar open={open}>
