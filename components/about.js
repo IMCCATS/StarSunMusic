@@ -60,6 +60,11 @@ export default function Advertisement() {
           <span>运营：内蒙古畅哥计算机科技工作室</span>
           <br />
           <span>
+            &copy; 2020 - {new Date().getFullYear()} 内蒙古畅哥计算机科技工作室
+            版权所有.
+          </span>
+          <br />
+          <span>
             特别致谢（无先后顺序）：故梦API；Ushio API；保罗
             API以及其他为本工具提供技术支持的平台。
           </span>
@@ -67,11 +72,6 @@ export default function Advertisement() {
           <span>本系统仅用作个人音乐欣赏、学习交流，不可用于商业用途。</span>
           <br />
           <span>音乐版权归其版权方所有。</span>
-          <br />
-          <span>
-            &copy; 2020 - {new Date().getFullYear()} 内蒙古畅哥计算机科技工作室
-            版权所有.
-          </span>
           <br />
           <span>应用程序可能响应较慢或无响应，烦请耐心等待，多次尝试~</span>
           <br />
