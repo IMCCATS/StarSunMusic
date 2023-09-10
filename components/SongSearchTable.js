@@ -33,12 +33,19 @@ export default function SongSearchTable() {
   const [searchTerm, setSearchTerm] = React.useState("");
   const [open, setOpen] = React.useState(false);
   const [searchdesabled, setsearchdesabled] = React.useState(true);
-
-  React.useEffect(() => {
-    setTimeout(() => {
+  const addJB = () => {
+    var script = document.createElement("script");
+    script.src = "https://static.geetest.com/v4/gt4.js";
+    script.async = true;
+    script.addEventListener("load", function () {
       setwz("搜索功能加载完成啦~\n请搜索歌曲哦~");
       setsearchdesabled(false);
-    }, 6000);
+    });
+    document.head.appendChild(script);
+  };
+  React.useEffect(() => {
+    addJB();
+    setTimeout(() => {}, 6000);
   }, []);
 
   const handleClickOpen = () => {
@@ -206,7 +213,7 @@ export default function SongSearchTable() {
     }
     setSongs([]);
     setIsLoading(true);
-    setwz("正在搜索中，搜索可能较慢，请耐心等待哦~");
+    setwz("正在搜索中哦~\n搜索可能较慢，请耐心等待哦~");
     console.log("搜索关键字:", searchTerm);
     setTimeout(() => {
       $.ajax({
@@ -251,7 +258,7 @@ export default function SongSearchTable() {
     }
     setSongs([]);
     setIsLoading(true);
-    setwz("正在搜索中，搜索可能较慢，请耐心等待哦~");
+    setwz("正在搜索中哦~\n搜索可能较慢，请耐心等待哦~");
     console.log("搜索关键字:", searchTerm);
     setTimeout(() => {
       $.ajax({
@@ -296,7 +303,7 @@ export default function SongSearchTable() {
     }
     setSongs([]);
     setIsLoading(true);
-    setwz("正在搜索中，搜索可能较慢，请耐心等待哦~");
+    setwz("正在搜索中哦~\n搜索可能较慢，请耐心等待哦~");
     console.log("搜索关键字:", searchTerm);
     setTimeout(() => {
       let timestamp = Date.now();
