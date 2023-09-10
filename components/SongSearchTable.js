@@ -60,7 +60,23 @@ export default function SongSearchTable() {
   const searchOpen = () => {
     if (searchTerm) {
       if (searchTerm != "") {
-        handleClickOpen();
+        initGeetest4(
+          {
+            captchaId: "cbf4e068bc17eb10afa9e3b8a84d51d0",
+            product: "bind",
+          },
+          function (captcha) {
+            // captcha为验证码实例
+            captcha.appendTo("#captcha");
+            captcha
+              .onReady(function () {
+                captcha.showCaptcha();
+              })
+              .onSuccess(function () {
+                handleClickOpen();
+              });
+          }
+        );
       }
     }
   };
@@ -365,6 +381,7 @@ export default function SongSearchTable() {
             >
               <span>搜索</span>
             </Button>
+            <div id="captcha"></div>
           </Box>
           <Paper>
             <TableContainer>
