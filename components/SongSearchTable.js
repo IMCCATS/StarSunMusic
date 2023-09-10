@@ -29,9 +29,17 @@ export default function SongSearchTable() {
   const [isLoading, setIsLoading] = React.useState(true);
   const [songs, setSongs] = React.useState([]);
   const [PT, setPT] = React.useState("default");
-  const [jzwz, setwz] = React.useState("请搜索歌曲哦~");
+  const [jzwz, setwz] = React.useState("搜索功能加载中...");
   const [searchTerm, setSearchTerm] = React.useState("");
   const [open, setOpen] = React.useState(false);
+  const [searchdesabled, setsearchdesabled] = React.useState(true);
+
+  React.useEffect(() => {
+    setTimeout(() => {
+      setwz("搜索功能加载完成啦~\n请搜索歌曲哦~");
+      setsearchdesabled(false);
+    }, 6000);
+  }, []);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -376,6 +384,7 @@ export default function SongSearchTable() {
               onClick={searchOpen}
               variant="contained"
               sx={{ height: "56px" }}
+              disabled={searchdesabled}
             >
               <span>搜索</span>
             </Button>
