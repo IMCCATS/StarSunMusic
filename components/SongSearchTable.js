@@ -1,6 +1,6 @@
 "use client";
 import * as React from "react";
-import { CurrentSongContext } from "../src/app/page";
+import { CurrentSongContext } from "../src/app/dashboard/page";
 import FormatAlignLeftIcon from "@mui/icons-material/FormatAlignLeft";
 import FormatAlignCenterIcon from "@mui/icons-material/FormatAlignCenter";
 import {
