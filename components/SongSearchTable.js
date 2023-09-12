@@ -103,50 +103,6 @@ export default function SongSearchTable() {
   const handleListenClick = (song) => {
     setCurrentSong(song);
   };
-  const handleSearch = async () => {
-    if (!searchTerm) {
-      return;
-    }
-
-    setwz("搜索歌曲中");
-    setIsLoading(true);
-    console.log("搜索关键字:", searchTerm);
-    setTimeout(() => {
-      $.ajax({
-        url: "https://api.gumengya.com/Api/Music",
-        type: "post",
-        dataType: "json",
-        async: false,
-        data: {
-          format: "json",
-          text: `${searchTerm}`,
-          site: "kugou",
-        },
-        beforeSend: function () {
-          //请求中执行的代码
-        },
-        complete: function () {
-          //请求完成执行的代码
-        },
-        error: function () {
-          //请求成功失败执行的代码
-        },
-        success: function (res) {
-          // 状态码 200 表示请求成功
-          if (res) {
-            //console.log(res);
-            const CCJson = CCJSONC(res.data);
-            setSongs(CCJson);
-            setIsLoading(false);
-          } else {
-            console.log(res);
-            setSongs([]);
-            setIsLoading(false);
-          }
-        },
-      });
-    }, 1500);
-  };
 
   const handleSearchMG = () => {
     if (!searchTerm) {
