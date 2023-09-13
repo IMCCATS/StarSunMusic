@@ -23,6 +23,7 @@ import {
   DialogContent,
   DialogTitle,
 } from "@mui/material";
+import supabase from "@/app/api/supabase";
 
 export default function SongSearchTable() {
   const { setCurrentSong } = React.useContext(CurrentSongContext);
@@ -69,6 +70,11 @@ export default function SongSearchTable() {
     setOpen(false);
     setPT("mg");
     handleSearchMG();
+  };
+  const close4 = () => {
+    setOpen(false);
+    setPT("sjk");
+    handleSearchSJK();
   };
   const searchOpen = () => {
     if (searchTerm) {
@@ -297,6 +303,34 @@ export default function SongSearchTable() {
     }, 1500);
   };
 
+  const handleSearchSJK = () => {
+    if (!searchTerm) {
+      return;
+    }
+    setSongs([]);
+    setIsLoading(true);
+    setwz("正在搜索中哦~\n搜索可能较慢，请耐心等待哦~");
+    console.log("搜索关键字:", searchTerm);
+    setTimeout(async () => {
+      const { data, error } = await supabase
+        .from("MusicSearch")
+        .select("*")
+        .textSearch("title", `${searchTerm}`, {
+          type: "websearch",
+        });
+      if (data) {
+        //console.log(res);
+        const CCJson = data;
+        setSongs(CCJson);
+        setIsLoading(false);
+      } else {
+        console.log(res);
+        setSongs([]);
+        setIsLoading(false);
+      }
+    }, 1500);
+  };
+
   const handleSearch = () => {
     if (!searchTerm) {
       return;
@@ -369,6 +403,9 @@ export default function SongSearchTable() {
           </Button>
           <Button onClick={close3}>
             <span>方式3</span>
+          </Button>
+          <Button onClick={close4}>
+            <span>方式4</span>
           </Button>
         </DialogActions>
       </Dialog>
