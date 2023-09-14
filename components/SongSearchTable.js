@@ -320,7 +320,7 @@ export default function SongSearchTable() {
         });
       if (data) {
         //console.log(res);
-        const CCJson = data;
+        const CCJson = CCJSONSJK(data);
         setSongs(CCJson);
         setIsLoading(false);
       } else {
@@ -329,6 +329,27 @@ export default function SongSearchTable() {
         setIsLoading(false);
       }
     }, 1500);
+  };
+
+  const CCJSONSJK = function (serverJson) {
+    const data = serverJson;
+    const convertedJsons = [];
+
+    for (let i = 0; i < data.length; i++) {
+      const convertedJson = {
+        id: data[i].id,
+        title: data[i].title,
+        artist: data[i].artist,
+        name: data[i].name,
+        ar: [{ name: data[i].artist }],
+        cover: data[i].cover,
+        lyric: data[i].lyric,
+        link: atob(data[i].link),
+      };
+      convertedJsons.push(convertedJson);
+    }
+
+    return convertedJsons;
   };
 
   const handleSearch = () => {
