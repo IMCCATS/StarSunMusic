@@ -179,7 +179,7 @@ export default function SongSearchTable() {
     setdisabled(true);
     $.ajax({
       url: "https://api.gumengya.com/Api/Netease",
-      type: "post",
+      type: "get",
       dataType: "json",
       async: false,
       data: {
@@ -228,7 +228,7 @@ export default function SongSearchTable() {
     setTimeout(() => {
       $.ajax({
         url: "https://api.gumengya.com/Api/Music",
-        type: "post",
+        type: "get",
         dataType: "json",
         async: false,
         data: {
@@ -275,7 +275,7 @@ export default function SongSearchTable() {
     setTimeout(() => {
       $.ajax({
         url: "https://api.gumengya.com/Api/Music",
-        type: "post",
+        type: "get",
         dataType: "json",
         async: false,
         data: {
