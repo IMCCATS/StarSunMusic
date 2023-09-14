@@ -121,7 +121,9 @@ export default function SongSearchTable() {
           //请求完成执行的代码
         },
         error: function () {
-          //请求成功失败执行的代码
+          console.log(res);
+          setSongs([]);
+          setIsLoading(false);
         },
         success: function (res) {
           // 状态码 200 表示请求成功
@@ -191,7 +193,9 @@ export default function SongSearchTable() {
         //请求完成执行的代码
       },
       error: function () {
-        //请求成功失败执行的代码
+        console.log(res);
+        setSongs([]);
+        setIsLoading(false);
       },
       success: function (res) {
         // 状态码 200 表示请求成功
@@ -239,7 +243,9 @@ export default function SongSearchTable() {
           //请求完成执行的代码
         },
         error: function () {
-          //请求成功失败执行的代码
+          console.log(res);
+          setSongs([]);
+          setIsLoading(false);
         },
         success: function (res) {
           // 状态码 200 表示请求成功
@@ -284,7 +290,9 @@ export default function SongSearchTable() {
           //请求完成执行的代码
         },
         error: function () {
-          //请求成功失败执行的代码
+          console.log(res);
+          setSongs([]);
+          setIsLoading(false);
         },
         success: function (res) {
           // 状态码 200 表示请求成功
