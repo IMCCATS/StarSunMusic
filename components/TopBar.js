@@ -15,6 +15,7 @@ import {
   Card,
   CircularProgress,
   Pagination,
+  Box,
 } from "@mui/material";
 export default function TopBar() {
   const { setCurrentSong } = React.useContext(CurrentSongContext);
@@ -95,6 +96,27 @@ export default function TopBar() {
       });
     }, 1500);
   };
+  let timeoutId;
+
+  function handleSongList(songs, index = 0) {
+    if (index >= songs.length) {
+      return;
+    }
+
+    const song = songs[index];
+    handleListenClick(song.id);
+
+    // 3.5分钟后调用这个函数，index加1
+    timeoutId = setTimeout(
+      () => handleSongList(songs, index + 1),
+      3.5 * 60 * 1000
+    );
+  }
+
+  // 停止执行函数
+  function stopExecution() {
+    clearTimeout(timeoutId);
+  }
 
   const lastIndex = currentPage * itemsPerPage;
   const firstIndex = lastIndex - itemsPerPage;
@@ -128,54 +150,79 @@ export default function TopBar() {
                   <span>暂无数据</span>
                 </div>
               ) : (
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>
-                        <span>热歌榜 · 排名</span>
-                      </TableCell>
-                      <TableCell>
-                        <span>歌曲图片</span>
-                      </TableCell>
-                      <TableCell>
-                        <span>标题</span>
-                      </TableCell>
-                      <TableCell>
-                        <span>作者</span>
-                      </TableCell>
-                      <TableCell>
-                        <span>操作</span>
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {currentSongs.map((song, index) => (
-                      <TableRow key={song.id}>
+                <div>
+                  <Box>
+                    <Button
+                      style={{ marginLeft: "10px", marginTop: "10px" }}
+                      variant="contained"
+                      onClick={() => {
+                        handleSongList(currentSongs);
+                      }}
+                    >
+                      列表播放
+                    </Button>
+                    <Button
+                      style={{ marginLeft: "10px", marginTop: "10px" }}
+                      variant="contained"
+                      onClick={() => {
+                        stopExecution();
+                      }}
+                    >
+                      取消列表播放
+                    </Button>
+                    <p style={{ marginLeft: "10px" }}>
+                      （实验性功能）功能原理：每3.5分钟切换下一曲。
+                    </p>
+                  </Box>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
                         <TableCell>
-                          <span>{firstIndex + index + 1}</span>
+                          <span>热歌榜 · 排名</span>
                         </TableCell>
                         <TableCell>
-                          <img src={song.cover} alt="Thumbnail" height="64" />
+                          <span>歌曲图片</span>
                         </TableCell>
                         <TableCell>
-                          <span>{song.name}</span>
+                          <span>标题</span>
                         </TableCell>
                         <TableCell>
-                          <span>{song.artist}</span>
+                          <span>作者</span>
                         </TableCell>
                         <TableCell>
-                          <Button
-                            onClick={() => handleListenClick(song.id)}
-                            variant="contained"
-                            disabled={disabled}
-                          >
-                            <span>听</span>
-                          </Button>
+                          <span>操作</span>
                         </TableCell>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                    </TableHead>
+                    <TableBody>
+                      {currentSongs.map((song, index) => (
+                        <TableRow key={song.id}>
+                          <TableCell>
+                            <span>{firstIndex + index + 1}</span>
+                          </TableCell>
+                          <TableCell>
+                            <img src={song.cover} alt="Thumbnail" height="64" />
+                          </TableCell>
+                          <TableCell>
+                            <span>{song.name}</span>
+                          </TableCell>
+                          <TableCell>
+                            <span>{song.artist}</span>
+                          </TableCell>
+                          <TableCell>
+                            <Button
+                              onClick={() => handleListenClick(song.id)}
+                              variant="contained"
+                              disabled={disabled}
+                            >
+                              <span>听</span>
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
               )}
             </TableContainer>
           </Paper>
