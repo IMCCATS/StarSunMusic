@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
+import RepeatOneIcon from "@mui/icons-material/RepeatOne";
 import FileIcon from "@mui/icons-material/Article";
 
 const MusicCard = ({ currentSong }) => {
@@ -24,6 +25,7 @@ const MusicCard = ({ currentSong }) => {
   const [currentLyricIndex, setCurrentLyricIndex] = React.useState(0);
   const audioRef = React.useRef(null);
   const [open, setOpen] = React.useState(false);
+  const [isReplay, setisReplay] = React.useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -113,7 +115,15 @@ const MusicCard = ({ currentSong }) => {
       }
     };
   }, [currentSong]);
-
+  const handleReplay = () => {
+    if (isReplay) {
+      setTimeout(() => {
+        audioRef.current.currentTime = 0;
+        audioRef.current.play();
+        setIsPlaying(true);
+      }, 1000);
+    }
+  };
   React.useEffect(() => {
     if (lyrics && lyrics.length > 0) {
       audioRef.current.src = currentSong.link;
@@ -224,6 +234,10 @@ const MusicCard = ({ currentSong }) => {
     setIsPlaying(!isPlaying); // 切换播放状态
   };
 
+  const handleSetReplay = () => {
+    setisReplay(!isReplay); // 切换状态
+  };
+
   const handleVolumeChange = (event, newValue) => {
     setVolume(newValue);
     audioRef.current.volume = newValue / 100;
@@ -317,7 +331,7 @@ const MusicCard = ({ currentSong }) => {
             )}
             {!currentSong.cover && "暂无图片哦~"}
             <div>{formatLyrics()}</div>
-            <audio ref={audioRef} />
+            <audio ref={audioRef} onEnded={handleReplay} />
             <Slider
               value={progress}
               onChange={handleSliderChange}
@@ -342,6 +356,12 @@ const MusicCard = ({ currentSong }) => {
               disabled={isAudioPlayable === false}
             >
               {isPlaying ? <PauseIcon /> : <PlayArrowIcon />}
+            </IconButton>
+            <IconButton
+              onClick={handleSetReplay}
+              disabled={isAudioPlayable === false}
+            >
+              {isReplay ? <RepeatOneIcon color="primary" /> : <RepeatOneIcon />}
             </IconButton>
             <IconButton
               aria-label="file button"
