@@ -13,13 +13,17 @@ import {
 } from "@mui/material";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
+import FullscreenIcon from "@mui/icons-material/Fullscreen";
+import FullscreenExitIcon from "@mui/icons-material/FullscreenExit";
 import RepeatOneIcon from "@mui/icons-material/RepeatOne";
 import FileIcon from "@mui/icons-material/Article";
+import { error } from "jquery";
 
 const MusicCard = ({ currentSong }) => {
   const [isAudioPlayable, setIsAudioPlayable] = React.useState(true);
   const [isPlaying, setIsPlaying] = React.useState(false);
   const [volume, setVolume] = React.useState(100);
+  const [Fullscreen, setFullscreen] = React.useState(false);
   const [progress, setProgress] = React.useState(0);
   const [lyrics, setLyrics] = React.useState([]);
   const [currentLyricIndex, setCurrentLyricIndex] = React.useState(0);
@@ -199,7 +203,44 @@ const MusicCard = ({ currentSong }) => {
       }
     }
   };
+  const handleFullScreen = () => {
+    function fullscreen() {
+      if (!document.fullscreenEnabled) {
+        return Promise.reject(new Error("全屏模式被禁用"));
+      }
+      let result = null;
+      if (document.documentElement.requestFullscreen) {
+        result = document.documentElement.requestFullscreen();
+      } else if (document.documentElement.mozRequestFullScreen) {
+        result = document.documentElement.mozRequestFullScreen();
+      } else if (document.documentElement.msRequestFullscreen) {
+        result = document.documentElement.msRequestFullscreen();
+      } else if (document.documentElement.webkitRequestFullscreen) {
+        result = document.documentElement.webkitRequestFullScreen();
+      }
+      return result || Promise.reject(new Error("不支持全屏"));
+    }
 
+    function cancelFullscreen() {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if (document.msExitFullscreen) {
+        document.msExitFullscreen();
+      } else if (document.mozCancelFullScreen) {
+        document.mozCancelFullScreen();
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      }
+    }
+
+    if (document.fullscreenElement) {
+      cancelFullscreen();
+      setFullscreen(false);
+    } else {
+      fullscreen();
+      setFullscreen(true);
+    }
+  };
   const handleSliderChange = async (event, newValue) => {
     setProgress(newValue);
     const duration = audioRef.current.duration;
@@ -253,7 +294,7 @@ const MusicCard = ({ currentSong }) => {
 
   return (
     <Card style={{ marginTop: "15px" }}>
-      <CardContent>
+      <CardContent id="MusicCard">
         {!currentSong && (
           <Typography variant="body1">
             <span>您还没有操作播放歌曲呢~</span>
@@ -369,6 +410,12 @@ const MusicCard = ({ currentSong }) => {
               disabled={isAudioPlayable === false}
             >
               <FileIcon />
+            </IconButton>
+            <IconButton
+              onClick={handleFullScreen}
+              disabled={isAudioPlayable === false}
+            >
+              {Fullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
             </IconButton>
             <Slider
               value={volume}
