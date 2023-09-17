@@ -96,27 +96,6 @@ export default function TopBar() {
       });
     }, 1500);
   };
-  let timeoutId;
-
-  function handleSongList(songs, index = 0) {
-    if (index >= songs.length) {
-      return;
-    }
-
-    const song = songs[index];
-    handleListenClick(song.id);
-
-    // 3.5分钟后调用这个函数，index加1
-    timeoutId = setTimeout(
-      () => handleSongList(songs, index + 1),
-      3.5 * 60 * 1000
-    );
-  }
-
-  // 停止执行函数
-  function stopExecution() {
-    clearTimeout(timeoutId);
-  }
 
   const lastIndex = currentPage * itemsPerPage;
   const firstIndex = lastIndex - itemsPerPage;
@@ -151,29 +130,6 @@ export default function TopBar() {
                 </div>
               ) : (
                 <div>
-                  <Box>
-                    <Button
-                      style={{ marginLeft: "10px", marginTop: "10px" }}
-                      variant="contained"
-                      onClick={() => {
-                        handleSongList(currentSongs);
-                      }}
-                    >
-                      <span>列表播放</span>
-                    </Button>
-                    <Button
-                      style={{ marginLeft: "10px", marginTop: "10px" }}
-                      variant="contained"
-                      onClick={() => {
-                        stopExecution();
-                      }}
-                    >
-                      <span>取消列表播放</span>
-                    </Button>
-                    <p style={{ marginLeft: "10px" }}>
-                      （实验性功能）功能原理：每3.5分钟切换下一曲。
-                    </p>
-                  </Box>
                   <Table>
                     <TableHead>
                       <TableRow>

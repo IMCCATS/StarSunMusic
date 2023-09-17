@@ -57,10 +57,11 @@ export default function Advertisement() {
           <br />
           <span>开发者：小研同学</span>
           <br />
-          <span>运营：小研同学</span>
+          <span>运营：内蒙古畅哥计算机科技工作室</span>
           <br />
           <span>
-            &copy; 2020 - {new Date().getFullYear()} 小研同学 版权所有.
+            &copy; 2020 - {new Date().getFullYear()} 内蒙古畅哥计算机科技工作室
+            版权所有.
           </span>
           <br />
           <span>

@@ -137,12 +137,13 @@ const HomePage = () => {
           <br />
           <span>开发者：小研同学</span>
           <br />
-          <span>运营：小研同学</span>
+          <span>运营：内蒙古畅哥计算机科技工作室</span>
           <br />
           <span>本系统仅用作个人音乐欣赏、学习交流，不可用于商业用途。</span>
           <br />
           <span>
-            &copy; 2020 - {new Date().getFullYear()} 小研同学 版权所有.
+            &copy; 2020 - {new Date().getFullYear()} 内蒙古畅哥计算机科技工作室
+            版权所有.
           </span>
           <br />
           <span>应用程序可能响应较慢或无响应，烦请耐心等待，多次尝试~</span>
