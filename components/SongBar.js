@@ -191,7 +191,7 @@ const PlaylistComponent = ({ playlist }) => {
                         <img src={song.cover} alt="Thumbnail" height="64" />
                       </TableCell>
                       <TableCell>
-                        <span>{song.album}</span>
+                        <span>{song.name}</span>
                       </TableCell>
                       <TableCell>
                         <span>{song.artist}</span>

@@ -15,7 +15,6 @@ import {
   Card,
   CircularProgress,
   Pagination,
-  Box,
 } from "@mui/material";
 export default function TopBar() {
   const { setCurrentSong } = React.useContext(CurrentSongContext);
