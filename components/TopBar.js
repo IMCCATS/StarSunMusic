@@ -159,7 +159,7 @@ export default function TopBar() {
                         handleSongList(currentSongs);
                       }}
                     >
-                      列表播放
+                      <span>列表播放</span>
                     </Button>
                     <Button
                       style={{ marginLeft: "10px", marginTop: "10px" }}
@@ -168,7 +168,7 @@ export default function TopBar() {
                         stopExecution();
                       }}
                     >
-                      取消列表播放
+                      <span>取消列表播放</span>
                     </Button>
                     <p style={{ marginLeft: "10px" }}>
                       （实验性功能）功能原理：每3.5分钟切换下一曲。
