@@ -12,6 +12,7 @@ import cookie from "react-cookies";
 import { useRouter } from "next/navigation";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
+import JuanZeng from "../../../components/juanzeng";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -84,6 +85,7 @@ export default function BasicCard() {
           <SongBar />
         </div>
       </CurrentSongContext.Provider>
+      <JuanZeng />
       <About />
     </main>
   );

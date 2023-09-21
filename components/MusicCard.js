@@ -190,7 +190,7 @@ const MusicCard = ({ currentSong }) => {
             lyrics[currentLyricIndex].text ? (
               <span>{lyrics[currentLyricIndex].text}</span>
             ) : (
-              <span></span>
+              <span>~</span>
             )}
           </Typography>
         );
