@@ -18,25 +18,6 @@ const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 export const CurrentSongContext = React.createContext(null);
-(function () {
-  setInterval(function () {
-    check();
-  }, 1000);
-  var check = function () {
-    function doCheck(a) {
-      if (("" + a / a)["length"] !== 1 || a % 20 === 0) {
-        (function () {})["constructor"]("debugger")();
-      } else {
-        (function () {})["constructor"]("debugger")();
-      }
-      doCheck(++a);
-    }
-    try {
-      doCheck(0);
-    } catch (err) {}
-  };
-  check();
-})();
 export default function BasicCard() {
   const router = useRouter();
   const [currentSong, setCurrentSong] = React.useState(null);
