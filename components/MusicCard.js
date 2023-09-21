@@ -17,7 +17,7 @@ import FullscreenIcon from "@mui/icons-material/Fullscreen";
 import FullscreenExitIcon from "@mui/icons-material/FullscreenExit";
 import RepeatOneIcon from "@mui/icons-material/RepeatOne";
 import FileIcon from "@mui/icons-material/Article";
-import { error } from "jquery";
+import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
 
 const MusicCard = ({ currentSong }) => {
   const [isAudioPlayable, setIsAudioPlayable] = React.useState(true);
@@ -253,6 +253,14 @@ const MusicCard = ({ currentSong }) => {
     setIsPlaying(true); // 更新播放状态
   };
 
+  const handleVedioClick = (name) => {
+    window.open(
+      `https://search.bilibili.com/all?keyword=${name}MV`,
+      "mozillaTab",
+      "noreferrer"
+    );
+  };
+
   const handleSliderDragEnd = async () => {
     const duration = audioRef.current.duration;
     const currentTime = (progress / 100) * duration;
@@ -416,6 +424,15 @@ const MusicCard = ({ currentSong }) => {
               disabled={isAudioPlayable === false}
             >
               {Fullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
+            </IconButton>
+            <IconButton
+              onClick={() => {
+                const name = currentSong.title + " ";
+                handleVedioClick(name);
+              }}
+              disabled={isAudioPlayable === false}
+            >
+              <OndemandVideoIcon />
             </IconButton>
             <Slider
               value={volume}
