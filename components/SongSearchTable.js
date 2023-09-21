@@ -3,6 +3,7 @@ import * as React from "react";
 import $ from "jquery";
 import { CurrentSongContext } from "../src/app/dashboard/page";
 import ButtonGroup from "@mui/material/ButtonGroup";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import {
   Button,
   TableRow,
@@ -474,7 +475,11 @@ export default function SongSearchTable() {
                     height: "200px",
                   }}
                 >
-                  <CircularProgress />
+                  {jzwz !== "搜索功能加载完成啦~\n请搜索歌曲哦~" ? (
+                    <CircularProgress />
+                  ) : (
+                    <CheckCircleIcon color="success" fontSize="large" />
+                  )}
                   <p style={{ marginLeft: "10px", whiteSpace: "pre" }}>
                     {jzwz}
                   </p>

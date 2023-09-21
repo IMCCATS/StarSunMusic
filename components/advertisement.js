@@ -1,10 +1,26 @@
 "use client";
+import { Button, CardActions } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
+import * as React from "react";
 export default function Advertisement() {
+  const [open, setOpen] = React.useState("none");
+  const SetAD = () => {
+    const OpenState = window.localStorage.getItem("showad");
+    if (OpenState !== "off") {
+      setOpen("block");
+    }
+  };
+  const OffAD = () => {
+    setOpen("none");
+    window.localStorage.setItem("showad", "off");
+  };
+  React.useEffect(() => {
+    SetAD();
+  }, []);
   return (
-    <Card sx={{ minWidth: 275 }}>
+    <Card sx={{ minWidth: 275, marginTop: "10px" }} style={{ display: open }}>
       <CardContent>
         <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
           <span>来自 畅哥科技</span>
@@ -27,6 +43,15 @@ export default function Advertisement() {
           </span>
         </Typography>
       </CardContent>
+      <CardActions>
+        <Button
+          onClick={() => {
+            OffAD();
+          }}
+        >
+          <span>知道啦，关闭吧~</span>
+        </Button>
+      </CardActions>
     </Card>
   );
 }
