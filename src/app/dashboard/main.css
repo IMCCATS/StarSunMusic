@@ -1,9 +1,9 @@
 @font-face {
-  font-family: "DingTalkJinBuTi";
+  font-family: "SourceHanSansSC";
   src: url("../../../font/SourceHanSansSC-Bold-2.otf") format("truetype");
   font-display: swap;
 }
 
 * {
-  font-family: "DingTalkJinBuTi", sans-serif;
+  font-family: "SourceHanSansSC", sans-serif;
 }
