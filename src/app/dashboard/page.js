@@ -8,7 +8,6 @@ import * as React from "react";
 import TopBar from "../../../components/TopBar";
 import TopBarBS from "../../../components/TopBarBS";
 import SongBar from "../../../components/SongBar";
-import cookie from "react-cookies";
 import { useRouter } from "next/navigation";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
@@ -30,7 +29,7 @@ export default function BasicCard() {
     setOpen(true);
   };
   const CheckPolicy = () => {
-    const state = cookie.load("isAgreedPolicy");
+    const state = localStorage.getItem("isAgreedPolicy");
     if (state !== "1") {
       handleClick();
       setTimeout(() => {
