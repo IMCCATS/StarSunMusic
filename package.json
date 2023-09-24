@@ -17,9 +17,9 @@
     "@supabase/supabase-js": "^2.33.2",
     "jquery": "^3.7.0",
     "lrc-parser": "^1.0.1",
-    "next": "latest",
-    "react": "18.2.0",
+    "next": "^13.5.2",
+    "react": "^18.2.0",
     "react-cookies": "^0.1.1",
-    "react-dom": "18.2.0"
+    "react-dom": "^18.2.0"
   }
 }
