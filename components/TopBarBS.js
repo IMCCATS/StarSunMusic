@@ -17,16 +17,34 @@ import {
   Pagination,
 } from "@mui/material";
 export default function TopBar() {
-  const { setCurrentSong, setcanlistplay } =
-    React.useContext(CurrentSongContext);
+  const {
+    playingpage,
+    setplayingpage,
+    isPlayComplete,
+    setCurrentSong,
+    setisPlayComplete,
+    setcanlistplay,
+  } = React.useContext(CurrentSongContext);
   const [isLoading, setIsLoading] = React.useState(true);
   const [songs, setSongs] = React.useState([]);
   const [currentPage, setCurrentPage] = React.useState(1);
   const itemsPerPage = 10;
+  const [lastPlayedSongIndex, setLastPlayedSongIndex] = React.useState(0);
+
+  const handleNextSongClick = () => {
+    const index = lastPlayedSongIndex + 1;
+    if (songs[index] && songs[index].id) {
+      handleListenClick(songs[index].id);
+      setisPlayComplete(false);
+    }
+  };
 
   React.useEffect(() => {
     fetchMusicList();
-  }, []);
+    if (isPlayComplete && playingpage === "TopBarBS") {
+      handleNextSongClick();
+    }
+  }, [isPlayComplete]);
 
   const fetchMusicList = () => {
     $.ajax({
@@ -87,7 +105,11 @@ export default function TopBar() {
             // console.log(res);
             setCurrentSong(res);
             setdisabled(false);
-            setcanlistplay(false);
+            setLastPlayedSongIndex(
+              songs.findIndex((song) => song.id === songId)
+            );
+            setcanlistplay(true);
+            setplayingpage("TopBarBS");
           } else {
             console.log(res);
             setdisabled(false);

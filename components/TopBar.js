@@ -17,8 +17,14 @@ import {
   Pagination,
 } from "@mui/material";
 export default function TopBar() {
-  const { isPlayComplete, setCurrentSong, setisPlayComplete, setcanlistplay } =
-    React.useContext(CurrentSongContext);
+  const {
+    playingpage,
+    setplayingpage,
+    isPlayComplete,
+    setCurrentSong,
+    setisPlayComplete,
+    setcanlistplay,
+  } = React.useContext(CurrentSongContext);
   const [isLoading, setIsLoading] = React.useState(true);
   const [songs, setSongs] = React.useState([]);
   const [lastPlayedSongIndex, setLastPlayedSongIndex] = React.useState(0);
@@ -35,7 +41,7 @@ export default function TopBar() {
 
   React.useEffect(() => {
     fetchMusicList();
-    if (isPlayComplete) {
+    if (isPlayComplete && playingpage === "TopBar") {
       handleNextSongClick();
     }
   }, [isPlayComplete]);
@@ -104,6 +110,7 @@ export default function TopBar() {
               songs.findIndex((song) => song.id === songId)
             );
             setcanlistplay(true);
+            setplayingpage("TopBar");
           } else {
             console.log(res);
             setdisabled(false);

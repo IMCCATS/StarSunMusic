@@ -22,6 +22,7 @@ export default function BasicCard() {
   const router = useRouter();
   const [currentSong, setCurrentSong] = React.useState(null);
   const [isPlayComplete, setisPlayComplete] = React.useState(false);
+  const [playingpage, setplayingpage] = React.useState("");
   const [canlistplay, setcanlistplay] = React.useState(false);
   const [open, setOpen] = React.useState(false);
 
@@ -65,6 +66,8 @@ export default function BasicCard() {
           setCurrentSong,
           setisPlayComplete,
           setcanlistplay,
+          playingpage,
+          setplayingpage,
         }}
       >
         <div>

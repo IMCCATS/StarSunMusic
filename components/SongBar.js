@@ -31,8 +31,15 @@ const playlists = [
 ];
 
 const PlaylistComponent = ({ playlist }) => {
-  const { setCurrentSong, setcanlistplay } =
-    React.useContext(CurrentSongContext);
+  const {
+    playingpage,
+    setplayingpage,
+    isPlayComplete,
+    setCurrentSong,
+    setisPlayComplete,
+    setcanlistplay,
+  } = React.useContext(CurrentSongContext);
+  const [lastPlayedSongIndex, setLastPlayedSongIndex] = React.useState(0);
   const [isLoading, setIsLoading] = React.useState(false);
   const [songs, setSongs] = React.useState([]);
   const [currentPage, setCurrentPage] = React.useState(1);
@@ -45,6 +52,20 @@ const PlaylistComponent = ({ playlist }) => {
       fetchMusicList();
     }, 1000);
   };
+
+  const handleNextSongClick = () => {
+    const index = lastPlayedSongIndex + 1;
+    if (songs[index] && songs[index].id) {
+      handleListenClick(songs[index].id);
+      setisPlayComplete(false);
+    }
+  };
+
+  React.useEffect(() => {
+    if (isPlayComplete && playingpage === playlist.name) {
+      handleNextSongClick();
+    }
+  }, [isPlayComplete]);
 
   const fetchMusicList = () => {
     const playlistId = playlist.id;
@@ -106,7 +127,8 @@ const PlaylistComponent = ({ playlist }) => {
             // console.log(res);
             setCurrentSong(res);
             setdisabled(false);
-            setcanlistplay(false);
+            setcanlistplay(true);
+            setplayingpage(playlist.name);
           } else {
             console.log(res);
             setdisabled(false);
