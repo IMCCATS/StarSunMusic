@@ -11,6 +11,7 @@ import {
   DialogTitle,
   DialogActions,
 } from "@mui/material";
+import QueueMusicIcon from "@mui/icons-material/QueueMusic";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
@@ -19,13 +20,14 @@ import RepeatOneIcon from "@mui/icons-material/RepeatOne";
 import FileIcon from "@mui/icons-material/Article";
 import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
 
-const MusicCard = ({ currentSong }) => {
+const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
   const [isAudioPlayable, setIsAudioPlayable] = React.useState(true);
   const [isPlaying, setIsPlaying] = React.useState(false);
   const [volume, setVolume] = React.useState(100);
   const [Fullscreen, setFullscreen] = React.useState(false);
   const [progress, setProgress] = React.useState(0);
   const [lyrics, setLyrics] = React.useState([]);
+  const [listplaying, setlistplaying] = React.useState(false);
   const [currentLyricIndex, setCurrentLyricIndex] = React.useState(0);
   const audioRef = React.useRef(null);
   const [open, setOpen] = React.useState(false);
@@ -126,6 +128,8 @@ const MusicCard = ({ currentSong }) => {
         audioRef.current.play();
         setIsPlaying(true);
       }, 1000);
+    } else if (listplaying) {
+      setisPlayComplete(true);
     }
   };
   React.useEffect(() => {
@@ -411,6 +415,22 @@ const MusicCard = ({ currentSong }) => {
               disabled={isAudioPlayable === false}
             >
               {isReplay ? <RepeatOneIcon color="primary" /> : <RepeatOneIcon />}
+            </IconButton>
+            <IconButton
+              onClick={() => {
+                setlistplaying(!listplaying);
+              }}
+              disabled={isAudioPlayable === false || canlistplay === false}
+            >
+              {canlistplay ? (
+                listplaying ? (
+                  <QueueMusicIcon color="primary" />
+                ) : (
+                  <QueueMusicIcon />
+                )
+              ) : (
+                <QueueMusicIcon />
+              )}
             </IconButton>
             <IconButton
               aria-label="file button"

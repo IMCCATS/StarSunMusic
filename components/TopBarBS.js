@@ -17,7 +17,8 @@ import {
   Pagination,
 } from "@mui/material";
 export default function TopBar() {
-  const { setCurrentSong } = React.useContext(CurrentSongContext);
+  const { setCurrentSong, setcanlistplay } =
+    React.useContext(CurrentSongContext);
   const [isLoading, setIsLoading] = React.useState(true);
   const [songs, setSongs] = React.useState([]);
   const [currentPage, setCurrentPage] = React.useState(1);
@@ -86,6 +87,7 @@ export default function TopBar() {
             // console.log(res);
             setCurrentSong(res);
             setdisabled(false);
+            setcanlistplay(false);
           } else {
             console.log(res);
             setdisabled(false);

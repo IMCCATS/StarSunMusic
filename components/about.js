@@ -18,7 +18,7 @@ export default function Advertisement() {
           <span>一款由中学生自制的音乐欣赏系统</span>
         </Typography>
         <Typography variant="body2">
-          <span>版本：1.0.0_202309092136</span>
+          <span>版本：1.0.0_202309241529</span>
           <br />
           <span>由 畅哥科技&trade; 运营。</span>
           <br />
@@ -68,6 +68,8 @@ export default function Advertisement() {
                 1.0.0_202309031343：修复了歌单区在移动端变形导致无法播放的Bug；
                 <br />
                 1.0.0_202309092136：应用合规化处理，优化了操作逻辑；
+                <br />
+                1.0.0_202309241529：支持热歌榜列表播放，修复了一些已知问题；
               </span>
             </Typography>
           </AccordionDetails>

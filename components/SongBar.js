@@ -31,7 +31,8 @@ const playlists = [
 ];
 
 const PlaylistComponent = ({ playlist }) => {
-  const { setCurrentSong } = React.useContext(CurrentSongContext);
+  const { setCurrentSong, setcanlistplay } =
+    React.useContext(CurrentSongContext);
   const [isLoading, setIsLoading] = React.useState(false);
   const [songs, setSongs] = React.useState([]);
   const [currentPage, setCurrentPage] = React.useState(1);
@@ -105,6 +106,7 @@ const PlaylistComponent = ({ playlist }) => {
             // console.log(res);
             setCurrentSong(res);
             setdisabled(false);
+            setcanlistplay(false);
           } else {
             console.log(res);
             setdisabled(false);

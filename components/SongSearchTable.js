@@ -26,7 +26,7 @@ import {
 } from "@mui/material";
 import supabase from "@/app/api/supabase";
 
-export default function SongSearchTable() {
+export default function SongSearchTable({ setcanlistplay }) {
   const { setCurrentSong } = React.useContext(CurrentSongContext);
   const [isLoading, setIsLoading] = React.useState(true);
   const [songs, setSongs] = React.useState([]);
@@ -132,6 +132,7 @@ export default function SongSearchTable() {
             //console.log(res);
             setCurrentSong(res);
             setdisabled(false);
+            setcanlistplay(false);
           } else {
             console.log(res);
             setdisabled(false);
@@ -206,6 +207,7 @@ export default function SongSearchTable() {
           //console.log(convertedJson);
           setCurrentSong(convertedJson);
           setdisabled(false);
+          setcanlistplay(false);
         } else {
           console.log(res);
           setdisabled(false);
@@ -215,6 +217,7 @@ export default function SongSearchTable() {
   };
 
   const handleListenClickLinethree = (song) => {
+    setcanlistplay(false);
     setCurrentSong(song);
   };
 

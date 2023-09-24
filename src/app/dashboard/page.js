@@ -21,6 +21,8 @@ export const CurrentSongContext = React.createContext(null);
 export default function BasicCard() {
   const router = useRouter();
   const [currentSong, setCurrentSong] = React.useState(null);
+  const [isPlayComplete, setisPlayComplete] = React.useState(false);
+  const [canlistplay, setcanlistplay] = React.useState(false);
   const [open, setOpen] = React.useState(false);
 
   const handleClick = () => {
@@ -57,10 +59,21 @@ export default function BasicCard() {
       </Snackbar>
       <AppBar />
       <Advertisement />
-      <CurrentSongContext.Provider value={{ setCurrentSong }}>
+      <CurrentSongContext.Provider
+        value={{
+          isPlayComplete,
+          setCurrentSong,
+          setisPlayComplete,
+          setcanlistplay,
+        }}
+      >
         <div>
-          <MusicCard currentSong={currentSong} />
-          <SongSearchTable />
+          <MusicCard
+            currentSong={currentSong}
+            setisPlayComplete={setisPlayComplete}
+            canlistplay={canlistplay}
+          />
+          <SongSearchTable setcanlistplay={setcanlistplay} />
           <TopBar />
           <TopBarBS />
           <SongBar />
