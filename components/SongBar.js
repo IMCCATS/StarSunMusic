@@ -127,6 +127,9 @@ const PlaylistComponent = ({ playlist }) => {
             // console.log(res);
             setCurrentSong(res);
             setdisabled(false);
+            setLastPlayedSongIndex(
+              songs.findIndex((song) => song.id === songId)
+            );
             setcanlistplay(true);
             setplayingpage(playlist.name);
           } else {
