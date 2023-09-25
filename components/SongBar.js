@@ -19,6 +19,7 @@ import {
   AccordionDetails,
   Typography,
   Paper,
+  Backdrop,
 } from "@mui/material";
 const playlists = [
   { name: "短视频各样卡点/热血音乐-燃到极致！", id: "5335051744" },
@@ -85,7 +86,8 @@ const PlaylistComponent = ({ playlist }) => {
         //请求完成执行的代码
       },
       error: function () {
-        //请求成功失败执行的代码
+        setSongs([]);
+        setIsLoading(false);
       },
       success: function (res) {
         // 状态码 200 表示请求成功
@@ -94,7 +96,7 @@ const PlaylistComponent = ({ playlist }) => {
           setSongs(res);
           setIsLoading(false);
         } else {
-          console.log(res);
+          setSongs([]);
           setIsLoading(false);
         }
       },
@@ -119,7 +121,7 @@ const PlaylistComponent = ({ playlist }) => {
           //请求完成执行的代码
         },
         error: function () {
-          //请求成功失败执行的代码
+          setdisabled(false);
         },
         success: function (res) {
           // 状态码 200 表示请求成功
@@ -133,7 +135,6 @@ const PlaylistComponent = ({ playlist }) => {
             setcanlistplay(true);
             setplayingpage(playlist.name);
           } else {
-            console.log(res);
             setdisabled(false);
           }
         },
@@ -151,112 +152,121 @@ const PlaylistComponent = ({ playlist }) => {
   };
 
   return (
-    <Accordion key={playlist.id}>
-      <AccordionSummary>
-        <Typography>
-          <span>{playlist.name}</span>
-        </Typography>
-      </AccordionSummary>
-      <AccordionDetails>
-        <Button
-          onClick={jzsj}
-          disabled={jy}
-          variant="contained"
-          style={{ marginBottom: "10px" }}
-        >
-          加载数据
-        </Button>
-        <Paper>
-          <TableContainer>
-            {/* 此处是动态渲染的具体表单内容 */}
-            {isLoading ? (
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  height: "200px",
-                }}
-              >
-                <CircularProgress />
-                <p style={{ marginLeft: "10px" }}>加载中...</p>
-              </div>
-            ) : songs.length === 0 ? (
-              <div style={{ textAlign: "center", padding: "20px" }}>
-                <span>
-                  暂无数据哦~若您没有点击加载数据按钮的话，点击一下加载数据按钮~
-                </span>
-              </div>
-            ) : (
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>
-                      <span>序号</span>
-                    </TableCell>
-                    <TableCell>
-                      <span>歌曲图片</span>
-                    </TableCell>
-                    <TableCell>
-                      <span>标题</span>
-                    </TableCell>
-                    <TableCell>
-                      <span>作者</span>
-                    </TableCell>
-                    <TableCell>
-                      <span>操作</span>
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {currentSongs.map((song, index) => (
-                    <TableRow key={song.id}>
+    <main>
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={disabled}
+      >
+        <CircularProgress color="inherit" />
+        <span style={{ marginLeft: "15px" }}>正在加载歌曲</span>
+      </Backdrop>
+      <Accordion key={playlist.id}>
+        <AccordionSummary>
+          <Typography>
+            <span>{playlist.name}</span>
+          </Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Button
+            onClick={jzsj}
+            disabled={jy}
+            variant="contained"
+            style={{ marginBottom: "10px" }}
+          >
+            加载数据
+          </Button>
+          <Paper>
+            <TableContainer>
+              {/* 此处是动态渲染的具体表单内容 */}
+              {isLoading ? (
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    height: "200px",
+                  }}
+                >
+                  <CircularProgress />
+                  <p style={{ marginLeft: "10px" }}>加载中...</p>
+                </div>
+              ) : songs.length === 0 ? (
+                <div style={{ textAlign: "center", padding: "20px" }}>
+                  <span>
+                    暂无数据哦~若您没有点击加载数据按钮的话，点击一下加载数据按钮~
+                  </span>
+                </div>
+              ) : (
+                <Table>
+                  <TableHead>
+                    <TableRow>
                       <TableCell>
-                        <span>{firstIndex + index + 1}</span>
+                        <span>序号</span>
                       </TableCell>
                       <TableCell>
-                        <img src={song.cover} alt="Thumbnail" height="64" />
+                        <span>歌曲图片</span>
                       </TableCell>
                       <TableCell>
-                        <span>{song.name}</span>
+                        <span>标题</span>
                       </TableCell>
                       <TableCell>
-                        <span>{song.artist}</span>
+                        <span>作者</span>
                       </TableCell>
                       <TableCell>
-                        <Button
-                          onClick={() => handleListenClick(song.id)}
-                          variant="contained"
-                          disabled={disabled}
-                        >
-                          <span>听</span>
-                        </Button>
+                        <span>操作</span>
                       </TableCell>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            )}
-          </TableContainer>
-        </Paper>
-        {/* 此处是动态渲染的其他部分 */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            marginTop: "20px",
-          }}
-        >
-          <Pagination
-            count={numPages}
-            page={currentPage}
-            onChange={handlePaginationChange}
-            shape="rounded"
-            color="primary"
-          />
-        </div>
-      </AccordionDetails>
-    </Accordion>
+                  </TableHead>
+                  <TableBody>
+                    {currentSongs.map((song, index) => (
+                      <TableRow key={song.id}>
+                        <TableCell>
+                          <span>{firstIndex + index + 1}</span>
+                        </TableCell>
+                        <TableCell>
+                          <img src={song.cover} alt="Thumbnail" height="64" />
+                        </TableCell>
+                        <TableCell>
+                          <span>{song.name}</span>
+                        </TableCell>
+                        <TableCell>
+                          <span>{song.artist}</span>
+                        </TableCell>
+                        <TableCell>
+                          <Button
+                            onClick={() => handleListenClick(song.id)}
+                            variant="contained"
+                            disabled={disabled}
+                          >
+                            <span>听</span>
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
+            </TableContainer>
+          </Paper>
+          {/* 此处是动态渲染的其他部分 */}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              marginTop: "20px",
+            }}
+          >
+            <Pagination
+              count={numPages}
+              page={currentPage}
+              onChange={handlePaginationChange}
+              shape="rounded"
+              color="primary"
+            />
+          </div>
+        </AccordionDetails>
+      </Accordion>
+    </main>
   );
 };
 

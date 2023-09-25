@@ -13,7 +13,6 @@ import {
 } from "@mui/material";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import CircularProgress from "@mui/material/CircularProgress";
-import { useRouter } from "next/navigation";
 import CloseIcon from "@mui/icons-material/Close";
 import UserAgreementAndPrivacyPolicy from "../../components/UserAgreementAndPrivacyPolicy";
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -21,7 +20,6 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 const HomePage = () => {
-  const router = useRouter();
   const [isLoading, setIsLoading] = React.useState(false);
   const [open, setOpen] = React.useState(false);
 
@@ -43,12 +41,12 @@ const HomePage = () => {
     localStorage.setItem("isAgreedPolicy", "1");
     setIsLoading(true);
     setOpen(false);
-    router.push("/dashboard");
+    window.location.href = "/dashboard";
   };
 
   const handleClickPolicyed = () => {
     setIsLoading(true);
-    router.push("/dashboard");
+    window.location.href = "/dashboard";
   };
 
   return (

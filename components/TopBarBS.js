@@ -15,6 +15,7 @@ import {
   Card,
   CircularProgress,
   Pagination,
+  Backdrop,
 } from "@mui/material";
 export default function TopBar() {
   const {
@@ -63,7 +64,8 @@ export default function TopBar() {
         //请求完成执行的代码
       },
       error: function () {
-        //请求成功失败执行的代码
+        setSongs([]);
+        setIsLoading(false);
       },
       success: function (res) {
         // 状态码 200 表示请求成功
@@ -97,7 +99,7 @@ export default function TopBar() {
           //请求完成执行的代码
         },
         error: function () {
-          //请求成功失败执行的代码
+          setdisabled(false);
         },
         success: function (res) {
           // 状态码 200 表示请求成功
@@ -130,6 +132,13 @@ export default function TopBar() {
 
   return (
     <main>
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={disabled}
+      >
+        <CircularProgress color="inherit" />
+        <span style={{ marginLeft: "15px" }}>正在加载歌曲</span>
+      </Backdrop>
       <Card sx={{ minWidth: 275 }} style={{ marginTop: "15px" }}>
         <CardContent>
           <Paper>
