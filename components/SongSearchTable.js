@@ -1,6 +1,6 @@
 "use client";
 import * as React from "react";
-import $ from "jquery";
+import $, { event } from "jquery";
 import { CurrentSongContext } from "../src/app/dashboard/page";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -24,6 +24,7 @@ import {
   DialogContent,
   DialogTitle,
   Backdrop,
+  Autocomplete,
 } from "@mui/material";
 import supabase from "@/app/api/supabase";
 
@@ -35,6 +36,7 @@ export default function SongSearchTable({ setcanlistplay }) {
   const [jzwz, setwz] = React.useState("搜索功能加载中...");
   const [searchTerm, setSearchTerm] = React.useState("");
   const [open, setOpen] = React.useState(false);
+  const [SearchHistory, SetSearchHistory] = React.useState([]);
   const [searchdesabled, setsearchdesabled] = React.useState(true);
   const addJB = () => {
     var script = document.createElement("script");
@@ -48,8 +50,27 @@ export default function SongSearchTable({ setcanlistplay }) {
   };
   React.useEffect(() => {
     addJB();
-    setTimeout(() => {}, 6000);
+    AddSearchHistory();
   }, []);
+
+  const AddHistory = (searchTerm) => {
+    if (!searchTerm || SearchHistory.includes(searchTerm)) {
+      return;
+    }
+
+    const newSearchHistory = [...SearchHistory, searchTerm];
+    localStorage.setItem("SearchHistory", JSON.stringify(newSearchHistory));
+    SetSearchHistory(newSearchHistory);
+  };
+
+  const AddSearchHistory = () => {
+    const savedSearchHistory = JSON.parse(
+      localStorage.getItem("SearchHistory")
+    );
+    if (savedSearchHistory) {
+      SetSearchHistory(savedSearchHistory);
+    }
+  };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -62,21 +83,25 @@ export default function SongSearchTable({ setcanlistplay }) {
     setOpen(false);
     setPT("default");
     handleSearch();
+    AddHistory(searchTerm);
   };
   const close2 = () => {
     setOpen(false);
     setPT("kg");
     handleSearchKG();
+    AddHistory(searchTerm);
   };
   const close3 = () => {
     setOpen(false);
     setPT("mg");
     handleSearchMG();
+    AddHistory(searchTerm);
   };
   const close4 = () => {
     setOpen(false);
     setPT("sjk");
     handleSearchSJK();
+    AddHistory(searchTerm);
   };
   const searchOpen = () => {
     if (searchTerm) {
@@ -103,6 +128,9 @@ export default function SongSearchTable({ setcanlistplay }) {
   };
   const handleChange = (event) => {
     setSearchTerm(event.target.value);
+  };
+  const ChangeSearch = (event, value) => {
+    setSearchTerm(value);
   };
   const [disabled, setdisabled] = React.useState(false);
   const handleListenClick = (songId) => {
@@ -404,7 +432,10 @@ export default function SongSearchTable({ setcanlistplay }) {
       });
     }, 1500);
   };
-
+  const ClearHistory = () => {
+    localStorage.removeItem("SearchHistory");
+    SetSearchHistory([]);
+  };
   return (
     <main>
       <Backdrop
@@ -454,20 +485,71 @@ export default function SongSearchTable({ setcanlistplay }) {
             noValidate
             autoComplete="off"
           >
-            <TextField
-              label="搜索..."
-              id="search"
-              variant="outlined"
-              onChange={handleChange}
-            />
-            <Button
-              onClick={searchOpen}
-              variant="contained"
-              sx={{ height: "56px" }}
-              disabled={searchdesabled}
-            >
-              <span>搜索</span>
-            </Button>
+            {Array.isArray(SearchHistory) && SearchHistory.length > 0 ? (
+              <Autocomplete
+                freeSolo
+                disableClearable
+                onChange={ChangeSearch}
+                options={SearchHistory.map((option) => option)}
+                renderInput={(params) => (
+                  <div>
+                    <TextField
+                      {...params}
+                      label="搜索..."
+                      id="search"
+                      variant="outlined"
+                      onChange={handleChange}
+                      InputProps={{
+                        ...params.InputProps,
+                        type: "search",
+                      }}
+                    />
+                    <Button
+                      onClick={searchOpen}
+                      variant="contained"
+                      sx={{
+                        height: "56px",
+                        marginTop: "15px",
+                        marginRight: "10px",
+                      }}
+                      disabled={searchdesabled}
+                    >
+                      <span>搜索</span>
+                    </Button>
+                    <Button
+                      onClick={ClearHistory}
+                      variant="contained"
+                      sx={{ height: "56px", marginTop: "15px" }}
+                      disabled={searchdesabled}
+                    >
+                      <span>清除搜索历史记录</span>
+                    </Button>
+                  </div>
+                )}
+              />
+            ) : (
+              <div>
+                <TextField
+                  label="搜索..."
+                  fullWidth
+                  id="search"
+                  variant="outlined"
+                  onChange={handleChange}
+                />
+                <Button
+                  onClick={searchOpen}
+                  variant="contained"
+                  sx={{
+                    height: "56px",
+                    marginTop: "15px",
+                    marginRight: "10px",
+                  }}
+                  disabled={searchdesabled}
+                >
+                  <span>搜索</span>
+                </Button>
+              </div>
+            )}
             <div id="captcha"></div>
           </Box>
           <Paper>
