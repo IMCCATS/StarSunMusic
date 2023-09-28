@@ -10,6 +10,7 @@ import {
   DialogContent,
   DialogTitle,
   DialogActions,
+  Tooltip,
 } from "@mui/material";
 import QueueMusicIcon from "@mui/icons-material/QueueMusic";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
@@ -410,50 +411,64 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
             >
               {isPlaying ? <PauseIcon /> : <PlayArrowIcon />}
             </IconButton>
-            <IconButton
-              onClick={handleSetReplay}
-              disabled={isAudioPlayable === false}
-            >
-              {isReplay ? <RepeatOneIcon color="primary" /> : <RepeatOneIcon />}
-            </IconButton>
-            <IconButton
-              onClick={() => {
-                setlistplaying(!listplaying);
-              }}
-              disabled={isAudioPlayable === false || canlistplay === false}
-            >
-              {canlistplay ? (
-                listplaying ? (
-                  <QueueMusicIcon color="primary" />
+            <Tooltip title="单曲循环" placement="top">
+              <IconButton
+                onClick={handleSetReplay}
+                disabled={isAudioPlayable === false}
+              >
+                {isReplay ? (
+                  <RepeatOneIcon color="primary" />
+                ) : (
+                  <RepeatOneIcon />
+                )}
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="列表播放" placement="top">
+              <IconButton
+                onClick={() => {
+                  setlistplaying(!listplaying);
+                }}
+                disabled={isAudioPlayable === false || canlistplay === false}
+              >
+                {canlistplay ? (
+                  listplaying ? (
+                    <QueueMusicIcon color="primary" />
+                  ) : (
+                    <QueueMusicIcon />
+                  )
                 ) : (
                   <QueueMusicIcon />
-                )
-              ) : (
-                <QueueMusicIcon />
-              )}
-            </IconButton>
-            <IconButton
-              aria-label="file button"
-              onClick={handleClickOpen}
-              disabled={isAudioPlayable === false}
-            >
-              <FileIcon />
-            </IconButton>
-            <IconButton
-              onClick={handleFullScreen}
-              disabled={isAudioPlayable === false}
-            >
-              {Fullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
-            </IconButton>
-            <IconButton
-              onClick={() => {
-                const name = currentSong.title + " ";
-                handleVedioClick(name);
-              }}
-              disabled={isAudioPlayable === false}
-            >
-              <OndemandVideoIcon />
-            </IconButton>
+                )}
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="查看歌词" placement="top">
+              <IconButton
+                aria-label="file button"
+                onClick={handleClickOpen}
+                disabled={isAudioPlayable === false}
+              >
+                <FileIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="全屏" placement="top">
+              <IconButton
+                onClick={handleFullScreen}
+                disabled={isAudioPlayable === false}
+              >
+                {Fullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="MV(将跳转外部网站)" placement="top">
+              <IconButton
+                onClick={() => {
+                  const name = currentSong.title + " ";
+                  handleVedioClick(name);
+                }}
+                disabled={isAudioPlayable === false}
+              >
+                <OndemandVideoIcon />
+              </IconButton>
+            </Tooltip>
             <Slider
               value={volume}
               onChange={handleVolumeChange}
