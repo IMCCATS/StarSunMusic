@@ -143,7 +143,10 @@ const PlayListC = () => {
                 <ButtonGroup>
                   <Button
                     disabled={playList.length === 0 || disabled}
-                    onClick={() => setPlayList([])}
+                    onClick={() => {
+                      setPlayList([]);
+                      localStorage.removeItem("playList");
+                    }}
                     variant="contained"
                   >
                     清空
