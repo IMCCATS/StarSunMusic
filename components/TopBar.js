@@ -16,8 +16,11 @@ import {
   CircularProgress,
   Pagination,
   Backdrop,
+  ButtonGroup,
 } from "@mui/material";
+import { message } from "antd";
 export default function TopBar() {
+  const [messageApi, contextHolder] = message.useMessage();
   const {
     playingpage,
     setplayingpage,
@@ -131,8 +134,23 @@ export default function TopBar() {
     setCurrentPage(value);
   };
 
+  const addSongToLocalPlaylist = (song) => {
+    const playList = JSON.parse(localStorage.getItem("playList")) || [];
+    const existingSongIndex = playList.findIndex(
+      (s) => s.songId === song.songId
+    );
+    if (existingSongIndex === -1) {
+      playList.push(song);
+      localStorage.setItem("playList", JSON.stringify(playList));
+      messageApi.success("添加成功啦~");
+    } else {
+      message.info("歌单已存在本歌曲了哦~");
+    }
+  };
+
   return (
     <main>
+      {contextHolder}
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={disabled}
@@ -198,13 +216,28 @@ export default function TopBar() {
                             <span>{song.artist}</span>
                           </TableCell>
                           <TableCell>
-                            <Button
-                              onClick={() => handleListenClick(song.id)}
-                              variant="contained"
-                              disabled={disabled}
-                            >
-                              <span>听</span>
-                            </Button>
+                            <ButtonGroup>
+                              <Button
+                                onClick={() => handleListenClick(song.id)}
+                                variant="contained"
+                                disabled={disabled}
+                              >
+                                <span>听</span>
+                              </Button>
+                              <Button
+                                onClick={() =>
+                                  addSongToLocalPlaylist({
+                                    title: song.name,
+                                    artist: song.artist,
+                                    songId: song.id,
+                                  })
+                                }
+                                variant="contained"
+                                disabled={disabled}
+                              >
+                                <span>添加到歌单</span>
+                              </Button>
+                            </ButtonGroup>
                           </TableCell>
                         </TableRow>
                       ))}

@@ -20,7 +20,9 @@ import {
   Typography,
   Paper,
   Backdrop,
+  ButtonGroup,
 } from "@mui/material";
+import { message } from "antd";
 const playlists = [
   { name: "短视频各样卡点/热血音乐-燃到极致！", id: "5335051744" },
   { name: "纯爱硬曲 高燃漫剪BGM", id: "8550146295" },
@@ -32,6 +34,7 @@ const playlists = [
 ];
 
 const PlaylistComponent = ({ playlist }) => {
+  const [messageApi, contextHolder] = message.useMessage();
   const {
     playingpage,
     setplayingpage,
@@ -151,8 +154,23 @@ const PlaylistComponent = ({ playlist }) => {
     setCurrentPage(value);
   };
 
+  const addSongToLocalPlaylist = (song) => {
+    const playList = JSON.parse(localStorage.getItem("playList")) || [];
+    const existingSongIndex = playList.findIndex(
+      (s) => s.songId === song.songId
+    );
+    if (existingSongIndex === -1) {
+      playList.push(song);
+      localStorage.setItem("playList", JSON.stringify(playList));
+      messageApi.success("添加成功啦~");
+    } else {
+      message.info("歌单已存在本歌曲了哦~");
+    }
+  };
+
   return (
     <main>
+      {contextHolder}
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={disabled}
@@ -233,13 +251,28 @@ const PlaylistComponent = ({ playlist }) => {
                           <span>{song.artist}</span>
                         </TableCell>
                         <TableCell>
-                          <Button
-                            onClick={() => handleListenClick(song.id)}
-                            variant="contained"
-                            disabled={disabled}
-                          >
-                            <span>听</span>
-                          </Button>
+                          <ButtonGroup>
+                            <Button
+                              onClick={() => handleListenClick(song.id)}
+                              variant="contained"
+                              disabled={disabled}
+                            >
+                              <span>听</span>
+                            </Button>
+                            <Button
+                              onClick={() =>
+                                addSongToLocalPlaylist({
+                                  title: song.name,
+                                  artist: song.artist,
+                                  songId: song.id,
+                                })
+                              }
+                              variant="contained"
+                              disabled={disabled}
+                            >
+                              <span>添加到歌单</span>
+                            </Button>
+                          </ButtonGroup>
                         </TableCell>
                       </TableRow>
                     ))}

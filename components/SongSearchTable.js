@@ -1,6 +1,6 @@
 "use client";
 import * as React from "react";
-import $, { event } from "jquery";
+import $ from "jquery";
 import { CurrentSongContext } from "../src/app/dashboard/page";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -27,11 +27,13 @@ import {
   Autocomplete,
 } from "@mui/material";
 import supabase from "@/app/api/supabase";
+import { message } from "antd";
 
 export default function SongSearchTable({ setcanlistplay }) {
   const { setCurrentSong } = React.useContext(CurrentSongContext);
   const [isLoading, setIsLoading] = React.useState(true);
   const [songs, setSongs] = React.useState([]);
+  const [messageApi, contextHolder] = message.useMessage();
   const [PT, setPT] = React.useState("default");
   const [jzwz, setwz] = React.useState("搜索功能加载中...");
   const [searchTerm, setSearchTerm] = React.useState("");
@@ -124,6 +126,8 @@ export default function SongSearchTable({ setcanlistplay }) {
           }
         );
       }
+    } else {
+      messageApi.error("您没有输入搜索内容哦~");
     }
   };
   const handleChange = (event) => {
@@ -168,21 +172,6 @@ export default function SongSearchTable({ setcanlistplay }) {
       });
     }, 1500);
   };
-
-  const convertJson = function (serverJson) {
-    const data = serverJson;
-    const convertedJson = {
-      id: data.songid,
-      title: data.title,
-      artist: data.author,
-      cover: data.pic,
-      lyric: data.lrc,
-      link: data.url,
-    };
-
-    return convertedJson;
-  };
-
   const CCJSONC = function (serverJson) {
     const data = serverJson;
     const convertedJsons = [];
@@ -204,41 +193,18 @@ export default function SongSearchTable({ setcanlistplay }) {
     return convertedJsons;
   };
 
-  const handleListenClickLinetwo = (songId) => {
-    setdisabled(true);
-    $.ajax({
-      url: "https://api.gumengya.com/Api/Netease",
-      type: "get",
-      dataType: "json",
-      async: false,
-      data: {
-        format: "json",
-        id: `${songId}`,
-      },
-      beforeSend: function () {
-        //请求中执行的代码
-      },
-      complete: function () {
-        //请求完成执行的代码
-      },
-      error: function () {
-        setdisabled(false);
-      },
-      success: function (res) {
-        // 状态码 200 表示请求成功
-        if (res) {
-          //console.log(res.data);
-          const convertedJson = convertJson(res.data);
-          //console.log(convertedJson);
-          setCurrentSong(convertedJson);
-          setdisabled(false);
-          setcanlistplay(false);
-        } else {
-          console.log(res);
-          setdisabled(false);
-        }
-      },
-    });
+  const addSongToLocalPlaylist = (song) => {
+    const playList = JSON.parse(localStorage.getItem("playList")) || [];
+    const existingSongIndex = playList.findIndex(
+      (s) => s.songId === song.songId
+    );
+    if (existingSongIndex === -1) {
+      playList.push(song);
+      localStorage.setItem("playList", JSON.stringify(playList));
+      messageApi.success("添加成功啦~");
+    } else {
+      message.info("歌单已存在本歌曲了哦~");
+    }
   };
 
   const handleListenClickLinethree = (song) => {
@@ -248,6 +214,7 @@ export default function SongSearchTable({ setcanlistplay }) {
 
   const handleSearchKG = () => {
     if (!searchTerm) {
+      messageApi.error("您没有输入搜索内容哦~");
       return;
     }
     setSongs([]);
@@ -294,6 +261,7 @@ export default function SongSearchTable({ setcanlistplay }) {
 
   const handleSearchMG = () => {
     if (!searchTerm) {
+      messageApi.error("您没有输入搜索内容哦~");
       return;
     }
     setSongs([]);
@@ -340,6 +308,7 @@ export default function SongSearchTable({ setcanlistplay }) {
 
   const handleSearchSJK = () => {
     if (!searchTerm) {
+      messageApi.error("您没有输入搜索内容哦~");
       return;
     }
     setSongs([]);
@@ -389,6 +358,7 @@ export default function SongSearchTable({ setcanlistplay }) {
 
   const handleSearch = () => {
     if (!searchTerm) {
+      messageApi.error("您没有输入搜索内容哦~");
       return;
     }
     setSongs([]);
@@ -438,6 +408,7 @@ export default function SongSearchTable({ setcanlistplay }) {
   };
   return (
     <main>
+      {contextHolder}
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={disabled}
@@ -623,16 +594,20 @@ export default function SongSearchTable({ setcanlistplay }) {
                                       variant="contained"
                                       disabled={PT !== "default" || disabled}
                                     >
-                                      <span>线路1·听</span>
+                                      <span>听</span>
                                     </Button>
                                     <Button
                                       onClick={() =>
-                                        handleListenClickLinetwo(song.id)
+                                        addSongToLocalPlaylist({
+                                          title: song.name,
+                                          artist: song.ar[0].name,
+                                          songId: song.id,
+                                        })
                                       }
                                       variant="contained"
                                       disabled={PT !== "default" || disabled}
                                     >
-                                      <span>线路2·听</span>
+                                      <span>添加到歌单</span>
                                     </Button>
                                   </main>
                                 ) : (
