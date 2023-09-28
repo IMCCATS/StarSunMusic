@@ -15,7 +15,7 @@ export default function Advertisement() {
           <span>星阳音乐系统</span>
         </Typography>
         <Typography sx={{ mb: 1.5 }} color="text.secondary">
-          <span>一款由中学生自制的音乐欣赏系统</span>
+          <span>“音韵流传，乐章永恒”</span>
         </Typography>
         <Typography variant="body2">
           <span>版本：1.0.0_202309241529</span>
