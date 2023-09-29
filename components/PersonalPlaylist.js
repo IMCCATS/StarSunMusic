@@ -427,7 +427,7 @@ const PersonalPlaylist = () => {
                   <span>
                     注：个人歌单功能为
                     <ExperimentTwoTone />
-                    实验性功能，且需要登录。
+                    实验性功能，且需要登录后才能分享歌单。
                     <br />
                     当前仅支持部分歌曲添加到歌单播放，开发者正在全力开发啦~
                     <br />
