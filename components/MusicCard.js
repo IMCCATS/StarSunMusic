@@ -177,6 +177,7 @@ const MusicCard = ({
 
   const formatLyrics = () => {
     if (!isAudioPlayable) {
+      document.title = "首页 · 星阳音乐系统";
       return (
         <Typography variant="body1">
           <span>本歌曲暂不支持播放哦~</span>
@@ -185,6 +186,7 @@ const MusicCard = ({
     } else {
       if (lyrics && lyrics.length > 0) {
         // console.log(lyrics);
+        document.title = currentSong.title + " · 星阳音乐系统";
         return (
           <Typography
             key={
@@ -205,6 +207,7 @@ const MusicCard = ({
           </Typography>
         );
       } else {
+        document.title = "首页 · 星阳音乐系统";
         return (
           <Typography variant="body1">
             <span>暂无歌词信息哦，可尝试点击查看完整歌词~</span>
