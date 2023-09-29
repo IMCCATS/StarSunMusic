@@ -1,12 +1,20 @@
 "use client";
 import * as React from "react";
-import { Button, Typography, Container, TextField, Box } from "@mui/material";
+import {
+  Button,
+  Typography,
+  Container,
+  TextField,
+  Box,
+  Card,
+  CardContent,
+} from "@mui/material";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useRouter } from "next/navigation";
-import cookie from "react-cookies";
 
 const LoginPage = () => {
+  const [logined, setlogined] = React.useState(false);
   React.useEffect(() => {
     const script = document.createElement("script");
     script.src = "https://cdn.jijiancode.com/jijian-sdk.min.js";
@@ -49,10 +57,11 @@ const LoginPage = () => {
       setIsLoading(true);
       Jijian.verify({
         appId: "b54246d06f6a68320927641a", //应用appId
-        show: "dialog", // 包括 inner，dialog两种方式
+        show: "inner", // 包括 inner，dialog两种方式
         option: "barcode", // 当 show='inner' 时，此处传元素的 id；当 show='dialog' 时，此值为 null；
         mobile: username, //用户手机
         success: function (mobileidc, token) {
+          setlogined(true);
           localStorage.setItem("userprofile", mobileidc);
           localStorage.setItem("mobiletoken", token);
           setTimeout(function () {
@@ -87,20 +96,41 @@ const LoginPage = () => {
           alt="Logo"
           style={{ marginBottom: "2px", width: "220px", height: "220px" }}
         />
-        <Typography variant="h3" component="h1" gutterBottom>
+        <Typography variant="h4" component="h4" gutterBottom>
           <span>登录·星阳音乐系统</span>
         </Typography>
         {isLoading ? (
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              height: "100%",
-            }}
-          >
-            <CircularProgress />
-            <p style={{ marginLeft: "10px", whiteSpace: "pre" }}>正在登录</p>
+          <div>
+            {logined ? (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: "100%",
+                }}
+              >
+                <CircularProgress />
+                <p style={{ marginLeft: "10px", whiteSpace: "pre" }}>
+                  正在登录
+                </p>
+              </div>
+            ) : (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: "100%",
+                }}
+              >
+                <Card>
+                  <CardContent>
+                    <div id="barcode"></div>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
           </div>
         ) : (
           <div>
