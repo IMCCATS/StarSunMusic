@@ -112,26 +112,30 @@ const PlayListC = () => {
       return;
     }
     if (GedanS && Array.isArray(GedanS)) {
-      const gedan = GedanS[0].songs;
-      if (Array.isArray(gedan) && gedan.length >= 10) {
-        // 遍历数组中的每一首歌
-        for (let i = 0; i < gedan.length; i++) {
-          addSongToLocalPlaylist({
-            title: gedan[i].title,
-            artist: gedan[i].artist,
-            songId: gedan[i].songId,
-          });
+      if (GedanS.length > 0) {
+        const gedan = GedanS[0].songs;
+        if (Array.isArray(gedan) && gedan.length >= 10) {
+          // 遍历数组中的每一首歌
+          for (let i = 0; i < gedan.length; i++) {
+            addSongToLocalPlaylist({
+              title: gedan[i].title,
+              artist: gedan[i].artist,
+              songId: gedan[i].songId,
+            });
+          }
+          setuuid("");
+          setOpenDialog(false);
+          onClose();
+          setcheckisabled(true);
+          setTimeout(() => {
+            messageApi.success("分享的歌单歌曲已经全部添加完成啦~");
+          }, 1000);
+          setTimeout(() => {
+            setcheckisabled(false);
+          }, 300000);
         }
-        setuuid("");
-        setOpenDialog(false);
-        onClose();
-        setcheckisabled(true);
-        setTimeout(() => {
-          messageApi.success("分享的歌单歌曲已经全部添加完成啦~");
-        }, 1000);
-        setTimeout(() => {
-          setcheckisabled(false);
-        }, 300000);
+      } else {
+        messageApi.error("歌单码错误了哦~");
       }
     }
   };
