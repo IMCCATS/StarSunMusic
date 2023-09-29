@@ -386,7 +386,9 @@ const PlayListC = () => {
                     <span>
                       分享成功啦~ 您的歌单ID为：
                       <br />
+                      <br />
                       {gedanidc}
+                      <br />
                       <br />
                       收好它哦！下次打开可能就没有啦~赶快把它分享给好友吧~
                     </span>
