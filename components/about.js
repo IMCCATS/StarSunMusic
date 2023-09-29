@@ -39,7 +39,7 @@ export default function Advertisement() {
             </Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <Typography variant="p">
+            <Typography variant="p" style={{ fontSize: "14px" }}>
               <span>
                 1.0.0_202308180126：全新发布；
                 <br />
@@ -73,7 +73,7 @@ export default function Advertisement() {
                 <br />
                 1.0.0_202309282129：新增个人歌单功能，修复了一些已知问题；
                 <br />
-                1.0.0_202309291438：支持歌单分享，修复了一些已知问题；
+                1.0.0_202309291438：支持歌单分享，适配系统暂停事件，修复了一些已知问题；
               </span>
             </Typography>
           </AccordionDetails>
@@ -88,7 +88,7 @@ export default function Advertisement() {
             </Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <Typography variant="p">
+            <Typography variant="p" style={{ fontSize: "14px" }}>
               <span>开发者：小研同学</span>
               <br />
               <span>运营：内蒙古畅哥计算机科技工作室</span>
@@ -127,7 +127,7 @@ export default function Advertisement() {
             </Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <Typography variant="p">
+            <Typography variant="p" style={{ fontSize: "14px" }}>
               <span>您的所有信息均在本地进行处理。</span>
               <br />
               <span>
