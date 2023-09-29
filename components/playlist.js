@@ -205,9 +205,10 @@ const PlayListC = () => {
           // 状态码 200 表示请求成功
           if (res) {
             const ip = res.ip;
+            const eip = btoa(ip);
             const { data, error } = await supabase
               .from("GedanS")
-              .insert([{ songs: playList, ip: ip }])
+              .insert([{ songs: playList, ip: eip }])
               .select();
             if (error) {
               setOpenDialog(false);
