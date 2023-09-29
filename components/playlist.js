@@ -252,6 +252,7 @@ const PlayListC = () => {
   };
 
   const handleLogin = () => {
+    setdisabled(true);
     const profile = localStorage.getItem("userprofile");
     if (!profile) {
       router.push("/oauth-login");
@@ -261,10 +262,14 @@ const PlayListC = () => {
   };
 
   const handleQuitLogin = () => {
+    setdisabled(true);
     localStorage.removeItem("userprofile");
     localStorage.removeItem("mobiletoken");
-    messageApi.success("退出登录成功");
     setprofile(false);
+    setTimeout(() => {
+      messageApi.success("退出登录成功");
+      setdisabled(false);
+    }, 1000);
   };
 
   return (
@@ -304,7 +309,7 @@ const PlayListC = () => {
         open={disabled}
       >
         <CircularProgress color="inherit" />
-        <span style={{ marginLeft: "15px" }}>正在加载歌曲</span>
+        <span style={{ marginLeft: "15px" }}>正在加载</span>
       </Backdrop>
       <Card style={{ marginTop: "15px" }}>
         <CardContent>
@@ -315,6 +320,7 @@ const PlayListC = () => {
             <Button
               onClick={handleQuitLogin}
               variant="contained"
+              disabled={disabled}
               sx={{
                 height: "56px",
                 marginTop: "10px",
@@ -327,6 +333,7 @@ const PlayListC = () => {
             <Button
               onClick={handleLogin}
               variant="contained"
+              disabled={disabled}
               sx={{
                 height: "56px",
                 marginTop: "10px",
@@ -420,7 +427,7 @@ const PlayListC = () => {
                   <span>
                     注：个人歌单功能为
                     <ExperimentTwoTone />
-                    实验性功能。
+                    实验性功能，且需要登录。
                     <br />
                     当前仅支持部分歌曲添加到歌单播放，开发者正在全力开发啦~
                     <br />
