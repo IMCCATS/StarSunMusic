@@ -84,6 +84,7 @@ export default function BasicCard() {
             currentSong={currentSong}
             setisPlayComplete={setisPlayComplete}
             canlistplay={canlistplay}
+            setcanlistplay={setcanlistplay}
           />
           <PlayListC />
           <SongSearchTable setcanlistplay={setcanlistplay} />

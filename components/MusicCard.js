@@ -21,7 +21,12 @@ import RepeatOneIcon from "@mui/icons-material/RepeatOne";
 import FileIcon from "@mui/icons-material/Article";
 import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
 
-const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
+const MusicCard = ({
+  currentSong,
+  setisPlayComplete,
+  canlistplay,
+  setcanlistplay,
+}) => {
   const [isAudioPlayable, setIsAudioPlayable] = React.useState(true);
   const [isPlaying, setIsPlaying] = React.useState(false);
   const [volume, setVolume] = React.useState(100);
@@ -89,7 +94,7 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
     const updateLyrics = async () => {
       if (currentSong) {
         setIsPlaying(true);
-        const lrcss = await parseLrcString(currentSong.lyric);
+        const lrcss = parseLrcString(currentSong.lyric);
         setLyrics(lrcss);
       } else {
         setIsPlaying(false);
@@ -289,7 +294,14 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
   };
 
   const handleSetReplay = () => {
-    setisReplay(!isReplay); // 切换状态
+    if (isReplay === true) {
+      setisReplay(false);
+      setcanlistplay(true);
+    } else if (isReplay === false) {
+      setisReplay(true);
+      setlistplaying(false);
+      setcanlistplay(false);
+    }
   };
 
   const handleVolumeChange = (event, newValue) => {
