@@ -117,6 +117,29 @@ export default function Advertisement() {
             </Typography>
           </AccordionDetails>
         </Accordion>
+        <Accordion>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel1a-content"
+          >
+            <Typography>
+              <span>账户相关问题</span>
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Typography variant="p">
+              <span>您的所有信息均在本地进行处理。</span>
+              <br />
+              <span>
+                如您想注销账户，直接清除浏览器数据即可，本系统的一切数据将会清空。
+              </span>
+              <br />
+              <span>
+                如您想删除您之前分享过的歌单，请联系public@singtech.top删除。
+              </span>
+            </Typography>
+          </AccordionDetails>
+        </Accordion>
       </CardContent>
     </Card>
   );
