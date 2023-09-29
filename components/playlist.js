@@ -16,11 +16,14 @@ import {
   TextField,
   DialogActions,
 } from "@mui/material";
+import { useRouter } from "next/navigation";
 import { Drawer, List, Empty, message } from "antd";
 import { ExperimentTwoTone } from "@ant-design/icons";
 import supabase from "@/app/api/supabase";
 
 const PlayListC = () => {
+  const router = useRouter();
+  const [profile, setprofile] = React.useState(false);
   const [messageApi, contextHolder] = message.useMessage();
   const [openDialog, setOpenDialog] = React.useState(false);
 
@@ -60,6 +63,10 @@ const PlayListC = () => {
   React.useEffect(() => {
     if (isPlayComplete && playingpage === "LocalGD") {
       handleNextSongClick();
+    }
+    const c = localStorage.getItem("userprofile");
+    if (c) {
+      setprofile(true);
     }
   }, [isPlayComplete]);
 
@@ -206,9 +213,11 @@ const PlayListC = () => {
           if (res) {
             const ip = res.ip;
             const eip = btoa(ip);
+            const mobile = localStorage.getItem("userprofile");
+            const emobile = btoa(mobile);
             const { data, error } = await supabase
               .from("GedanS")
-              .insert([{ songs: playList, ip: eip }])
+              .insert([{ songs: playList, ip: eip, mobile: emobile }])
               .select();
             if (error) {
               setOpenDialog(false);
@@ -240,6 +249,22 @@ const PlayListC = () => {
     newPlayList.splice(index, 1);
     setPlayList(newPlayList);
     localStorage.setItem("playList", JSON.stringify(newPlayList));
+  };
+
+  const handleLogin = () => {
+    const profile = localStorage.getItem("userprofile");
+    if (!profile) {
+      router.push("/oauth-login");
+    } else {
+      messageApi.info("您已经登录了哦~");
+    }
+  };
+
+  const handleQuitLogin = () => {
+    localStorage.removeItem("userprofile");
+    localStorage.removeItem("mobiletoken");
+    messageApi.success("退出登录成功");
+    setprofile(false);
   };
 
   return (
@@ -286,6 +311,31 @@ const PlayListC = () => {
           <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
             <span>操作区</span>
           </Typography>
+          {profile ? (
+            <Button
+              onClick={handleQuitLogin}
+              variant="contained"
+              sx={{
+                height: "56px",
+                marginTop: "10px",
+                marginRight: "10px",
+              }}
+            >
+              <span>退出登录</span>
+            </Button>
+          ) : (
+            <Button
+              onClick={handleLogin}
+              variant="contained"
+              sx={{
+                height: "56px",
+                marginTop: "10px",
+                marginRight: "10px",
+              }}
+            >
+              <span>用户账户登录</span>
+            </Button>
+          )}
           <Button
             onClick={showDrawer}
             variant="contained"
@@ -406,7 +456,8 @@ const PlayListC = () => {
                       disabled ||
                       playList.length === 0 ||
                       playList.length < 10 ||
-                      sharedisabled
+                      sharedisabled ||
+                      !profile
                     }
                   >
                     分享我的歌单
