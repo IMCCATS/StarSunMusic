@@ -21,7 +21,7 @@ import { Drawer, List, Empty, message } from "antd";
 import { ExperimentTwoTone } from "@ant-design/icons";
 import supabase from "@/app/api/supabase";
 
-const PlayListC = () => {
+const PersonalPlaylist = () => {
   const router = useRouter();
   const [profile, setprofile] = React.useState(false);
   const [messageApi, contextHolder] = message.useMessage();
@@ -485,4 +485,4 @@ const PlayListC = () => {
     </>
   );
 };
-export default PlayListC;
+export default PersonalPlaylist;

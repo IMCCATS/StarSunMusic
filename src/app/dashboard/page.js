@@ -13,7 +13,7 @@ import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import JuanZeng from "../../../components/juanzeng";
 import ScrollToTopFab from "../../../components/ScrollToTopFab";
-import PlayListC from "../../../components/playlist";
+import PersonalPlaylist from "../../../components/PersonalPlaylist";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -86,7 +86,7 @@ export default function BasicCard() {
             canlistplay={canlistplay}
             setcanlistplay={setcanlistplay}
           />
-          <PlayListC />
+          <PersonalPlaylist />
           <SongSearchTable setcanlistplay={setcanlistplay} />
           <TopBar />
           <TopBarBS />
