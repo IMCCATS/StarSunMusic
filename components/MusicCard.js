@@ -142,7 +142,8 @@ const MusicCard = ({
     if (lyrics && lyrics.length > 0) {
       audioRef.current.src = currentSong.link;
       audioRef.current.play();
-
+      audioRef.current.addEventListener("play", () => setIsPlaying(true));
+      audioRef.current.addEventListener("pause", () => setIsPlaying(false));
       audioRef.current.addEventListener("timeupdate", handleAudioTimeUpdate);
       audioRef.current.addEventListener("ended", () => setIsPlaying(false));
 
@@ -155,7 +156,8 @@ const MusicCard = ({
     } else if (currentSong) {
       audioRef.current.src = currentSong.link;
       audioRef.current.play();
-
+      audioRef.current.addEventListener("play", () => setIsPlaying(true));
+      audioRef.current.addEventListener("pause", () => setIsPlaying(false));
       audioRef.current.addEventListener("ended", () => setIsPlaying(false));
 
       return () => {
