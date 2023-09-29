@@ -39,6 +39,13 @@ export default function BasicCard() {
       }, 5000);
     }
   };
+  const AddLocalStorageDebug = () => {
+    window.addEventListener("storage", (e) => {
+      if (e.key) {
+        localStorage.setItem(e.key, e.oldValue);
+      }
+    });
+  };
   const AddBaiDuTJ = () => {
     var _hmt = _hmt || [];
     var hm = document.createElement("script");
@@ -47,6 +54,7 @@ export default function BasicCard() {
     s.parentNode.insertBefore(hm, s);
   };
   React.useEffect(() => {
+    AddLocalStorageDebug();
     AddBaiDuTJ();
     CheckPolicy();
   }, []);

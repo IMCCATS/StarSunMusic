@@ -9,13 +9,36 @@ import {
   ButtonGroup,
   CircularProgress,
   Backdrop,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  TextField,
+  DialogActions,
 } from "@mui/material";
-import { Drawer, List, Empty } from "antd";
+import { Drawer, List, Empty, message } from "antd";
+import { ExperimentTwoTone } from "@ant-design/icons";
+import supabase from "@/app/api/supabase";
 
 const PlayListC = () => {
+  const [messageApi, contextHolder] = message.useMessage();
+  const [openDialog, setOpenDialog] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpenDialog(true);
+  };
+
+  const handleClose = () => {
+    setOpenDialog(false);
+  };
   const [open, setOpen] = React.useState(false);
+  const [uuidtext, setuuid] = React.useState("");
   const [playList, setPlayList] = React.useState([]);
   const [disabled, setdisabled] = React.useState(false);
+  const [gedanidshow, setgedanidshow] = React.useState(false);
+  const [sharedisabled, setsharedisabled] = React.useState(false);
+  const [checkisabled, setcheckisabled] = React.useState(false);
+  const [gedanidc, setgedanidc] = React.useState("");
   const {
     playingpage,
     setplayingpage,
@@ -48,6 +71,20 @@ const PlayListC = () => {
     }
   };
 
+  const addSongToLocalPlaylist = (song) => {
+    const playList = JSON.parse(localStorage.getItem("playList")) || [];
+    const existingSongIndex = playList.findIndex(
+      (s) => s.songId === song.songId
+    );
+    if (existingSongIndex === -1) {
+      playList.push(song);
+      localStorage.setItem("playList", JSON.stringify(playList));
+      messageApi.success("添加成功啦~");
+    } else {
+      message.info("歌单已存在本歌曲了哦~");
+    }
+  };
+
   // 显示抽屉的函数
   const showDrawer = () => {
     setOpen(true);
@@ -57,6 +94,46 @@ const PlayListC = () => {
   // 关闭抽屉的函数
   const onClose = () => {
     setOpen(false);
+  };
+  const handlechange = (event) => {
+    setuuid(event.target.value);
+  };
+
+  const handleCheckUUID = async () => {
+    handleClose();
+    let { data: GedanS, error } = await supabase
+      .from("GedanS")
+      .select("*")
+      .eq("gedanid", uuidtext);
+    if (error) {
+      setOpenDialog(false);
+      messageApi.error("获取歌单失败了哦~请检查是否有问题~");
+      setdisabled(false);
+      return;
+    }
+    if (GedanS && Array.isArray(GedanS)) {
+      const gedan = GedanS[0].songs;
+      if (Array.isArray(gedan) && gedan.length >= 10) {
+        // 遍历数组中的每一首歌
+        for (let i = 0; i < gedan.length; i++) {
+          addSongToLocalPlaylist({
+            title: gedan[i].title,
+            artist: gedan[i].artist,
+            songId: gedan[i].songId,
+          });
+        }
+        setuuid("");
+        setOpenDialog(false);
+        onClose();
+        setcheckisabled(true);
+        setTimeout(() => {
+          messageApi.success("分享的歌单歌曲已经全部添加完成啦~");
+        }, 1000);
+        setTimeout(() => {
+          setcheckisabled(false);
+        }, 300000);
+      }
+    }
   };
 
   // 播放歌曲的函数
@@ -100,6 +177,58 @@ const PlayListC = () => {
     }, 1500);
   };
 
+  const handleShare = async () => {
+    if (playList && Array.isArray(playList) && playList.length >= 10) {
+      setdisabled(true);
+      await $.ajax({
+        url: "/api/checkip",
+        type: "get",
+        dataType: "json",
+        async: true,
+        data: {},
+        beforeSend: function () {
+          //请求中执行的代码
+        },
+        complete: function () {
+          //请求完成执行的代码
+        },
+        error: function () {
+          setOpenDialog(false);
+          messageApi.error("分享歌单失败了哦~请检查网络是否有问题~");
+          setdisabled(false);
+        },
+        success: async function (res) {
+          // 状态码 200 表示请求成功
+          if (res) {
+            const ip = res.ip;
+            const { data, error } = await supabase
+              .from("GedanS")
+              .insert([{ songs: playList, ip: ip }])
+              .select();
+            if (error) {
+              setOpenDialog(false);
+              messageApi.error(
+                "分享歌单失败了哦~可能是您的歌单和别人的重复啦，再去添加一些别的歌曲吧~"
+              );
+              setdisabled(false);
+              return;
+            }
+            if (data && Array.isArray(data)) {
+              const UUID = data[0].gedanid;
+              setgedanidc(UUID);
+              setgedanidshow(true);
+              setdisabled(false);
+              setsharedisabled(true);
+              setTimeout(() => {
+                setsharedisabled(false);
+              }, 300000);
+            }
+          }
+        },
+      });
+    }
+  };
+
   // 删除歌曲的函数
   const handleDeleteClick = (index) => {
     const newPlayList = [...playList];
@@ -110,6 +239,36 @@ const PlayListC = () => {
 
   return (
     <>
+      {contextHolder}
+      <Dialog open={openDialog} onClose={handleClose}>
+        <DialogTitle>
+          <span>请输入好友分享给你的歌单码</span>
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            <span>
+              当好友分享歌单后，会获得一个歌单码。请输入这个歌单码来获取这个歌单。获取成功后，分享的歌单中的歌曲将添加到您的歌单中。
+            </span>
+          </DialogContentText>
+          <TextField
+            margin="dense"
+            label="歌单码"
+            type="text"
+            fullWidth
+            variant="standard"
+            value={uuidtext}
+            onChange={handlechange}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>
+            <span>取消</span>
+          </Button>
+          <Button onClick={handleCheckUUID}>
+            <span>添加到歌单</span>
+          </Button>
+        </DialogActions>
+      </Dialog>
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={disabled}
@@ -185,17 +344,74 @@ const PlayListC = () => {
             ) : (
               <Empty description="还没有歌曲哦~" />
             )}
-            <Card style={{ marginTop: "10px" }}>
-              <CardContent>
+            <Card
+              style={{
+                marginTop: "10px",
+              }}
+            >
+              <CardContent
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
                 <Typography
                   variant="body2"
                   gutterBottom
                   style={{ marginTop: "10px" }}
                 >
                   <span>
-                    注：当前个人歌单功能为实验性功能，仅支持部分歌曲添加到歌单播放，开发者正在全力开发啦~
+                    注：个人歌单功能为
+                    <ExperimentTwoTone />
+                    实验性功能。
+                    <br />
+                    当前仅支持部分歌曲添加到歌单播放，开发者正在全力开发啦~
+                    <br />
+                    如果您想分享歌单的话，攒够十首您和您好友喜欢听的歌，就可以分享啦~但是请合理使用哦，有时间限制哒~
                   </span>
                 </Typography>
+                {gedanidshow ? (
+                  <Typography
+                    variant="body2"
+                    gutterBottom
+                    style={{ marginTop: "10px" }}
+                  >
+                    <span>
+                      分享成功啦~ 您的歌单ID为：
+                      <br />
+                      {gedanidc}
+                      <br />
+                      收好它哦！下次打开可能就没有啦~赶快把它分享给好友吧~
+                    </span>
+                  </Typography>
+                ) : (
+                  <></>
+                )}
+                <ButtonGroup style={{ marginTop: "10px" }}>
+                  <Button
+                    onClick={() => {
+                      handleShare();
+                    }}
+                    variant="contained"
+                    disabled={
+                      disabled ||
+                      playList.length === 0 ||
+                      playList.length < 10 ||
+                      sharedisabled
+                    }
+                  >
+                    分享我的歌单
+                  </Button>
+                  <Button
+                    onClick={() => handleClickOpen()}
+                    variant="contained"
+                    disabled={disabled || checkisabled}
+                  >
+                    获取好友的歌单
+                  </Button>
+                </ButtonGroup>
               </CardContent>
             </Card>
           </Drawer>
