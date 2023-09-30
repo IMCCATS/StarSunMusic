@@ -15,15 +15,28 @@ import { useRouter } from "next/navigation";
 
 const LoginPage = () => {
   const [logined, setlogined] = React.useState(false);
+  const CheckScript = () => {
+    const state = localStorage.getItem("userprofile");
+    if (state) {
+      setIsLoading(true);
+      setlogined(true);
+      setTimeout(() => {
+        router.push("/dashboard");
+        return null;
+      }, 1500);
+    } else {
+      const script = document.createElement("script");
+      script.src = "https://cdn.jijiancode.com/jijian-sdk.min.js";
+      script.async = true;
+      document.body.appendChild(script);
+      // 在组件卸载前移除JS文件
+      return () => {
+        document.body.removeChild(script);
+      };
+    }
+  };
   React.useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "https://cdn.jijiancode.com/jijian-sdk.min.js";
-    script.async = true;
-    document.body.appendChild(script);
-    // 在组件卸载前移除JS文件
-    return () => {
-      document.body.removeChild(script);
-    };
+    CheckScript();
   }, []);
   const router = useRouter();
   const [isLoading, setIsLoading] = React.useState(false);
