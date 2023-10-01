@@ -275,7 +275,7 @@ const PersonalPlaylist = () => {
             <span>取消</span>
           </Button>
           <Button onClick={handleCheckUUID}>
-            <span>添加到歌单</span>
+            <span>加歌单</span>
           </Button>
         </DialogActions>
       </Dialog>
@@ -404,7 +404,7 @@ const PersonalPlaylist = () => {
                     <ExperimentTwoTone />
                     实验性功能，且需要登录后才能分享歌单。
                     <br />
-                    当前仅支持部分歌曲添加到歌单播放，开发者正在全力开发啦~
+                    当前仅支持部分歌曲加歌单播放，开发者正在全力开发啦~
                     <br />
                     如果您想分享歌单的话，攒够十首您和您好友喜欢听的歌，就可以分享啦~但是请合理使用哦，有时间限制哒~
                   </span>

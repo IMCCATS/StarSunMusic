@@ -7,6 +7,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import {
   Button,
   TableRow,
+  Grid,
   TableHead,
   TableContainer,
   TableCell,
@@ -368,14 +369,13 @@ export default function SongSearchTable({ setcanlistplay }) {
     setTimeout(() => {
       let timestamp = Date.now();
       $.ajax({
-        url: "https://anywherecors.lcahy.cn/cloudsearch",
+        url: "https://api.gumengya.com/Api/Music",
         type: "get",
         dataType: "json",
         async: false,
         data: {
-          keywords: `${searchTerm}`,
-          timestamp: timestamp,
-          realIP: "116.25.146.177",
+          text: `${searchTerm}`,
+          site: "netease",
         },
         beforeSend: function () {
           //请求中执行的代码
@@ -391,7 +391,8 @@ export default function SongSearchTable({ setcanlistplay }) {
           // 状态码 200 表示请求成功
           if (res) {
             //console.log(res);
-            setSongs(res.result.songs);
+            const datac = CCJSONC(res.data);
+            setSongs(datac);
             setIsLoading(false);
           } else {
             console.log(res);
@@ -589,26 +590,42 @@ export default function SongSearchTable({ setcanlistplay }) {
                               <ButtonGroup>
                                 {PT === "default" ? (
                                   <main>
-                                    <Button
-                                      onClick={() => handleListenClick(song.id)}
-                                      variant="contained"
-                                      disabled={PT !== "default" || disabled}
+                                    <Grid
+                                      container
+                                      direction="column"
+                                      spacing={2}
                                     >
-                                      <span>听</span>
-                                    </Button>
-                                    <Button
-                                      onClick={() =>
-                                        addSongToLocalPlaylist({
-                                          title: song.name,
-                                          artist: song.ar[0].name,
-                                          songId: song.id,
-                                        })
-                                      }
-                                      variant="contained"
-                                      disabled={PT !== "default" || disabled}
-                                    >
-                                      <span>添加到歌单</span>
-                                    </Button>
+                                      <Grid item>
+                                        <Button
+                                          onClick={() =>
+                                            handleListenClick(song.id)
+                                          }
+                                          variant="contained"
+                                          disabled={
+                                            PT !== "default" || disabled
+                                          }
+                                        >
+                                          <span>听歌曲</span>
+                                        </Button>
+                                      </Grid>
+                                      <Grid item>
+                                        <Button
+                                          onClick={() =>
+                                            addSongToLocalPlaylist({
+                                              title: song.name,
+                                              artist: song.ar[0].name,
+                                              songId: song.id,
+                                            })
+                                          }
+                                          variant="contained"
+                                          disabled={
+                                            PT !== "default" || disabled
+                                          }
+                                        >
+                                          <span>加歌单</span>
+                                        </Button>
+                                      </Grid>
+                                    </Grid>
                                   </main>
                                 ) : (
                                   <Button
@@ -618,7 +635,7 @@ export default function SongSearchTable({ setcanlistplay }) {
                                     variant="contained"
                                     disabled={PT === "default" || disabled}
                                   >
-                                    <span>线路3·听</span>
+                                    <span>听歌曲</span>
                                   </Button>
                                 )}
                               </ButtonGroup>

@@ -220,7 +220,7 @@ export default function TopBar() {
                               variant="contained"
                               disabled={disabled}
                             >
-                              <span>听</span>
+                              <span>听歌曲</span>
                             </Button>
                             <Button
                               onClick={() =>
@@ -233,7 +233,7 @@ export default function TopBar() {
                               variant="contained"
                               disabled={disabled}
                             >
-                              <span>添加到歌单</span>
+                              <span>加歌单</span>
                             </Button>
                           </ButtonGroup>
                         </TableCell>
