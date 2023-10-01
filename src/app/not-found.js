@@ -14,6 +14,7 @@ const App = () => {
         height: "100vh",
       }}
     >
+      <link rel="icon" href="./favicon.ico" />
       <Result
         status="404"
         title="404 未找到资源"
