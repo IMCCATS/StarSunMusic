@@ -60,6 +60,10 @@ export default function BasicCard() {
   }, []);
   return (
     <main>
+      <meta
+        http-equiv="Content-Security-Policy"
+        content="upgrade-insecure-requests"
+      />
       <link rel="icon" href="./favicon.ico" />
       <meta name="viewport" content="initial-scale=1, width=device-width" />
       <Snackbar open={open}>
