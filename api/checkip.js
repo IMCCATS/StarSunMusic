@@ -1,4 +1,3 @@
-export const runtime = "edge";
 // 获取用户IP地址
 function getUserIP(req) {
   const ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
