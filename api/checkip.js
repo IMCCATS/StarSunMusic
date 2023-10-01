@@ -12,4 +12,3 @@ async function IPcheck(req, res) {
 
 // 导出API路由处理函数
 export default IPcheck;
-export const runtime = "edge";
