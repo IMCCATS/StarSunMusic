@@ -191,55 +191,30 @@ const PersonalPlaylist = () => {
   const handleShare = async () => {
     if (playList && Array.isArray(playList) && playList.length >= 10) {
       setdisabled(true);
-      await $.ajax({
-        url: "/api/checkip",
-        type: "get",
-        dataType: "json",
-        async: true,
-        data: {},
-        beforeSend: function () {
-          //请求中执行的代码
-        },
-        complete: function () {
-          //请求完成执行的代码
-        },
-        error: function () {
-          setOpenDialog(false);
-          messageApi.error("分享歌单失败了哦~请检查网络是否有问题~");
-          setdisabled(false);
-        },
-        success: async function (res) {
-          // 状态码 200 表示请求成功
-          if (res) {
-            const ip = res.ip;
-            const eip = btoa(ip);
-            const mobile = localStorage.getItem("userprofile");
-            const emobile = btoa(mobile);
-            const { data, error } = await supabase
-              .from("GedanS")
-              .insert([{ songs: playList, ip: eip, mobile: emobile }])
-              .select();
-            if (error) {
-              setOpenDialog(false);
-              messageApi.error(
-                "分享歌单失败了哦~可能是您的歌单和别人的重复啦，再去添加一些别的歌曲吧~"
-              );
-              setdisabled(false);
-              return;
-            }
-            if (data && Array.isArray(data)) {
-              const UUID = data[0].gedanid;
-              setgedanidc(UUID);
-              setgedanidshow(true);
-              setdisabled(false);
-              setsharedisabled(true);
-              setTimeout(() => {
-                setsharedisabled(false);
-              }, 300000);
-            }
-          }
-        },
-      });
+      const mobile = localStorage.getItem("userprofile");
+      const emobile = btoa(mobile);
+      const { data, error } = await supabase
+        .from("GedanS")
+        .upsert({ songs: playList, mobile: emobile })
+        .select();
+      if (error) {
+        setOpenDialog(false);
+        messageApi.error(
+          "分享歌单失败了哦~可能是您的歌单和别人的重复啦，再去添加一些别的歌曲吧~"
+        );
+        setdisabled(false);
+        return;
+      }
+      if (data && Array.isArray(data)) {
+        const UUID = data[0].gedanid;
+        setgedanidc(UUID);
+        setgedanidshow(true);
+        setdisabled(false);
+        setsharedisabled(true);
+        setTimeout(() => {
+          setsharedisabled(false);
+        }, 300000);
+      }
     }
   };
 
