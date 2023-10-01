@@ -111,10 +111,6 @@ export default function Advertisement() {
               <br />
               <span>应用程序可能响应较慢或无响应，烦请耐心等待，多次尝试~</span>
               <br />
-              <span>
-                搜索时，若更改了搜索词但出现的仍是之前的内容，请等待一会重新搜索即可。
-              </span>
-              <br />
               <span>如有侵权，请联系public@singtech.top删除。</span>
             </Typography>
           </AccordionDetails>
