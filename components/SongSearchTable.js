@@ -39,6 +39,8 @@ export default function SongSearchTable({ setcanlistplay }) {
   const [jzwz, setwz] = React.useState("搜索功能加载中...");
   const [searchTerm, setSearchTerm] = React.useState("");
   const [open, setOpen] = React.useState(false);
+  const [searchxh, setsearchxh] = React.useState(1);
+  const [searchTermC, setSearchTermC] = React.useState("");
   const [SearchHistory, SetSearchHistory] = React.useState([]);
   const [searchdesabled, setsearchdesabled] = React.useState(true);
   const addJB = () => {
@@ -87,24 +89,28 @@ export default function SongSearchTable({ setcanlistplay }) {
     setPT("default");
     handleSearch();
     AddHistory(searchTerm);
+    setSearchTermC(searchTerm);
   };
   const close2 = () => {
     setOpen(false);
     setPT("kg");
     handleSearchKG();
     AddHistory(searchTerm);
+    setSearchTermC(searchTerm);
   };
   const close3 = () => {
     setOpen(false);
     setPT("mg");
     handleSearchMG();
     AddHistory(searchTerm);
+    setSearchTermC(searchTerm);
   };
   const close4 = () => {
     setOpen(false);
     setPT("sjk");
     handleSearchSJK();
     AddHistory(searchTerm);
+    setSearchTermC(searchTerm);
   };
   const searchOpen = () => {
     if (searchTerm) {
@@ -173,26 +179,6 @@ export default function SongSearchTable({ setcanlistplay }) {
       });
     }, 1500);
   };
-  const CCJSONC = function (serverJson) {
-    const data = serverJson;
-    const convertedJsons = [];
-
-    for (let i = 0; i < data.length; i++) {
-      const convertedJson = {
-        id: data[i].songid,
-        title: data[i].title,
-        artist: data[i].author,
-        name: data[i].title,
-        ar: [{ name: data[i].author }],
-        cover: data[i].pic,
-        lyric: data[i].lrc,
-        link: data[i].url,
-      };
-      convertedJsons.push(convertedJson);
-    }
-
-    return convertedJsons;
-  };
 
   const addSongToLocalPlaylist = (song) => {
     const playList = JSON.parse(localStorage.getItem("playList")) || [];
@@ -247,7 +233,7 @@ export default function SongSearchTable({ setcanlistplay }) {
           // 状态码 200 表示请求成功
           if (res) {
             //console.log(res);
-            const CCJson = CCJSONC(res.data);
+            const CCJson = ConvertJson(res.data);
             setSongs(CCJson);
             setIsLoading(false);
           } else {
@@ -258,6 +244,26 @@ export default function SongSearchTable({ setcanlistplay }) {
         },
       });
     }, 1500);
+  };
+
+  const ConvertJson = function (serverJson) {
+    const data = serverJson;
+    const convertedJsons = [];
+
+    for (let i = 0; i < data.length; i++) {
+      const convertedJson = {
+        songid: data[i].songid,
+        title: data[i].title,
+        artist: data[i].author,
+        author: data[i].author,
+        cover: data[i].pic,
+        lyric: data[i].lrc,
+        link: data[i].url,
+      };
+      convertedJsons.push(convertedJson);
+    }
+
+    return convertedJsons;
   };
 
   const handleSearchMG = () => {
@@ -294,7 +300,7 @@ export default function SongSearchTable({ setcanlistplay }) {
           // 状态码 200 表示请求成功
           if (res) {
             //console.log(res);
-            const CCJson = CCJSONC(res.data);
+            const CCJson = ConvertJson(res.data);
             setSongs(CCJson);
             setIsLoading(false);
           } else {
@@ -325,7 +331,7 @@ export default function SongSearchTable({ setcanlistplay }) {
         });
       if (data) {
         //console.log(res);
-        const CCJson = CCJSONSJK(data);
+        const CCJson = ConvertJsonSJK(data);
         setSongs(CCJson);
         setIsLoading(false);
       } else {
@@ -335,18 +341,16 @@ export default function SongSearchTable({ setcanlistplay }) {
       }
     }, 1500);
   };
-
-  const CCJSONSJK = function (serverJson) {
+  const ConvertJsonSJK = function (serverJson) {
     const data = serverJson;
     const convertedJsons = [];
 
     for (let i = 0; i < data.length; i++) {
       const convertedJson = {
-        id: data[i].id,
+        songid: data[i].id,
         title: data[i].title,
         artist: data[i].artist,
-        name: data[i].name,
-        ar: [{ name: data[i].artist }],
+        author: data[i].artist,
         cover: data[i].cover,
         lyric: data[i].lyric,
         link: atob(data[i].link),
@@ -367,7 +371,6 @@ export default function SongSearchTable({ setcanlistplay }) {
     setwz("正在搜索中哦~\n搜索可能较慢，请耐心等待哦~");
     console.log("搜索关键字:", searchTerm);
     setTimeout(() => {
-      let timestamp = Date.now();
       $.ajax({
         url: "https://api.gumengya.com/Api/Music",
         type: "get",
@@ -391,7 +394,7 @@ export default function SongSearchTable({ setcanlistplay }) {
           // 状态码 200 表示请求成功
           if (res) {
             //console.log(res);
-            const datac = CCJSONC(res.data);
+            const datac = ConvertJson(res.data);
             setSongs(datac);
             setIsLoading(false);
           } else {
@@ -407,6 +410,155 @@ export default function SongSearchTable({ setcanlistplay }) {
     localStorage.removeItem("SearchHistory");
     SetSearchHistory([]);
   };
+
+  const loadmoresong = () => {
+    setdisabled(true);
+    if (PT === "default") {
+      if (!searchTermC) {
+        messageApi.error("您没有输入搜索内容哦~");
+        return;
+      }
+      console.log("继续搜索关键字:", searchTermC);
+      setTimeout(() => {
+        $.ajax({
+          url: "https://api.gumengya.com/Api/Music",
+          type: "get",
+          dataType: "json",
+          async: false,
+          data: {
+            text: `${searchTermC}`,
+            page: `${searchxh + 1}`,
+            site: "netease",
+          },
+          beforeSend: function () {
+            //请求中执行的代码
+          },
+          complete: function () {
+            //请求完成执行的代码
+          },
+          error: function () {
+            setdisabled(false);
+          },
+          success: function (res) {
+            // 状态码 200 表示请求成功
+            if (res) {
+              //console.log(res);
+              if (res.data) {
+                const newsongArray = res.data;
+                if (Array.isArray(newsongArray) && newsongArray.length > 0) {
+                  const newsongArrays = ConvertJson(newsongArray);
+                  setSongs((prevSongs) => prevSongs.concat(newsongArrays));
+                  const newxh = searchxh + 1;
+                  setsearchxh(newxh);
+                }
+              }
+              setdisabled(false);
+            } else {
+              console.log(res);
+              setdisabled(false);
+            }
+          },
+        });
+      }, 1500);
+    }
+    if (PT === "kg") {
+      if (!searchTermC) {
+        messageApi.error("您没有输入搜索内容哦~");
+        return;
+      }
+      console.log("继续搜索关键字:", searchTermC);
+      setTimeout(() => {
+        $.ajax({
+          url: "https://api.gumengya.com/Api/Music",
+          type: "get",
+          dataType: "json",
+          async: false,
+          data: {
+            text: `${searchTermC}`,
+            page: `${searchxh + 1}`,
+            site: "kugou",
+          },
+          beforeSend: function () {
+            //请求中执行的代码
+          },
+          complete: function () {
+            //请求完成执行的代码
+          },
+          error: function () {
+            setdisabled(false);
+          },
+          success: function (res) {
+            // 状态码 200 表示请求成功
+            if (res) {
+              //console.log(res);
+              if (res.data) {
+                const newsongArray = res.data;
+                if (Array.isArray(newsongArray) && newsongArray.length > 0) {
+                  const newsongArrays = ConvertJson(newsongArray);
+                  setSongs((prevSongs) => prevSongs.concat(newsongArrays));
+                  const newxh = searchxh + 1;
+                  setsearchxh(newxh);
+                }
+              }
+              setdisabled(false);
+            } else {
+              console.log(res);
+              setdisabled(false);
+            }
+          },
+        });
+      }, 1500);
+    }
+    if (PT === "mg") {
+      if (!searchTermC) {
+        messageApi.error("您没有输入搜索内容哦~");
+        return;
+      }
+      console.log("继续搜索关键字:", searchTermC);
+      setTimeout(() => {
+        $.ajax({
+          url: "https://api.gumengya.com/Api/Music",
+          type: "get",
+          dataType: "json",
+          async: false,
+          data: {
+            text: `${searchTermC}`,
+            page: `${searchxh + 1}`,
+            site: "migu",
+          },
+          beforeSend: function () {
+            //请求中执行的代码
+          },
+          complete: function () {
+            //请求完成执行的代码
+          },
+          error: function () {
+            setdisabled(false);
+          },
+          success: function (res) {
+            // 状态码 200 表示请求成功
+            if (res) {
+              //console.log(res);
+              if (res.data) {
+                const newsongArray = res.data;
+                if (Array.isArray(newsongArray) && newsongArray.length > 0) {
+                  const newsongArrays = ConvertJson(newsongArray);
+                  setSongs((prevSongs) => prevSongs.concat(newsongArrays));
+                  const newxh = searchxh + 1;
+                  setsearchxh(newxh);
+                }
+              }
+              setdisabled(false);
+            } else {
+              console.log(res);
+              setdisabled(false);
+            }
+          },
+        });
+      }, 1500);
+    }
+  };
+
   return (
     <main>
       {contextHolder}
@@ -579,12 +731,12 @@ export default function SongSearchTable({ setcanlistplay }) {
                       </TableHead>
                       <TableBody>
                         {songs.map((song) => (
-                          <TableRow key={song.id}>
+                          <TableRow key={song.songid}>
                             <TableCell>
-                              <span>{song.name}</span>
+                              <span>{song.title}</span>
                             </TableCell>
                             <TableCell>
-                              <span>{song.ar[0].name}</span>
+                              <span>{song.author}</span>
                             </TableCell>
                             <TableCell>
                               <ButtonGroup>
@@ -598,7 +750,7 @@ export default function SongSearchTable({ setcanlistplay }) {
                                       <Grid item>
                                         <Button
                                           onClick={() =>
-                                            handleListenClick(song.id)
+                                            handleListenClick(song.songid)
                                           }
                                           variant="contained"
                                           disabled={
@@ -612,9 +764,9 @@ export default function SongSearchTable({ setcanlistplay }) {
                                         <Button
                                           onClick={() =>
                                             addSongToLocalPlaylist({
-                                              title: song.name,
-                                              artist: song.ar[0].name,
-                                              songId: song.id,
+                                              title: song.title,
+                                              artist: song.author,
+                                              songId: song.songid,
                                             })
                                           }
                                           variant="contained"
@@ -642,6 +794,12 @@ export default function SongSearchTable({ setcanlistplay }) {
                             </TableCell>
                           </TableRow>
                         ))}
+                        <Button
+                          disabled={disabled || PT === "sjk"}
+                          onClick={loadmoresong}
+                        >
+                          <span>加载更多歌曲</span>
+                        </Button>
                       </TableBody>
                     </Table>
                   )}

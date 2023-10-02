@@ -21,12 +21,22 @@ const UpdateDialog = () => {
   // 检查版本信息并显示更新提示
   useEffect(() => {
     const localVersion = getLocalVersion();
-    const currentVersion = appversion; // 这里替换为你的当前版本号
-    if (!localVersion || localVersion < currentVersion) {
+    const currentVersion = appversion; // 当前版本号
+
+    // 将版本号字符串分割为主版本号和次版本号
+    const localVersionParts = localVersion ? localVersion.split("_") : [0, 0];
+    const currentVersionParts = currentVersion.split("_");
+
+    // 分别比较主版本号和次版本号
+    if (
+      localVersionParts[0] < currentVersionParts[0] ||
+      (localVersionParts[0] === currentVersionParts[0] &&
+        localVersionParts[1] < currentVersionParts[1])
+    ) {
       setOpen(true);
       setNewVersion(currentVersion);
-      setUpdateTime(appupdatetime); // 这里替换为你的更新时间
-      setUpdateContent(appupdatecontent); // 这里替换为你的更新内容
+      setUpdateTime(appupdatetime); // 更新时间
+      setUpdateContent(appupdatecontent); // 更新内容
     }
   }, []);
 

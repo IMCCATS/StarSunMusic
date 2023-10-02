@@ -25,12 +25,7 @@ import RepeatOneIcon from "@mui/icons-material/RepeatOne";
 import FileIcon from "@mui/icons-material/Article";
 import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
 
-const MusicCard = ({
-  currentSong,
-  setisPlayComplete,
-  canlistplay,
-  setcanlistplay,
-}) => {
+const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
   const [isAudioPlayable, setIsAudioPlayable] = React.useState(true);
   const [isPlaying, setIsPlaying] = React.useState(false);
   const [volume, setVolume] = React.useState(100);

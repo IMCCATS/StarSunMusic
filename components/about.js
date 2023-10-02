@@ -78,6 +78,9 @@ export default function Advertisement() {
                 <br />
                 1.0.0_202309301020：支持部分歌曲查看翻译歌词，修复了一些已知问题；
                 <br />
+                1.0.0_202310020850：修复了播放器单曲循环与列表播放逻辑错误导致卡顿的问题，
+                修复了一些已知问题；
+                <br />
                 {appversion}：{appupdatecontent}
               </span>
             </Typography>
