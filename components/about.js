@@ -1,7 +1,12 @@
 "use client";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import { Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
+import {
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Tooltip,
+} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import { appupdatecontent, appversion } from "@/app/api/appconfig";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -22,6 +27,26 @@ export default function Advertisement() {
           <span>版本：{appversion}</span>
           <br />
           <span>由 畅哥科技&trade; 运营。</span>
+          <br />
+          <Tooltip
+            placement="right"
+            title="点击将前往外部查询网站：由IP查询(ipw.cn)提供技术支持"
+          >
+            <a
+              onClick={() => {
+                window.open(
+                  "https://ipw.cn/ipv6webcheck/?site=music.lcahy.cn",
+                  "_blank",
+                  "noopener,noreferrer"
+                );
+              }}
+            >
+              <img
+                style={{ display: "inline-block", verticalAlign: "middle" }}
+                src="/IPv6.svg"
+              />
+            </a>
+          </Tooltip>
           <br />
           <span>音乐版权归其版权方所有。</span>
           <br />
