@@ -35,6 +35,7 @@ const MusicCard = ({
   const [isPlaying, setIsPlaying] = React.useState(false);
   const [volume, setVolume] = React.useState(100);
   const [value, setValue] = React.useState(0);
+  const [islistplayable, setlistplayable] = React.useState(true);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -366,11 +367,11 @@ const MusicCard = ({
   const handleSetReplay = () => {
     if (isReplay === true) {
       setisReplay(false);
-      setcanlistplay(true);
+      setlistplayable(true);
     } else if (isReplay === false) {
       setisReplay(true);
       setlistplaying(false);
-      setcanlistplay(false);
+      setlistplayable(false);
     }
   };
 
@@ -606,7 +607,11 @@ const MusicCard = ({
                 onClick={() => {
                   setlistplaying(!listplaying);
                 }}
-                disabled={isAudioPlayable === false || canlistplay === false}
+                disabled={
+                  islistplayable === false ||
+                  isAudioPlayable === false ||
+                  canlistplay === false
+                }
               >
                 {canlistplay ? (
                   listplaying ? (

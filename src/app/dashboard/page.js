@@ -14,6 +14,7 @@ import MuiAlert from "@mui/material/Alert";
 import JuanZeng from "../../../components/juanzeng";
 import ScrollToTopFab from "../../../components/ScrollToTopFab";
 import PersonalPlaylist from "../../../components/PersonalPlaylist";
+import UpdateDialog from "../../../components/updatedialog";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -73,6 +74,7 @@ export default function BasicCard() {
       </Snackbar>
       <AppBar />
       <Advertisement />
+      <UpdateDialog />
       <CurrentSongContext.Provider
         value={{
           isPlayComplete,

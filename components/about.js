@@ -3,6 +3,7 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import { Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
 import Typography from "@mui/material/Typography";
+import { appupdatecontent, appversion } from "@/app/api/appconfig";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 export default function Advertisement() {
   return (
@@ -18,7 +19,7 @@ export default function Advertisement() {
           <span>“音韵流传，乐章永恒”</span>
         </Typography>
         <Typography variant="body2">
-          <span>版本：1.0.0_202309301020</span>
+          <span>版本：{appversion}</span>
           <br />
           <span>由 畅哥科技&trade; 运营。</span>
           <br />
@@ -76,6 +77,8 @@ export default function Advertisement() {
                 1.0.0_202309291438：支持歌单分享，适配系统暂停事件，修复了一些已知问题；
                 <br />
                 1.0.0_202309301020：支持部分歌曲查看翻译歌词，修复了一些已知问题；
+                <br />
+                {appversion}：{appupdatecontent}
               </span>
             </Typography>
           </AccordionDetails>
