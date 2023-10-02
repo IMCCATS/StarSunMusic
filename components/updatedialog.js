@@ -47,7 +47,7 @@ const UpdateDialog = () => {
         </DialogContent>
         <DialogActions>
           <Button autoFocus onClick={handleClose}>
-            我知道啦~
+            <span>我知道啦~</span>
           </Button>
         </DialogActions>
       </Dialog>
