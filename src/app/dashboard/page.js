@@ -15,6 +15,14 @@ import JuanZeng from "../../../components/juanzeng";
 import ScrollToTopFab from "../../../components/ScrollToTopFab";
 import PersonalPlaylist from "../../../components/PersonalPlaylist";
 import UpdateDialog from "../../../components/updatedialog";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  Button,
+  DialogActions,
+} from "@mui/material";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -44,6 +52,7 @@ export default function BasicCard() {
     window.addEventListener("storage", (e) => {
       if (e.key) {
         localStorage.setItem(e.key, e.oldValue);
+        handleClickOpen();
       }
     });
   };
@@ -59,8 +68,39 @@ export default function BasicCard() {
     AddBaiDuTJ();
     CheckPolicy();
   }, []);
+  const [openDialog, setOpenDialog] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpenDialog(true);
+  };
+
+  const handleClose = () => {
+    setOpenDialog(false);
+  };
   return (
     <main>
+      <Dialog open={openDialog} onClose={handleClose}>
+        <DialogTitle>
+          <span>🚨不要修改程序的本地数据！！！</span>
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            <span>
+              如果您修改了程序的本地数据，轻则可能会导致程序无法正常运作，重则可能会导致程序出现不可意料的结果！！！
+            </span>
+            <br />
+            <br />
+            <span>
+              保持程序本地数据的合法性会让大家都有一个好的《星阳音乐系统》使用哦~
+            </span>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>
+            <span>我知道了，下次不会啦~</span>
+          </Button>
+        </DialogActions>
+      </Dialog>
       <meta
         http-equiv="Content-Security-Policy"
         content="upgrade-insecure-requests"
