@@ -147,6 +147,50 @@ const PersonalPlaylist = () => {
     }
   };
 
+  const handleGetMySongs = async () => {
+    setdisabled(true);
+    const mobile = localStorage.getItem("userprofile");
+    const emobile = btoa(mobile);
+    let { data: GedanS, error } = await supabase
+      .from("GedanS")
+      .select("*")
+      .eq("mobile", emobile);
+    if (error) {
+      setOpenDialog(false);
+      messageApi.error("获取歌单失败了哦~请检查是否有问题~");
+      setdisabled(false);
+      return;
+    }
+    if (GedanS && Array.isArray(GedanS)) {
+      if (GedanS.length > 0) {
+        const gedan = GedanS[0].songs;
+        if (Array.isArray(gedan) && gedan.length >= 10) {
+          // 遍历数组中的每一首歌
+          for (let i = 0; i < gedan.length; i++) {
+            addSongToLocalPlaylist({
+              title: gedan[i].title,
+              artist: gedan[i].artist,
+              songId: gedan[i].songId,
+            });
+          }
+          setuuid("");
+          setOpenDialog(false);
+          onClose();
+          setcheckisabled(true);
+          setdisabled(false);
+          setTimeout(() => {
+            messageApi.success("您分享的歌曲已经全部添加完成啦~");
+          }, 1000);
+          setTimeout(() => {
+            setcheckisabled(false);
+          }, 300000);
+        }
+      } else {
+        messageApi.error("系统发生错误了哦，快试试重新获取一下吧~");
+      }
+    }
+  };
+
   // 播放歌曲的函数
   const handleListenClick = (songId) => {
     setdisabled(true);
@@ -443,6 +487,13 @@ const PersonalPlaylist = () => {
                     }
                   >
                     分享我的歌单
+                  </Button>
+                  <Button
+                    onClick={() => handleGetMySongs()}
+                    variant="contained"
+                    disabled={disabled || checkisabled}
+                  >
+                    获取我的歌单
                   </Button>
                   <Button
                     onClick={() => handleClickOpen()}

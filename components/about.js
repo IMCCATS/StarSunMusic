@@ -30,7 +30,7 @@ export default function Advertisement() {
           <br />
           <Tooltip
             placement="right"
-            title="点击将前往外部查询网站：由IP查询(ipw.cn)提供技术支持"
+            title="点击将前往外部查询网站：IP查询(ipw.cn)。联网备案号：粤公网安备 44030602005948号 | 联网ICP备案号：赣ICP备19001536号"
           >
             <a
               onClick={() => {
@@ -105,6 +105,8 @@ export default function Advertisement() {
                 <br />
                 1.0.0_202310020850：修复了播放器单曲循环与列表播放逻辑错误导致卡顿的问题，
                 修复了一些已知问题；
+                <br />
+                1.0.0_202310021218：搜索歌曲支持加载更多，修复了一些已知问题；
                 <br />
                 {appversion}：{appupdatecontent}
               </span>

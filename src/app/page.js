@@ -10,6 +10,7 @@ import {
   AppBar,
   Toolbar,
   IconButton,
+  Tooltip,
 } from "@mui/material";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -147,6 +148,26 @@ const HomePage = () => {
           <span>开发者：小研同学</span>
           <br />
           <span>运营：内蒙古畅哥计算机科技工作室</span>
+          <br />
+          <Tooltip
+            placement="bottom"
+            title="点击将前往外部查询网站：IP查询(ipw.cn)。联网备案号：粤公网安备 44030602005948号 | 联网ICP备案号：赣ICP备19001536号"
+          >
+            <a
+              onClick={() => {
+                window.open(
+                  "https://ipw.cn/ipv6webcheck/?site=music.lcahy.cn",
+                  "_blank",
+                  "noopener,noreferrer"
+                );
+              }}
+            >
+              <img
+                style={{ display: "inline-block", verticalAlign: "middle" }}
+                src="/IPv6.svg"
+              />
+            </a>
+          </Tooltip>
           <br />
           <span>本系统仅用作个人音乐欣赏、学习交流，不可用于商业用途。</span>
           <br />
