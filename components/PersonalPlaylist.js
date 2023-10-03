@@ -186,6 +186,7 @@ const PersonalPlaylist = () => {
           }, 300000);
         }
       } else {
+        setdisabled(false);
         messageApi.error("系统发生错误了哦，快试试重新获取一下吧~");
       }
     }
@@ -491,7 +492,7 @@ const PersonalPlaylist = () => {
                   <Button
                     onClick={() => handleGetMySongs()}
                     variant="contained"
-                    disabled={disabled || checkisabled}
+                    disabled={disabled || !profile || checkisabled}
                   >
                     获取我的歌单
                   </Button>
