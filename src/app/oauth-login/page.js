@@ -12,8 +12,10 @@ import {
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useRouter } from "next/navigation";
+import { message } from "antd";
 
 const LoginPage = () => {
+  const [messageApi, contextHolder] = message.useMessage();
   const [logined, setlogined] = React.useState(false);
   const CheckScript = () => {
     const state = localStorage.getItem("userprofile");
@@ -62,7 +64,7 @@ const LoginPage = () => {
         return true;
       }
     }
-    MessagePlugin.error("手机号无效！");
+    messageApi.error("手机号未输入或格式无效！");
     setIsLoading(false);
   };
   const handleClickOpen = async () => {
@@ -94,6 +96,7 @@ const LoginPage = () => {
 
   return (
     <Container>
+      {contextHolder}
       <meta name="viewport" content="initial-scale=1, width=device-width" />
       <div
         style={{

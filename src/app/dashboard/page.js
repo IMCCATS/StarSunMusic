@@ -52,20 +52,12 @@ export default function BasicCard() {
     window.addEventListener("storage", (e) => {
       if (e.key) {
         localStorage.setItem(e.key, e.oldValue);
-        handleClickOpen();
+        // handleClickOpen();
       }
     });
   };
-  const AddBaiDuTJ = () => {
-    var _hmt = _hmt || [];
-    var hm = document.createElement("script");
-    hm.src = "https://hm.baidu.com/hm.js?68cb9d0aa571714fd6cb36083949f31e";
-    var s = document.getElementsByTagName("script")[0];
-    s.parentNode.insertBefore(hm, s);
-  };
   React.useEffect(() => {
     AddLocalStorageDebug();
-    AddBaiDuTJ();
     CheckPolicy();
   }, []);
   const [openDialog, setOpenDialog] = React.useState(false);
@@ -97,7 +89,7 @@ export default function BasicCard() {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>
-            <span>我知道了，下次不会啦~</span>
+            <span>我知道啦~</span>
           </Button>
         </DialogActions>
       </Dialog>
