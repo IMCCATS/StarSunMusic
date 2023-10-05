@@ -51,6 +51,11 @@ export default function Advertisement() {
           <span>音乐版权归其版权方所有。</span>
           <br />
           <span>
+            特别致谢（无先后顺序）：本系统所有的音乐的版权方及其提供平台；故梦API；Ushio
+            API；保罗 API以及其他为本工具提供技术支持的平台。
+          </span>
+          <br />
+          <span>
             免责声明：本网站内容来源于网络，仅提供检索服务。本网站不存储任何内容，也不承担任何责任。如果您需要使用本网站提供的检索服务，您应当自行负责获取相关内容的合法性和准确性。此外，本网站保留随时修改本声明的权利。如果您继续使用本网站，即表示您已经接受了本声明的所有修改。具体请在首页
             -《用户协议与隐私政策》查看。
           </span>
@@ -131,11 +136,6 @@ export default function Advertisement() {
               <span>
                 &copy; 2020 - {new Date().getFullYear()}{" "}
                 内蒙古畅哥计算机科技工作室 版权所有.
-              </span>
-              <br />
-              <span>
-                特别致谢（无先后顺序）：故梦API；Ushio API；保罗
-                API以及其他为本工具提供技术支持的平台。
               </span>
               <br />
               <span>
