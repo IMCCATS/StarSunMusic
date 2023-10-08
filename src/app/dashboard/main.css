@@ -1,9 +1,3 @@
-@font-face {
-  font-family: "SourceHanSans";
-  src: url("../../../font/SourceHanSans-Bold-2.otf") format("truetype");
-  font-display: swap;
-}
-
 * {
-  font-family: "SourceHanSans", sans-serif;
+  font-family: "Noto Sans SC", sans-serif;
 }

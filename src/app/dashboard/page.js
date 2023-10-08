@@ -71,6 +71,10 @@ export default function BasicCard() {
   };
   return (
     <main>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Noto+Sans+SC:100,300,400,500,700,900"
+      />
       <Dialog open={openDialog} onClose={handleClose}>
         <DialogTitle>
           <span>🚨不要修改程序的本地数据！！！</span>
