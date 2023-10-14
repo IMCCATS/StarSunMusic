@@ -10,6 +10,16 @@ import {
 import Typography from "@mui/material/Typography";
 import { appupdatecontent, appversion } from "@/app/api/appconfig";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { Col, Row, QRCode, Statistic } from "antd";
+import CountUp from "react-countup";
+import dayjs from "dayjs";
+
+const calculateDays = (dateString) => {
+  const today = dayjs(); // 获取当前日期时间
+  const targetDate = dayjs(dateString, { format: "YYYY-MM-DD" }); // 你的目标日期
+  return (today - targetDate) / (1000 * 60 * 60 * 24); // 计算相差的天数
+};
+const formatter = (value) => <CountUp end={value} separator="," />;
 export default function Advertisement() {
   return (
     <Card sx={{ minWidth: 275 }} style={{ marginTop: "15px" }}>
@@ -168,6 +178,56 @@ export default function Advertisement() {
               <span>
                 如您想删除您之前分享过的歌单，请联系public@singtech.top删除。
               </span>
+            </Typography>
+          </AccordionDetails>
+        </Accordion>
+        <Accordion>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel1a-content"
+          >
+            <Typography>
+              <span>手机扫码访问</span>
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Typography variant="p" style={{ fontSize: "14px" }}>
+              <span>使用手机扫描下面的二维码进入星阳音乐系统~</span>
+              <QRCode
+                errorLevel="H"
+                value="https://music.lcahy.cn/"
+                icon="/logo.png"
+              />
+            </Typography>
+          </AccordionDetails>
+        </Accordion>
+        <Accordion>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel1a-content"
+          >
+            <Typography>
+              <span>网站数据统计</span>
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Typography variant="p" style={{ fontSize: "14px" }}>
+              <Row gutter={16}>
+                <Col span={12}>
+                  <Statistic
+                    title="项目启动时长（天）"
+                    value={calculateDays("2023-08-17")}
+                    formatter={formatter}
+                  />
+                </Col>
+                <Col span={12}>
+                  <Statistic
+                    title="运行时长（天）"
+                    value={calculateDays("2023-08-18")}
+                    formatter={formatter}
+                  />
+                </Col>
+              </Row>
             </Typography>
           </AccordionDetails>
         </Accordion>
