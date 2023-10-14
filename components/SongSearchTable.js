@@ -167,12 +167,10 @@ export default function SongSearchTable({ setcanlistplay }) {
         success: function (res) {
           // 状态码 200 表示请求成功
           if (res) {
-            //console.log(res);
             setCurrentSong(res);
             setdisabled(false);
             setcanlistplay(false);
           } else {
-            console.log(res);
             setdisabled(false);
           }
         },
@@ -207,7 +205,6 @@ export default function SongSearchTable({ setcanlistplay }) {
     setSongs([]);
     setIsLoading(true);
     setwz("正在搜索中哦~\n搜索可能较慢，请耐心等待哦~");
-    console.log("搜索关键字:", searchTerm);
     setTimeout(() => {
       $.ajax({
         url: "https://api.gumengya.com/Api/Music",
@@ -232,12 +229,10 @@ export default function SongSearchTable({ setcanlistplay }) {
         success: function (res) {
           // 状态码 200 表示请求成功
           if (res) {
-            //console.log(res);
             const CCJson = ConvertJson(res.data);
             setSongs(CCJson);
             setIsLoading(false);
           } else {
-            console.log(res);
             setSongs([]);
             setIsLoading(false);
           }
@@ -274,7 +269,6 @@ export default function SongSearchTable({ setcanlistplay }) {
     setSongs([]);
     setIsLoading(true);
     setwz("正在搜索中哦~\n搜索可能较慢，请耐心等待哦~");
-    console.log("搜索关键字:", searchTerm);
     setTimeout(() => {
       $.ajax({
         url: "https://api.gumengya.com/Api/Music",
@@ -299,12 +293,10 @@ export default function SongSearchTable({ setcanlistplay }) {
         success: function (res) {
           // 状态码 200 表示请求成功
           if (res) {
-            //console.log(res);
             const CCJson = ConvertJson(res.data);
             setSongs(CCJson);
             setIsLoading(false);
           } else {
-            console.log(res);
             setSongs([]);
             setIsLoading(false);
           }
@@ -321,7 +313,6 @@ export default function SongSearchTable({ setcanlistplay }) {
     setSongs([]);
     setIsLoading(true);
     setwz("正在搜索中哦~\n搜索可能较慢，请耐心等待哦~");
-    console.log("搜索关键字:", searchTerm);
     setTimeout(async () => {
       const { data, error } = await supabase
         .from("MusicSearch")
@@ -330,12 +321,10 @@ export default function SongSearchTable({ setcanlistplay }) {
           type: "websearch",
         });
       if (data) {
-        //console.log(res);
         const CCJson = ConvertJsonSJK(data);
         setSongs(CCJson);
         setIsLoading(false);
       } else {
-        console.log(res);
         setSongs([]);
         setIsLoading(false);
       }
@@ -369,7 +358,6 @@ export default function SongSearchTable({ setcanlistplay }) {
     setSongs([]);
     setIsLoading(true);
     setwz("正在搜索中哦~\n搜索可能较慢，请耐心等待哦~");
-    console.log("搜索关键字:", searchTerm);
     setTimeout(() => {
       $.ajax({
         url: "https://api.gumengya.com/Api/Music",
@@ -393,12 +381,10 @@ export default function SongSearchTable({ setcanlistplay }) {
         success: function (res) {
           // 状态码 200 表示请求成功
           if (res) {
-            //console.log(res);
             const datac = ConvertJson(res.data);
             setSongs(datac);
             setIsLoading(false);
           } else {
-            console.log(res);
             setSongs([]);
             setIsLoading(false);
           }
@@ -418,7 +404,6 @@ export default function SongSearchTable({ setcanlistplay }) {
         messageApi.error("您没有输入搜索内容哦~");
         return;
       }
-      console.log("继续搜索关键字:", searchTermC);
       setTimeout(() => {
         $.ajax({
           url: "https://api.gumengya.com/Api/Music",
@@ -442,7 +427,6 @@ export default function SongSearchTable({ setcanlistplay }) {
           success: function (res) {
             // 状态码 200 表示请求成功
             if (res) {
-              //console.log(res);
               if (res.data) {
                 const newsongArray = res.data;
                 if (Array.isArray(newsongArray) && newsongArray.length > 0) {
@@ -454,7 +438,6 @@ export default function SongSearchTable({ setcanlistplay }) {
               }
               setdisabled(false);
             } else {
-              console.log(res);
               setdisabled(false);
             }
           },
@@ -466,7 +449,6 @@ export default function SongSearchTable({ setcanlistplay }) {
         messageApi.error("您没有输入搜索内容哦~");
         return;
       }
-      console.log("继续搜索关键字:", searchTermC);
       setTimeout(() => {
         $.ajax({
           url: "https://api.gumengya.com/Api/Music",
@@ -490,7 +472,6 @@ export default function SongSearchTable({ setcanlistplay }) {
           success: function (res) {
             // 状态码 200 表示请求成功
             if (res) {
-              //console.log(res);
               if (res.data) {
                 const newsongArray = res.data;
                 if (Array.isArray(newsongArray) && newsongArray.length > 0) {
@@ -502,7 +483,6 @@ export default function SongSearchTable({ setcanlistplay }) {
               }
               setdisabled(false);
             } else {
-              console.log(res);
               setdisabled(false);
             }
           },
@@ -514,7 +494,6 @@ export default function SongSearchTable({ setcanlistplay }) {
         messageApi.error("您没有输入搜索内容哦~");
         return;
       }
-      console.log("继续搜索关键字:", searchTermC);
       setTimeout(() => {
         $.ajax({
           url: "https://api.gumengya.com/Api/Music",
@@ -538,7 +517,6 @@ export default function SongSearchTable({ setcanlistplay }) {
           success: function (res) {
             // 状态码 200 表示请求成功
             if (res) {
-              //console.log(res);
               if (res.data) {
                 const newsongArray = res.data;
                 if (Array.isArray(newsongArray) && newsongArray.length > 0) {
@@ -550,7 +528,6 @@ export default function SongSearchTable({ setcanlistplay }) {
               }
               setdisabled(false);
             } else {
-              console.log(res);
               setdisabled(false);
             }
           },

@@ -246,7 +246,6 @@ const PersonalPlaylist = () => {
         success: function (res) {
           // 状态码 200 表示请求成功
           if (res) {
-            //console.log(res);
             setdisabled(false);
             setcanlistplay(true);
             setplayingpage("LocalGD");
@@ -256,7 +255,6 @@ const PersonalPlaylist = () => {
             setCurrentSong(res);
           } else {
             setdisabled(false);
-            console.log(res);
           }
         },
       });

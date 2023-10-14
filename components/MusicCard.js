@@ -216,7 +216,6 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
       );
     } else {
       if (lyrics && lyrics.length > 0) {
-        // console.log(lyrics);
         document.title = currentSong.title + " · 星阳音乐系统";
         return (
           <Typography

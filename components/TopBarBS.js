@@ -73,11 +73,9 @@ export default function TopBar() {
       success: function (res) {
         // 状态码 200 表示请求成功
         if (res) {
-          // console.log(res);
           setSongs(res);
           setIsLoading(false);
         } else {
-          console.log(res);
           setIsLoading(false);
         }
       },
@@ -107,7 +105,6 @@ export default function TopBar() {
         success: function (res) {
           // 状态码 200 表示请求成功
           if (res) {
-            // console.log(res);
             setCurrentSong(res);
             setdisabled(false);
             setLastPlayedSongIndex(
@@ -116,7 +113,6 @@ export default function TopBar() {
             setcanlistplay(true);
             setplayingpage("TopBarBS");
           } else {
-            console.log(res);
             setdisabled(false);
           }
         },
