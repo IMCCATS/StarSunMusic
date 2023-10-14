@@ -333,7 +333,7 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
     window.open(
       `https://search.bilibili.com/all?keyword=${name}MV`,
       "mozillaTab",
-      "noreferrer"
+      "noopener,noreferrer"
     );
   };
 

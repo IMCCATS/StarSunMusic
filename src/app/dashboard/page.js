@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import JuanZeng from "../../../components/common/juanzeng";
-import ScrollToTopFab from "../../../components/ScrollToTopFab";
+import ScrollToTopFab from "../../../components/common/ScrollToTopFab";
 import PersonalPlaylist from "../../../components/PersonalPlaylist";
 import UpdateDialog from "../../../components/common/updatedialog";
 import {
