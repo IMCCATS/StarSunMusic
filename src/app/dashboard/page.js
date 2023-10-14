@@ -1,7 +1,7 @@
 "use client";
-import AppBar from "../../../components/appbar";
-import Advertisement from "../../../components/advertisement";
-import About from "../../../components/about";
+import AppBar from "../../../components/common/appbar";
+import Advertisement from "../../../components/common/advertisement";
+import About from "../../../components/common/about";
 import SongSearchTable from "../../../components/SongSearchTable";
 import MusicCard from "../../../components/MusicCard";
 import * as React from "react";
@@ -11,10 +11,10 @@ import SongBar from "../../../components/SongBar";
 import { useRouter } from "next/navigation";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
-import JuanZeng from "../../../components/juanzeng";
+import JuanZeng from "../../../components/common/juanzeng";
 import ScrollToTopFab from "../../../components/ScrollToTopFab";
 import PersonalPlaylist from "../../../components/PersonalPlaylist";
-import UpdateDialog from "../../../components/updatedialog";
+import UpdateDialog from "../../../components/common/updatedialog";
 import {
   Dialog,
   DialogTitle,
@@ -98,7 +98,7 @@ export default function BasicCard() {
         </DialogActions>
       </Dialog>
       <meta
-        http-equiv="Content-Security-Policy"
+        httpEquiv="Content-Security-Policy"
         content="upgrade-insecure-requests"
       />
       <link rel="icon" href="./favicon.ico" />

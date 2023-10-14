@@ -20,6 +20,7 @@ import { useRouter } from "next/navigation";
 import { Drawer, List, Empty, message } from "antd";
 import { ExperimentTwoTone } from "@ant-design/icons";
 import supabase from "@/app/api/supabase";
+const crypto = require("crypto");
 
 const PersonalPlaylist = () => {
   const router = useRouter();
@@ -64,9 +65,38 @@ const PersonalPlaylist = () => {
     if (isPlayComplete && playingpage === "LocalGD") {
       handleNextSongClick();
     }
+    const b = localStorage.getItem("mobiletoken");
     const c = localStorage.getItem("userprofile");
     if (c) {
-      setprofile(true);
+      const d = localStorage.getItem("ykey");
+      const e = localStorage.getItem("skey");
+      if (d && e) {
+        async function sha256(input) {
+          return crypto.createHash("sha256").update(input).digest("hex");
+        }
+        const text = e + c + b + e;
+        sha256(text).then((ecode) => {
+          if (ecode === d) {
+            setprofile(true);
+          } else {
+            localStorage.removeItem("userprofile");
+            localStorage.removeItem("mobiletoken");
+            localStorage.removeItem("ykey");
+            localStorage.removeItem("skey");
+            setprofile(false);
+            messageApi.error("自动登录失败或登录失效啦，请重新登录~");
+          }
+        });
+      } else {
+        localStorage.removeItem("userprofile");
+        localStorage.removeItem("mobiletoken");
+        localStorage.removeItem("ykey");
+        localStorage.removeItem("skey");
+        setprofile(false);
+        messageApi.error("自动登录失败或登录失效啦，请重新登录~");
+      }
+    } else {
+      setprofile(false);
     }
   }, [isPlayComplete]);
 
@@ -285,9 +315,11 @@ const PersonalPlaylist = () => {
     setdisabled(true);
     localStorage.removeItem("userprofile");
     localStorage.removeItem("mobiletoken");
+    localStorage.removeItem("ykey");
+    localStorage.removeItem("skey");
     setprofile(false);
     setTimeout(() => {
-      messageApi.success("退出登录成功");
+      messageApi.success("退出登录成功~");
       setdisabled(false);
     }, 1000);
   };
@@ -448,6 +480,14 @@ const PersonalPlaylist = () => {
                     注：个人歌单功能为
                     <ExperimentTwoTone />
                     实验性功能，且需要登录后才能分享歌单。
+                    <br />
+                    <br />
+                    请注意，我们系统会自动保存您在歌单方面的更改。
+                    <br />
+                    这些数据是保存在您本地设备上的，也就是说，除非您分享了歌单，否则只有您才能看到和听到您的歌单。
+                    <br />
+                    我们强烈建议您不要尝试自行修改歌单数据。如果您进行任何修改，可能会造成不可预测的系统问题，这可能会影响您歌单的完整性和可用性。
+                    <br />
                     <br />
                     当前仅支持部分歌曲加歌单播放，开发者正在全力开发啦~
                     <br />

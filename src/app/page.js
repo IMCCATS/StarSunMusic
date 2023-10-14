@@ -15,7 +15,7 @@ import {
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import CircularProgress from "@mui/material/CircularProgress";
 import CloseIcon from "@mui/icons-material/Close";
-import UserAgreementAndPrivacyPolicy from "../../components/UserAgreementAndPrivacyPolicy";
+import UserAgreementAndPrivacyPolicy from "../../components/common/UserAgreementAndPrivacyPolicy";
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -161,7 +161,7 @@ const HomePage = () => {
               onClick={() => {
                 window.open(
                   "https://ipw.cn/ipv6webcheck/?site=music.lcahy.cn",
-                  "_blank",
+                  "mozillaTab",
                   "noopener,noreferrer"
                 );
               }}

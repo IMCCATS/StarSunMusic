@@ -46,7 +46,7 @@ export default function Advertisement() {
               onClick={() => {
                 window.open(
                   "https://ipw.cn/ipv6webcheck/?site=music.lcahy.cn",
-                  "_blank",
+                  "mozillaTab",
                   "noopener,noreferrer"
                 );
               }}
