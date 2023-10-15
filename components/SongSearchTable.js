@@ -27,36 +27,35 @@ import {
   Backdrop,
   Autocomplete,
 } from "@mui/material";
+import { Turnstile } from "@marsidev/react-turnstile";
 import supabase from "@/app/api/supabase";
 import { message } from "antd";
 
 export default function SongSearchTable({ setcanlistplay }) {
   const { setCurrentSong } = React.useContext(CurrentSongContext);
+  const ref = React.useRef();
   const [isLoading, setIsLoading] = React.useState(true);
   const [songs, setSongs] = React.useState([]);
   const [messageApi, contextHolder] = message.useMessage();
   const [PT, setPT] = React.useState("default");
   const [jzwz, setwz] = React.useState("搜索功能加载中...");
+  const [isrobot, setisrobot] = React.useState(true);
   const [searchTerm, setSearchTerm] = React.useState("");
   const [open, setOpen] = React.useState(false);
   const [searchxh, setsearchxh] = React.useState(1);
   const [searchTermC, setSearchTermC] = React.useState("");
   const [SearchHistory, SetSearchHistory] = React.useState([]);
   const [searchdesabled, setsearchdesabled] = React.useState(true);
-  const addJB = () => {
-    var script = document.createElement("script");
-    script.src = "https://static.geetest.com/v4/gt4.js";
-    script.async = true;
-    script.addEventListener("load", function () {
-      setwz("搜索功能加载完成啦~\n请搜索歌曲哦~");
-      setsearchdesabled(false);
-    });
-    document.head.appendChild(script);
-  };
   React.useEffect(() => {
-    addJB();
     AddSearchHistory();
   }, []);
+  React.useEffect(() => {
+    if (!isrobot) {
+      setsearchdesabled(false);
+    } else {
+      setsearchdesabled(true);
+    }
+  }, [isrobot]);
 
   const AddHistory = (searchTerm) => {
     if (!searchTerm || SearchHistory.includes(searchTerm)) {
@@ -69,6 +68,7 @@ export default function SongSearchTable({ setcanlistplay }) {
   };
 
   const AddSearchHistory = () => {
+    setwz("搜索功能加载完成啦~\n请搜索歌曲哦~");
     const savedSearchHistory = JSON.parse(
       localStorage.getItem("SearchHistory")
     );
@@ -90,6 +90,8 @@ export default function SongSearchTable({ setcanlistplay }) {
     handleSearch();
     AddHistory(searchTerm);
     setSearchTermC(searchTerm);
+    ref.current.reset();
+    setisrobot(true);
   };
   const close2 = () => {
     setOpen(false);
@@ -97,6 +99,8 @@ export default function SongSearchTable({ setcanlistplay }) {
     handleSearchKG();
     AddHistory(searchTerm);
     setSearchTermC(searchTerm);
+    ref.current.reset();
+    setisrobot(true);
   };
   const close3 = () => {
     setOpen(false);
@@ -104,6 +108,8 @@ export default function SongSearchTable({ setcanlistplay }) {
     handleSearchMG();
     AddHistory(searchTerm);
     setSearchTermC(searchTerm);
+    ref.current.reset();
+    setisrobot(true);
   };
   const close4 = () => {
     setOpen(false);
@@ -111,32 +117,19 @@ export default function SongSearchTable({ setcanlistplay }) {
     handleSearchSJK();
     AddHistory(searchTerm);
     setSearchTermC(searchTerm);
+    ref.current.reset();
+    setisrobot(true);
   };
   const searchOpen = () => {
     if (searchTerm) {
       if (searchTerm != "") {
-        initGeetest4(
-          {
-            captchaId: "cbf4e068bc17eb10afa9e3b8a84d51d0",
-            product: "bind",
-          },
-          function (captcha) {
-            // captcha为验证码实例
-            captcha.appendTo("#captcha");
-            captcha
-              .onReady(function () {
-                captcha.showCaptcha();
-              })
-              .onSuccess(function () {
-                handleClickOpen();
-              });
-          }
-        );
+        handleClickOpen();
       }
     } else {
       messageApi.error("您没有输入搜索内容哦~");
     }
   };
+
   const handleChange = (event) => {
     setSearchTerm(event.target.value);
   };
@@ -605,26 +598,51 @@ export default function SongSearchTable({ setcanlistplay }) {
                         type: "search",
                       }}
                     />
-                    <Button
-                      onClick={searchOpen}
-                      variant="contained"
-                      sx={{
-                        height: "56px",
-                        marginTop: "15px",
-                        marginRight: "10px",
+                    <Box
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        height: "100%",
+                        marginTop: "10px",
                       }}
-                      disabled={searchdesabled}
                     >
-                      <span>搜索</span>
-                    </Button>
-                    <Button
-                      onClick={ClearHistory}
-                      variant="contained"
-                      sx={{ height: "56px", marginTop: "15px" }}
-                      disabled={searchdesabled}
-                    >
-                      <span>清除搜索历史记录</span>
-                    </Button>
+                      <Button
+                        onClick={searchOpen}
+                        variant="contained"
+                        sx={{
+                          height: "63px",
+                          marginTop: "15px",
+                          marginRight: "10px",
+                        }}
+                        disabled={searchdesabled}
+                      >
+                        <span>搜索</span>
+                      </Button>
+                      <Button
+                        onClick={ClearHistory}
+                        variant="contained"
+                        sx={{
+                          height: "63px",
+                          marginTop: "15px",
+                          marginRight: "10px",
+                        }}
+                        disabled={searchdesabled}
+                      >
+                        <span>清除搜索历史记录</span>
+                      </Button>
+
+                      <Turnstile
+                        siteKey="0x4AAAAAAALqaAbvdoAvmWG-"
+                        ref={ref}
+                        style={{
+                          marginTop: "15px",
+                          marginRight: "10px",
+                        }}
+                        onSuccess={(token) => {
+                          setisrobot(false);
+                        }}
+                      />
+                    </Box>
                   </div>
                 )}
               />
@@ -637,18 +655,39 @@ export default function SongSearchTable({ setcanlistplay }) {
                   variant="outlined"
                   onChange={handleChange}
                 />
-                <Button
-                  onClick={searchOpen}
-                  variant="contained"
-                  sx={{
-                    height: "56px",
-                    marginTop: "15px",
-                    marginRight: "10px",
+
+                <Box
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    height: "100%",
+                    marginTop: "10px",
                   }}
-                  disabled={searchdesabled}
                 >
-                  <span>搜索</span>
-                </Button>
+                  <Button
+                    onClick={searchOpen}
+                    variant="contained"
+                    sx={{
+                      height: "63px",
+                      marginTop: "15px",
+                      marginRight: "10px",
+                    }}
+                    disabled={searchdesabled}
+                  >
+                    <span>搜索</span>
+                  </Button>
+                  <Turnstile
+                    siteKey="0x4AAAAAAALqaAbvdoAvmWG-"
+                    ref={ref}
+                    style={{
+                      marginTop: "15px",
+                      marginRight: "10px",
+                    }}
+                    onSuccess={(token) => {
+                      setisrobot(false);
+                    }}
+                  />
+                </Box>
               </div>
             )}
             <div id="captcha"></div>
