@@ -17,39 +17,27 @@ import PropTypes from "prop-types";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import { useRouter } from "next/navigation";
-import QueueMusicIcon from "@mui/icons-material/QueueMusic";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
-import FullscreenIcon from "@mui/icons-material/Fullscreen";
-import FullscreenExitIcon from "@mui/icons-material/FullscreenExit";
 import RepeatOneIcon from "@mui/icons-material/RepeatOne";
-import FileIcon from "@mui/icons-material/Article";
-import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
 
-const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
+const MusicCard = ({ currentSong, setisPlayComplete }) => {
   const [isAudioPlayable, setIsAudioPlayable] = React.useState(true);
   const [isPlaying, setIsPlaying] = React.useState(false);
   const [volume, setVolume] = React.useState(100);
   const [value, setValue] = React.useState(0);
-  const [islistplayable, setlistplayable] = React.useState(true);
   const router = useRouter();
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-  const [Fullscreen, setFullscreen] = React.useState(false);
   const [progress, setProgress] = React.useState(0);
   const [lyrics, setLyrics] = React.useState([]);
   const [lyricsFY, setLyricsFY] = React.useState([]);
-  const [listplaying, setlistplaying] = React.useState(false);
   const [currentLyricIndexFY, setCurrentLyricIndexFY] = React.useState(0);
   const [currentLyricIndex, setCurrentLyricIndex] = React.useState(0);
   const audioRef = React.useRef(null);
   const [open, setOpen] = React.useState(false);
   const [isReplay, setisReplay] = React.useState(false);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
 
   const handleClose = () => {
     setOpen(false);
@@ -164,8 +152,6 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
         audioRef.current.play();
         setIsPlaying(true);
       }, 1000);
-    } else if (listplaying) {
-      setisPlayComplete(true);
     }
   };
   React.useEffect(() => {
@@ -209,7 +195,7 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
 
   const formatLyrics = () => {
     if (!isAudioPlayable) {
-      document.title = "首页 · 星阳音乐系统";
+      document.title = "单曲播放 · 星阳音乐系统";
       return (
         <Typography variant="body1">
           <span>本歌曲暂不支持播放哦~</span>
@@ -238,7 +224,7 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
           </Typography>
         );
       } else {
-        document.title = "首页 · 星阳音乐系统";
+        document.title = "单曲播放 · 星阳音乐系统";
         return (
           <Typography variant="body1">
             <span>暂无歌词信息哦，可尝试点击查看完整歌词~</span>
@@ -279,44 +265,7 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
     }
   };
 
-  const handleFullScreen = () => {
-    function fullscreen() {
-      if (!document.fullscreenEnabled) {
-        return Promise.reject(new Error("全屏模式被禁用"));
-      }
-      let result = null;
-      if (document.documentElement.requestFullscreen) {
-        result = document.documentElement.requestFullscreen();
-      } else if (document.documentElement.mozRequestFullScreen) {
-        result = document.documentElement.mozRequestFullScreen();
-      } else if (document.documentElement.msRequestFullscreen) {
-        result = document.documentElement.msRequestFullscreen();
-      } else if (document.documentElement.webkitRequestFullscreen) {
-        result = document.documentElement.webkitRequestFullScreen();
-      }
-      return result || Promise.reject(new Error("不支持全屏"));
-    }
-
-    function cancelFullscreen() {
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      } else if (document.msExitFullscreen) {
-        document.msExitFullscreen();
-      } else if (document.mozCancelFullScreen) {
-        document.mozCancelFullScreen();
-      } else if (document.webkitExitFullscreen) {
-        document.webkitExitFullscreen();
-      }
-    }
-
-    if (document.fullscreenElement) {
-      cancelFullscreen();
-      setFullscreen(false);
-    } else {
-      fullscreen();
-      setFullscreen(true);
-    }
-  };
+  
   const handleSliderChange = async (event, newValue) => {
     setProgress(newValue);
     const duration = audioRef.current.duration;
@@ -327,14 +276,6 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
     await audioRef.current.play();
 
     setIsPlaying(true); // 更新播放状态
-  };
-
-  const handleVedioClick = (name) => {
-    window.open(
-      `https://search.bilibili.com/all?keyword=${name}MV`,
-      "mozillaTab",
-      "noopener,noreferrer"
-    );
   };
 
   const handleSliderDragEnd = async () => {
@@ -362,11 +303,8 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
   const handleSetReplay = () => {
     if (isReplay === true) {
       setisReplay(false);
-      setlistplayable(true);
     } else if (isReplay === false) {
       setisReplay(true);
-      setlistplaying(false);
-      setlistplayable(false);
     }
   };
 
@@ -597,56 +535,12 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
                 )}
               </IconButton>
             </Tooltip>
-            <Tooltip title="列表播放" placement="top">
-              <IconButton
-                onClick={() => {
-                  setlistplaying(!listplaying);
-                }}
-                disabled={
-                  islistplayable === false ||
-                  isAudioPlayable === false ||
-                  canlistplay === false
-                }
-              >
-                {canlistplay ? (
-                  listplaying ? (
-                    <QueueMusicIcon color="primary" />
-                  ) : (
-                    <QueueMusicIcon />
-                  )
-                ) : (
-                  <QueueMusicIcon />
-                )}
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="查看歌词" placement="top">
-              <IconButton
-                aria-label="file button"
-                onClick={handleClickOpen}
-                disabled={isAudioPlayable === false}
-              >
-                <FileIcon />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="全屏" placement="top">
-              <IconButton
-                onClick={handleFullScreen}
-                disabled={isAudioPlayable === false}
-              >
-                {Fullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="MV(将跳转外部网站)" placement="top">
-              <IconButton
-                onClick={() => {
-                  const name = currentSong.title + " ";
-                  handleVedioClick(name);
-                }}
-                disabled={isAudioPlayable === false}
-              >
-                <OndemandVideoIcon />
-              </IconButton>
-            </Tooltip>
+            <Typography
+              variant="caption"
+              style={{ margin: "10px 0", marginLeft: "10px" }}
+            >
+              <span>更多功能请到系统内体验~</span>
+            </Typography>
             <Slider
               value={volume}
               onChange={handleVolumeChange}
