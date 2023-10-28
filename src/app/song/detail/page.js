@@ -4,7 +4,6 @@ import * as React from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import ScrollToTopFab from "../../../../components/common/ScrollToTopFab";
 import $ from "jquery";
-import { Button } from "@mui/material";
 
 export const CurrentSongContext = React.createContext(null);
 export default function BasicCard() {
@@ -19,11 +18,10 @@ export default function BasicCard() {
     window.addEventListener("storage", (e) => {
       if (e.key) {
         localStorage.setItem(e.key, e.oldValue);
-        // handleClickOpen();
       }
     });
+    handleListenClick(params.songID);
   };
-  const [display, setdisplay] = React.useState("block");
   const handleListenClick = (songId) => {
     if (params.songID || params.songID !== "") {
       $.ajax({
@@ -98,17 +96,6 @@ export default function BasicCard() {
             setcanlistplay={setcanlistplay}
           />
         </div>
-        <Button
-          style={{ display: display }}
-          onClick={() => {
-            if (params.songID) {
-              setdisplay("none");
-              handleListenClick(params.songID);
-            }
-          }}
-        >
-          <span>点击开始播放</span>
-        </Button>
         <ScrollToTopFab />
       </CurrentSongContext.Provider>
     </main>

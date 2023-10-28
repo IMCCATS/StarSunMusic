@@ -12,7 +12,13 @@ import {
   DialogActions,
   Tooltip,
   Box,
+  Divider,
+  Link,
 } from "@mui/material";
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import PropTypes from "prop-types";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -157,7 +163,7 @@ const MusicCard = ({ currentSong, setisPlayComplete }) => {
   React.useEffect(() => {
     if (lyrics && lyrics.length > 0) {
       audioRef.current.src = currentSong.link;
-      audioRef.current.play();
+      setIsPlaying(false);
       audioRef.current.addEventListener("play", () => setIsPlaying(true));
       audioRef.current.addEventListener("pause", () => setIsPlaying(false));
       audioRef.current.addEventListener("timeupdate", handleAudioTimeUpdate);
@@ -171,7 +177,7 @@ const MusicCard = ({ currentSong, setisPlayComplete }) => {
       };
     } else if (currentSong) {
       audioRef.current.src = currentSong.link;
-      audioRef.current.play();
+      setIsPlaying(false);
       audioRef.current.addEventListener("play", () => setIsPlaying(true));
       audioRef.current.addEventListener("pause", () => setIsPlaying(false));
       audioRef.current.addEventListener("ended", () => setIsPlaying(false));
@@ -265,7 +271,6 @@ const MusicCard = ({ currentSong, setisPlayComplete }) => {
     }
   };
 
-  
   const handleSliderChange = async (event, newValue) => {
     setProgress(newValue);
     const duration = audioRef.current.duration;
@@ -541,32 +546,38 @@ const MusicCard = ({ currentSong, setisPlayComplete }) => {
             >
               <span>更多功能请到系统内体验~</span>
             </Typography>
-            <Slider
-              value={volume}
-              onChange={handleVolumeChange}
-              disabled={isAudioPlayable === false}
-            />
+            <Divider style={{ marginTop: "10px", marginBottom: "10px" }} />
             <Typography variant="caption" style={{ margin: "8px 0" }}>
               <span>
-                音量: {volume}%<br />
+                本歌曲由 星阳音乐系统 · 单曲播放功能 提供 | 畅哥科技&trade;
+                强力驱动 |{" "}
+                <Link
+                  href="https://music.lcahy.cn/"
+                  underline="hover"
+                  aria-label="前往星阳音乐系统"
+                >
+                  <span>点击前往星阳音乐系统</span>
+                </Link>
               </span>
             </Typography>
-            <Typography variant="caption" style={{ margin: "8px 0" }}>
-              <span>本歌曲由 星阳音乐系统 提供 | 畅哥科技&trade; 强力驱动</span>
-            </Typography>
-            <Button
-              onClick={() => {
-                router.push("/");
-              }}
-            >
-              <span>点击前往星阳音乐系统</span>
-            </Button>
-            <Typography variant="caption" style={{ margin: "8px 0" }}>
-              <br />
-              <span>
-                免责声明：本网站内容来源于网络，仅提供检索服务，用于个人音乐欣赏。本网站不存储任何内容，也不承担任何责任。如果您需要使用本网站提供的检索服务，您应当自行负责获取相关内容的合法性和准确性。此外，本网站保留随时修改本声明的权利。如果您继续使用本网站，即表示您已经接受了本声明的所有修改。
-              </span>
-            </Typography>
+            <Accordion>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1a-content"
+              >
+                <Typography>
+                  <span>免责声明</span>
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Typography variant="caption" style={{ margin: "8px 0" }}>
+                  <br />
+                  <span>
+                    本系统内容来源于网络，仅提供检索服务，用于个人音乐欣赏。本系统不存储任何内容，也不承担任何责任。如果您需要使用本系统提供的检索服务，您应当自行负责获取相关内容的合法性和准确性。此外，本系统保留随时修改本声明的权利。如果您继续使用本系统，即表示您已经接受了本声明的所有修改。
+                  </span>
+                </Typography>
+              </AccordionDetails>
+            </Accordion>
           </>
         )}
       </CardContent>
