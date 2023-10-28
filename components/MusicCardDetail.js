@@ -560,24 +560,12 @@ const MusicCard = ({ currentSong, setisPlayComplete }) => {
                 </Link>
               </span>
             </Typography>
-            <Accordion>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel1a-content"
-              >
-                <Typography>
-                  <span>免责声明</span>
-                </Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <Typography variant="caption" style={{ margin: "8px 0" }}>
-                  <br />
-                  <span>
-                    本系统内容来源于网络，仅提供检索服务，用于个人音乐欣赏。本系统不存储任何内容，也不承担任何责任。如果您需要使用本系统提供的检索服务，您应当自行负责获取相关内容的合法性和准确性。此外，本系统保留随时修改本声明的权利。如果您继续使用本系统，即表示您已经接受了本声明的所有修改。
-                  </span>
-                </Typography>
-              </AccordionDetails>
-            </Accordion>
+            <Typography variant="caption" style={{ margin: "8px 0" }}>
+              <br />
+              <span>
+                免责声明：本系统内容来源于网络，仅提供检索服务，用于个人音乐欣赏。本系统不存储任何内容，也不承担任何责任。如果您需要使用本系统提供的检索服务，您应当自行负责获取相关内容的合法性和准确性。此外，本系统保留随时修改本声明的权利。如果您继续使用本系统，即表示您已经接受了本声明的所有修改。
+              </span>
+            </Typography>
           </>
         )}
       </CardContent>

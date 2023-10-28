@@ -96,7 +96,6 @@ export default function BasicCard() {
             setcanlistplay={setcanlistplay}
           />
         </div>
-        <ScrollToTopFab />
       </CurrentSongContext.Provider>
     </main>
   );
