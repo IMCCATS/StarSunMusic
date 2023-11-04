@@ -362,7 +362,7 @@ const MusicCard = ({ currentSong, setisPlayComplete }) => {
       <CardContent id="MusicCard">
         {!currentSong && (
           <Typography variant="body1">
-            <span>您还没有操作播放歌曲呢~</span>
+            <span>歌曲信息加载中~</span>
           </Typography>
         )}
         {currentSong && (
