@@ -7,6 +7,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import {
   Button,
   TableRow,
+  Tooltip,
   Grid,
   TableHead,
   TableContainer,
@@ -30,6 +31,7 @@ import {
 import { Turnstile } from "@marsidev/react-turnstile";
 import supabase from "@/app/api/supabase";
 import { message } from "antd";
+import copy from "copy-to-clipboard";
 
 export default function SongSearchTable({ setcanlistplay }) {
   const { setCurrentSong } = React.useContext(CurrentSongContext);
@@ -42,6 +44,8 @@ export default function SongSearchTable({ setcanlistplay }) {
   const [isrobot, setisrobot] = React.useState(true);
   const [searchTerm, setSearchTerm] = React.useState("");
   const [open, setOpen] = React.useState(false);
+  const [fxopen, fxsetOpen] = React.useState(false);
+  const [shareurl, setshareurl] = React.useState("暂无~");
   const [searchxh, setsearchxh] = React.useState(1);
   const [searchTermC, setSearchTermC] = React.useState("");
   const [SearchHistory, SetSearchHistory] = React.useState([]);
@@ -84,6 +88,13 @@ export default function SongSearchTable({ setcanlistplay }) {
   const handleClose = () => {
     setOpen(false);
   };
+  const fxhandleClose = () => {
+    fxsetOpen(false);
+  };
+  const fxhandleClickOpen = () => {
+    fxsetOpen(true);
+  };
+
   const close1 = () => {
     setOpen(false);
     setPT("default");
@@ -546,27 +557,59 @@ export default function SongSearchTable({ setcanlistplay }) {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          <span>请选择搜索方式</span>
+          <span>请选择搜索通道</span>
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
             <span>
-              不同的搜索方式可能会有不同的搜索结果，请选择您要使用的搜索方式。
+              不同的搜索通道可能会有不同的搜索结果，请选择您要使用的搜索通道。
             </span>
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={close1}>
-            <span>方式1</span>
+            <span>通道1</span>
           </Button>
           <Button onClick={close2}>
-            <span>方式2</span>
+            <span>通道2</span>
           </Button>
           <Button onClick={close3}>
-            <span>方式3</span>
+            <span>通道3</span>
           </Button>
           <Button onClick={close4}>
-            <span>方式4</span>
+            <span>通道4</span>
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={fxopen}
+        onClose={fxhandleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          <span>已生成分享链接！</span>
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            <span>您的分享链接是：{shareurl}</span>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              copy(
+                "想象一下，你正站在一个山顶上，俯瞰着壮丽的风景。有一首歌曲就像山下的河流，蜿蜒曲折，流淌着激昂的旋律。每一个音符都像是你人生旅程中的一道风景线，让你流连忘返。现在，闭上眼睛，深呼吸，感受那首歌曲带来的能量。那是一种力量，它能够连接你和音乐之间的心灵感应。对，就是这种感觉！为了让你体验到这首歌曲的魔力，我使用星阳音乐系统特意为你准备了歌曲链接。让这首歌曲带你穿越时空，感受音乐带给你的无限可能！歌曲链接：" +
+                  shareurl
+              );
+              fxhandleClose();
+              messageApi.success("复制成功，快去分享吧~");
+            }}
+          >
+            <span>复制</span>
+          </Button>
+          <Button onClick={fxhandleClose}>
+            <span>好哒~</span>
           </Button>
         </DialogActions>
       </Dialog>
@@ -692,6 +735,13 @@ export default function SongSearchTable({ setcanlistplay }) {
             )}
             <div id="captcha"></div>
           </Box>
+          {isrobot ? (
+            <span style={{ marginBottom: "10px", marginTop: "10px" }}>
+              Tip:人机验证通过后搜索按钮会自动解锁。如果人机验证器没有出现，请刷新页面。
+            </span>
+          ) : (
+            <span></span>
+          )}
           <Paper>
             <TableContainer>
               {isLoading ? (
@@ -735,6 +785,9 @@ export default function SongSearchTable({ setcanlistplay }) {
                       <TableHead>
                         <TableRow>
                           <TableCell>
+                            <span>封面</span>
+                          </TableCell>
+                          <TableCell>
                             <span>标题</span>
                           </TableCell>
                           <TableCell>
@@ -749,10 +802,26 @@ export default function SongSearchTable({ setcanlistplay }) {
                         {songs.map((song) => (
                           <TableRow key={song.songid}>
                             <TableCell>
+                              {song.cover && (
+                                <img
+                                  src={song.cover}
+                                  alt="CoverImage"
+                                  height="64"
+                                  onError={() => {}}
+                                />
+                              )}
+                            </TableCell>
+                            <TableCell>
                               <span>{song.title}</span>
                             </TableCell>
                             <TableCell>
-                              <span>{song.author}</span>
+                              <Tooltip title={song.author}>
+                                <span>
+                                  {song.author.length <= 8
+                                    ? song.author
+                                    : `${song.author.slice(0, 8)}...`}
+                                </span>
+                              </Tooltip>
                             </TableCell>
                             <TableCell>
                               <ButtonGroup>
@@ -791,6 +860,23 @@ export default function SongSearchTable({ setcanlistplay }) {
                                           }
                                         >
                                           <span>加歌单</span>
+                                        </Button>
+                                      </Grid>
+                                      <Grid item>
+                                        <Button
+                                          onClick={() => {
+                                            setshareurl(
+                                              "https://music.lcahy.cn/song/detail?songID=" +
+                                                song.songid
+                                            );
+                                            fxhandleClickOpen();
+                                          }}
+                                          variant="contained"
+                                          disabled={
+                                            PT !== "default" || disabled
+                                          }
+                                        >
+                                          <span>分享它</span>
                                         </Button>
                                       </Grid>
                                     </Grid>
