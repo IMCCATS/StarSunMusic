@@ -23,6 +23,11 @@ import {
   Button,
   DialogActions,
 } from "@mui/material";
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import Typography from "@mui/material/Typography";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -128,8 +133,34 @@ export default function BasicCard() {
             canlistplay={canlistplay}
             setcanlistplay={setcanlistplay}
           />
-          <PersonalPlaylist />
-          <SongSearchTable setcanlistplay={setcanlistplay} />
+          <Accordion>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel1a-content"
+              id="panel1a-header"
+            >
+              <Typography>
+                <span>操作区</span>
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <PersonalPlaylist />
+            </AccordionDetails>
+          </Accordion>
+          <Accordion>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel1a-content"
+              id="panel1a-header"
+            >
+              <Typography>
+                <span>搜索区</span>
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <SongSearchTable setcanlistplay={setcanlistplay} />
+            </AccordionDetails>
+          </Accordion>
           <TopBar />
           <TopBarBS />
           <SongBar />
