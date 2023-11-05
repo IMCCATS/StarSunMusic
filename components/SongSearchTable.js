@@ -155,7 +155,7 @@ export default function SongSearchTable({ setcanlistplay }) {
         url: "https://api.paugram.com/netease/",
         type: "get",
         dataType: "json",
-        async: false,
+
         data: {
           id: `${songId}`,
         },
@@ -169,6 +169,7 @@ export default function SongSearchTable({ setcanlistplay }) {
           setdisabled(false);
         },
         success: function (res) {
+          $.Deferred().resolve(res);
           // 状态码 200 表示请求成功
           if (res) {
             setCurrentSong(res);
@@ -214,7 +215,7 @@ export default function SongSearchTable({ setcanlistplay }) {
         url: "https://api.gumengya.com/Api/Music",
         type: "get",
         dataType: "json",
-        async: false,
+
         data: {
           format: "json",
           text: `${searchTerm}`,
@@ -231,6 +232,7 @@ export default function SongSearchTable({ setcanlistplay }) {
           setIsLoading(false);
         },
         success: function (res) {
+          $.Deferred().resolve(res);
           // 状态码 200 表示请求成功
           if (res) {
             const CCJson = ConvertJson(res.data);
@@ -278,7 +280,7 @@ export default function SongSearchTable({ setcanlistplay }) {
         url: "https://api.gumengya.com/Api/Music",
         type: "get",
         dataType: "json",
-        async: false,
+
         data: {
           format: "json",
           text: `${searchTerm}`,
@@ -295,6 +297,7 @@ export default function SongSearchTable({ setcanlistplay }) {
           setIsLoading(false);
         },
         success: function (res) {
+          $.Deferred().resolve(res);
           // 状态码 200 表示请求成功
           if (res) {
             const CCJson = ConvertJson(res.data);
@@ -367,7 +370,7 @@ export default function SongSearchTable({ setcanlistplay }) {
         url: "https://api.gumengya.com/Api/Music",
         type: "get",
         dataType: "json",
-        async: false,
+
         data: {
           text: `${searchTerm}`,
           site: "netease",
@@ -383,6 +386,7 @@ export default function SongSearchTable({ setcanlistplay }) {
           setIsLoading(false);
         },
         success: function (res) {
+          $.Deferred().resolve(res);
           // 状态码 200 表示请求成功
           if (res) {
             const datac = ConvertJson(res.data);
@@ -413,7 +417,7 @@ export default function SongSearchTable({ setcanlistplay }) {
           url: "https://api.gumengya.com/Api/Music",
           type: "get",
           dataType: "json",
-          async: false,
+
           data: {
             text: `${searchTermC}`,
             page: `${searchxh + 1}`,
@@ -429,6 +433,7 @@ export default function SongSearchTable({ setcanlistplay }) {
             setdisabled(false);
           },
           success: function (res) {
+            $.Deferred().resolve(res);
             // 状态码 200 表示请求成功
             if (res) {
               if (res.data) {
@@ -458,7 +463,7 @@ export default function SongSearchTable({ setcanlistplay }) {
           url: "https://api.gumengya.com/Api/Music",
           type: "get",
           dataType: "json",
-          async: false,
+
           data: {
             text: `${searchTermC}`,
             page: `${searchxh + 1}`,
@@ -474,6 +479,7 @@ export default function SongSearchTable({ setcanlistplay }) {
             setdisabled(false);
           },
           success: function (res) {
+            $.Deferred().resolve(res);
             // 状态码 200 表示请求成功
             if (res) {
               if (res.data) {
@@ -503,7 +509,7 @@ export default function SongSearchTable({ setcanlistplay }) {
           url: "https://api.gumengya.com/Api/Music",
           type: "get",
           dataType: "json",
-          async: false,
+
           data: {
             text: `${searchTermC}`,
             page: `${searchxh + 1}`,
@@ -519,6 +525,7 @@ export default function SongSearchTable({ setcanlistplay }) {
             setdisabled(false);
           },
           success: function (res) {
+            $.Deferred().resolve(res);
             // 状态码 200 表示请求成功
             if (res) {
               if (res.data) {

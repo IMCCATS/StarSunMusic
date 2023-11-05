@@ -77,7 +77,6 @@ const PlaylistComponent = ({ playlist }) => {
       url: "https://api.yimian.xyz/msc/",
       type: "get",
       dataType: "json",
-      async: false,
       data: {
         type: "playlist",
         id: `${playlistId}`,
@@ -93,6 +92,7 @@ const PlaylistComponent = ({ playlist }) => {
         setIsLoading(false);
       },
       success: function (res) {
+        $.Deferred().resolve(res);
         // 状态码 200 表示请求成功
         if (res) {
           setSongs(res);
@@ -112,7 +112,7 @@ const PlaylistComponent = ({ playlist }) => {
         url: "https://api.paugram.com/netease/",
         type: "get",
         dataType: "json",
-        async: false,
+
         data: {
           id: `${songId}`,
         },
@@ -126,6 +126,7 @@ const PlaylistComponent = ({ playlist }) => {
           setdisabled(false);
         },
         success: function (res) {
+          $.Deferred().resolve(res);
           // 状态码 200 表示请求成功
           if (res) {
             setCurrentSong(res);

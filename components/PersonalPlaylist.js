@@ -230,7 +230,7 @@ const PersonalPlaylist = () => {
         url: "https://api.paugram.com/netease/",
         type: "get",
         dataType: "json",
-        async: false,
+
         data: {
           id: `${songId}`,
         },
@@ -244,6 +244,7 @@ const PersonalPlaylist = () => {
           setdisabled(false);
         },
         success: function (res) {
+          $.Deferred().resolve(res);
           // 状态码 200 表示请求成功
           if (res) {
             setdisabled(false);

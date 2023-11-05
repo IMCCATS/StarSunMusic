@@ -55,7 +55,6 @@ export default function TopBar() {
       url: "https://api.yimian.xyz/msc/",
       type: "get",
       dataType: "json",
-      async: false,
       data: {
         type: "playlist",
         id: `19723756`,
@@ -71,6 +70,7 @@ export default function TopBar() {
         setIsLoading(false);
       },
       success: function (res) {
+        $.Deferred().resolve(res);
         // 状态码 200 表示请求成功
         if (res) {
           setSongs(res);
@@ -89,7 +89,7 @@ export default function TopBar() {
         url: "https://api.paugram.com/netease/",
         type: "get",
         dataType: "json",
-        async: false,
+
         data: {
           id: `${songId}`,
         },
@@ -103,6 +103,7 @@ export default function TopBar() {
           setdisabled(false);
         },
         success: function (res) {
+          $.Deferred().resolve(res);
           // 状态码 200 表示请求成功
           if (res) {
             setCurrentSong(res);

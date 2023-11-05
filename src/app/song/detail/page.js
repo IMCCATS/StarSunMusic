@@ -28,7 +28,7 @@ export default function BasicCard() {
         url: "https://api.paugram.com/netease/",
         type: "get",
         dataType: "json",
-        async: false,
+
         data: {
           id: `${songId}`,
         },
@@ -40,6 +40,7 @@ export default function BasicCard() {
         },
         error: function () {},
         success: function (res) {
+          $.Deferred().resolve(res);
           // 状态码 200 表示请求成功
           if (
             res &&
