@@ -28,11 +28,18 @@ const UpdateDialog = () => {
     const currentVersionParts = currentVersion.split("_");
 
     // 分别比较主版本号和次版本号
-    if (
-      localVersionParts[0] < currentVersionParts[0] ||
-      (localVersionParts[0] === currentVersionParts[0] &&
-        localVersionParts[1] < currentVersionParts[1])
-    ) {
+    if (localVersion) {
+      if (
+        localVersionParts[0] < currentVersionParts[0] ||
+        (localVersionParts[0] === currentVersionParts[0] &&
+          localVersionParts[1] < currentVersionParts[1])
+      ) {
+        setOpen(true);
+        setNewVersion(currentVersion);
+        setUpdateTime(appupdatetime); // 更新时间
+        setUpdateContent(appupdatecontent); // 更新内容
+      }
+    } else {
       setOpen(true);
       setNewVersion(currentVersion);
       setUpdateTime(appupdatetime); // 更新时间
