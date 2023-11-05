@@ -613,92 +613,32 @@ export default function SongSearchTable({ setcanlistplay }) {
           </Button>
         </DialogActions>
       </Dialog>
-      <Card sx={{ minWidth: 275 }} style={{ marginTop: "15px" }}>
-        <CardContent>
-          <Box
-            sx={{
-              "& > :not(style)": { m: 1 },
-            }}
-            noValidate
-            autoComplete="off"
-          >
-            {Array.isArray(SearchHistory) && SearchHistory.length > 0 ? (
-              <Autocomplete
-                freeSolo
-                disableClearable
-                onChange={ChangeSearch}
-                options={SearchHistory.map((option) => option)}
-                renderInput={(params) => (
-                  <div>
-                    <TextField
-                      {...params}
-                      label="搜索..."
-                      id="search"
-                      variant="outlined"
-                      onChange={handleChange}
-                      InputProps={{
-                        ...params.InputProps,
-                        type: "search",
-                      }}
-                    />
-                    <Box
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        height: "100%",
-                        marginTop: "10px",
-                      }}
-                    >
-                      <Button
-                        onClick={searchOpen}
-                        variant="contained"
-                        sx={{
-                          height: "63px",
-                          marginTop: "15px",
-                          marginRight: "10px",
-                        }}
-                        disabled={searchdesabled}
-                      >
-                        <span>搜索</span>
-                      </Button>
-                      <Button
-                        onClick={ClearHistory}
-                        variant="contained"
-                        sx={{
-                          height: "63px",
-                          marginTop: "15px",
-                          marginRight: "10px",
-                        }}
-                        disabled={searchdesabled}
-                      >
-                        <span>清除搜索历史记录</span>
-                      </Button>
-
-                      <Turnstile
-                        siteKey="0x4AAAAAAALqaAbvdoAvmWG-"
-                        ref={ref}
-                        style={{
-                          marginTop: "15px",
-                          marginRight: "10px",
-                        }}
-                        onSuccess={(token) => {
-                          setisrobot(false);
-                        }}
-                      />
-                    </Box>
-                  </div>
-                )}
-              />
-            ) : (
+      <Box
+        sx={{
+          "& > :not(style)": { m: 1 },
+        }}
+        noValidate
+        autoComplete="off"
+      >
+        {Array.isArray(SearchHistory) && SearchHistory.length > 0 ? (
+          <Autocomplete
+            freeSolo
+            disableClearable
+            onChange={ChangeSearch}
+            options={SearchHistory.map((option) => option)}
+            renderInput={(params) => (
               <div>
                 <TextField
+                  {...params}
                   label="搜索..."
-                  fullWidth
                   id="search"
                   variant="outlined"
                   onChange={handleChange}
+                  InputProps={{
+                    ...params.InputProps,
+                    type: "search",
+                  }}
                 />
-
                 <Box
                   style={{
                     display: "flex",
@@ -719,6 +659,19 @@ export default function SongSearchTable({ setcanlistplay }) {
                   >
                     <span>搜索</span>
                   </Button>
+                  <Button
+                    onClick={ClearHistory}
+                    variant="contained"
+                    sx={{
+                      height: "63px",
+                      marginTop: "15px",
+                      marginRight: "10px",
+                    }}
+                    disabled={searchdesabled}
+                  >
+                    <span>清除搜索历史记录</span>
+                  </Button>
+
                   <Turnstile
                     siteKey="0x4AAAAAAALqaAbvdoAvmWG-"
                     ref={ref}
@@ -733,184 +686,213 @@ export default function SongSearchTable({ setcanlistplay }) {
                 </Box>
               </div>
             )}
-            <div id="captcha"></div>
-          </Box>
-          {isrobot ? (
-            <span style={{ marginBottom: "10px", marginTop: "10px" }}>
-              Tip:人机验证通过后搜索按钮会自动解锁。如果人机验证器没有出现，请刷新页面。
-            </span>
+          />
+        ) : (
+          <div>
+            <TextField
+              label="搜索..."
+              fullWidth
+              id="search"
+              variant="outlined"
+              onChange={handleChange}
+            />
+
+            <Box
+              style={{
+                display: "flex",
+                alignItems: "center",
+                height: "100%",
+                marginTop: "10px",
+              }}
+            >
+              <Button
+                onClick={searchOpen}
+                variant="contained"
+                sx={{
+                  height: "63px",
+                  marginTop: "15px",
+                  marginRight: "10px",
+                }}
+                disabled={searchdesabled}
+              >
+                <span>搜索</span>
+              </Button>
+              <Turnstile
+                siteKey="0x4AAAAAAALqaAbvdoAvmWG-"
+                ref={ref}
+                style={{
+                  marginTop: "15px",
+                  marginRight: "10px",
+                }}
+                onSuccess={(token) => {
+                  setisrobot(false);
+                }}
+              />
+            </Box>
+          </div>
+        )}
+        <div id="captcha"></div>
+      </Box>
+      {isrobot ? (
+        <span style={{ marginBottom: "10px", marginTop: "10px" }}>
+          Tip:人机验证通过后搜索按钮会自动解锁。如果人机验证器没有出现，请刷新页面。
+        </span>
+      ) : (
+        <span></span>
+      )}
+      <Paper>
+        <TableContainer>
+          {isLoading ? (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "200px",
+              }}
+            >
+              {jzwz !== "搜索功能加载完成啦~\n请搜索歌曲哦~" ? (
+                <CircularProgress />
+              ) : (
+                <CheckCircleIcon color="success" fontSize="large" />
+              )}
+              <p style={{ marginLeft: "10px", whiteSpace: "pre" }}>{jzwz}</p>
+            </div>
           ) : (
-            <span></span>
-          )}
-          <Paper>
-            <TableContainer>
-              {isLoading ? (
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    height: "200px",
-                  }}
-                >
-                  {jzwz !== "搜索功能加载完成啦~\n请搜索歌曲哦~" ? (
+            <>
+              {songs.length === 0 ? (
+                <div style={{ textAlign: "center", padding: "20px" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      height: "100%",
+                    }}
+                  >
                     <CircularProgress />
-                  ) : (
-                    <CheckCircleIcon color="success" fontSize="large" />
-                  )}
-                  <p style={{ marginLeft: "10px", whiteSpace: "pre" }}>
-                    {jzwz}
-                  </p>
+                    <p style={{ marginLeft: "10px", whiteSpace: "pre" }}>
+                      搜索无内容返回，请重新搜索~
+                    </p>
+                  </div>
                 </div>
               ) : (
-                <>
-                  {songs.length === 0 ? (
-                    <div style={{ textAlign: "center", padding: "20px" }}>
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          height: "100%",
-                        }}
-                      >
-                        <CircularProgress />
-                        <p style={{ marginLeft: "10px", whiteSpace: "pre" }}>
-                          搜索无内容返回，请重新搜索~
-                        </p>
-                      </div>
-                    </div>
-                  ) : (
-                    <Table>
-                      <TableHead>
-                        <TableRow>
-                          <TableCell>
-                            <span>封面</span>
-                          </TableCell>
-                          <TableCell>
-                            <span>标题</span>
-                          </TableCell>
-                          <TableCell>
-                            <span>作者</span>
-                          </TableCell>
-                          <TableCell>
-                            <span>操作</span>
-                          </TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {songs.map((song) => (
-                          <TableRow key={song.songid}>
-                            <TableCell>
-                              {song.cover && (
-                                <img
-                                  src={song.cover}
-                                  alt="CoverImage"
-                                  height="64"
-                                  onError={() => {}}
-                                />
-                              )}
-                            </TableCell>
-                            <TableCell>
-                              <span>{song.title}</span>
-                            </TableCell>
-                            <TableCell>
-                              <Tooltip title={song.author}>
-                                <span>
-                                  {song.author.length <= 8
-                                    ? song.author
-                                    : `${song.author.slice(0, 8)}...`}
-                                </span>
-                              </Tooltip>
-                            </TableCell>
-                            <TableCell>
-                              <ButtonGroup>
-                                {PT === "default" ? (
-                                  <main>
-                                    <Grid
-                                      container
-                                      direction="column"
-                                      spacing={2}
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>
+                        <span>封面</span>
+                      </TableCell>
+                      <TableCell>
+                        <span>标题</span>
+                      </TableCell>
+                      <TableCell>
+                        <span>作者</span>
+                      </TableCell>
+                      <TableCell>
+                        <span>操作</span>
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {songs.map((song) => (
+                      <TableRow key={song.songid}>
+                        <TableCell>
+                          {song.cover && (
+                            <img
+                              src={song.cover}
+                              alt="CoverImage"
+                              height="64"
+                              onError={() => {}}
+                            />
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          <span>{song.title}</span>
+                        </TableCell>
+                        <TableCell>
+                          <Tooltip title={song.author}>
+                            <span>
+                              {song.author.length <= 8
+                                ? song.author
+                                : `${song.author.slice(0, 8)}...`}
+                            </span>
+                          </Tooltip>
+                        </TableCell>
+                        <TableCell>
+                          <ButtonGroup>
+                            {PT === "default" ? (
+                              <main>
+                                <Grid container direction="column" spacing={2}>
+                                  <Grid item>
+                                    <Button
+                                      onClick={() =>
+                                        handleListenClick(song.songid)
+                                      }
+                                      variant="contained"
+                                      disabled={PT !== "default" || disabled}
                                     >
-                                      <Grid item>
-                                        <Button
-                                          onClick={() =>
-                                            handleListenClick(song.songid)
-                                          }
-                                          variant="contained"
-                                          disabled={
-                                            PT !== "default" || disabled
-                                          }
-                                        >
-                                          <span>听歌曲</span>
-                                        </Button>
-                                      </Grid>
-                                      <Grid item>
-                                        <Button
-                                          onClick={() =>
-                                            addSongToLocalPlaylist({
-                                              title: song.title,
-                                              artist: song.author,
-                                              songId: song.songid,
-                                            })
-                                          }
-                                          variant="contained"
-                                          disabled={
-                                            PT !== "default" || disabled
-                                          }
-                                        >
-                                          <span>加歌单</span>
-                                        </Button>
-                                      </Grid>
-                                      <Grid item>
-                                        <Button
-                                          onClick={() => {
-                                            setshareurl(
-                                              "https://music.lcahy.cn/song/detail?songID=" +
-                                                song.songid
-                                            );
-                                            fxhandleClickOpen();
-                                          }}
-                                          variant="contained"
-                                          disabled={
-                                            PT !== "default" || disabled
-                                          }
-                                        >
-                                          <span>分享它</span>
-                                        </Button>
-                                      </Grid>
-                                    </Grid>
-                                  </main>
-                                ) : (
-                                  <Button
-                                    onClick={() =>
-                                      handleListenClickLinethree(song)
-                                    }
-                                    variant="contained"
-                                    disabled={PT === "default" || disabled}
-                                  >
-                                    <span>听歌曲</span>
-                                  </Button>
-                                )}
-                              </ButtonGroup>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                        <Button
-                          disabled={disabled || PT === "sjk"}
-                          onClick={loadmoresong}
-                        >
-                          <span>加载更多歌曲</span>
-                        </Button>
-                      </TableBody>
-                    </Table>
-                  )}
-                </>
+                                      <span>听歌曲</span>
+                                    </Button>
+                                  </Grid>
+                                  <Grid item>
+                                    <Button
+                                      onClick={() =>
+                                        addSongToLocalPlaylist({
+                                          title: song.title,
+                                          artist: song.author,
+                                          songId: song.songid,
+                                        })
+                                      }
+                                      variant="contained"
+                                      disabled={PT !== "default" || disabled}
+                                    >
+                                      <span>加歌单</span>
+                                    </Button>
+                                  </Grid>
+                                  <Grid item>
+                                    <Button
+                                      onClick={() => {
+                                        setshareurl(
+                                          "https://music.lcahy.cn/song/detail?songID=" +
+                                            song.songid
+                                        );
+                                        fxhandleClickOpen();
+                                      }}
+                                      variant="contained"
+                                      disabled={PT !== "default" || disabled}
+                                    >
+                                      <span>分享它</span>
+                                    </Button>
+                                  </Grid>
+                                </Grid>
+                              </main>
+                            ) : (
+                              <Button
+                                onClick={() => handleListenClickLinethree(song)}
+                                variant="contained"
+                                disabled={PT === "default" || disabled}
+                              >
+                                <span>听歌曲</span>
+                              </Button>
+                            )}
+                          </ButtonGroup>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                    <Button
+                      disabled={disabled || PT === "sjk"}
+                      onClick={loadmoresong}
+                    >
+                      <span>加载更多歌曲</span>
+                    </Button>
+                  </TableBody>
+                </Table>
               )}
-            </TableContainer>
-          </Paper>
-        </CardContent>
-      </Card>
+            </>
+          )}
+        </TableContainer>
+      </Paper>
     </main>
   );
 }
