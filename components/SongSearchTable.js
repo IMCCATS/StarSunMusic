@@ -1,6 +1,6 @@
 "use client";
 import * as React from "react";
-import $ from "jquery";
+import $, { error } from "jquery";
 import { CurrentSongContext } from "../src/app/dashboard/page";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -32,6 +32,7 @@ import { Turnstile } from "@marsidev/react-turnstile";
 import supabase from "@/app/api/supabase";
 import { message } from "antd";
 import copy from "copy-to-clipboard";
+import { SearchSong } from "./common/fetchapi";
 
 export default function SongSearchTable({ setcanlistplay }) {
   const { setCurrentSong } = React.useContext(CurrentSongContext);
@@ -210,61 +211,19 @@ export default function SongSearchTable({ setcanlistplay }) {
     setSongs([]);
     setIsLoading(true);
     setwz("正在搜索中哦~\n搜索可能较慢，请耐心等待哦~");
-    setTimeout(() => {
-      $.ajax({
-        url: "https://api.gumengya.com/Api/Music",
-        type: "get",
-        dataType: "json",
-
-        data: {
-          format: "json",
-          text: `${searchTerm}`,
-          site: "kugou",
-        },
-        beforeSend: function () {
-          //请求中执行的代码
-        },
-        complete: function () {
-          //请求完成执行的代码
-        },
-        error: function () {
+    SearchSong("kugou", searchTerm)
+      .then((e) => {
+        if (Array.isArray(e)) {
+          setSongs(e);
+        } else {
           setSongs([]);
-          setIsLoading(false);
-        },
-        success: function (res) {
-          $.Deferred().resolve(res);
-          // 状态码 200 表示请求成功
-          if (res) {
-            const CCJson = ConvertJson(res.data);
-            setSongs(CCJson);
-            setIsLoading(false);
-          } else {
-            setSongs([]);
-            setIsLoading(false);
-          }
-        },
+        }
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        setSongs([]);
+        setIsLoading(false);
       });
-    }, 1500);
-  };
-
-  const ConvertJson = function (serverJson) {
-    const data = serverJson;
-    const convertedJsons = [];
-
-    for (let i = 0; i < data.length; i++) {
-      const convertedJson = {
-        songid: data[i].songid,
-        title: data[i].title,
-        artist: data[i].author,
-        author: data[i].author,
-        cover: data[i].pic,
-        lyric: data[i].lrc,
-        link: data[i].url,
-      };
-      convertedJsons.push(convertedJson);
-    }
-
-    return convertedJsons;
   };
 
   const handleSearchMG = () => {
@@ -275,41 +234,19 @@ export default function SongSearchTable({ setcanlistplay }) {
     setSongs([]);
     setIsLoading(true);
     setwz("正在搜索中哦~\n搜索可能较慢，请耐心等待哦~");
-    setTimeout(() => {
-      $.ajax({
-        url: "https://api.gumengya.com/Api/Music",
-        type: "get",
-        dataType: "json",
-
-        data: {
-          format: "json",
-          text: `${searchTerm}`,
-          site: "migu",
-        },
-        beforeSend: function () {
-          //请求中执行的代码
-        },
-        complete: function () {
-          //请求完成执行的代码
-        },
-        error: function () {
+    SearchSong("migu", searchTerm)
+      .then((e) => {
+        if (Array.isArray(e)) {
+          setSongs(e);
+        } else {
           setSongs([]);
-          setIsLoading(false);
-        },
-        success: function (res) {
-          $.Deferred().resolve(res);
-          // 状态码 200 表示请求成功
-          if (res) {
-            const CCJson = ConvertJson(res.data);
-            setSongs(CCJson);
-            setIsLoading(false);
-          } else {
-            setSongs([]);
-            setIsLoading(false);
-          }
-        },
+        }
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        setSongs([]);
+        setIsLoading(false);
       });
-    }, 1500);
   };
 
   const handleSearchSJK = () => {
@@ -356,7 +293,25 @@ export default function SongSearchTable({ setcanlistplay }) {
 
     return convertedJsons;
   };
+  const ConvertJson = function (serverJson) {
+    const data = serverJson;
+    const convertedJsons = [];
 
+    for (let i = 0; i < data.length; i++) {
+      const convertedJson = {
+        songid: data[i].songid,
+        title: data[i].title,
+        artist: data[i].author,
+        author: data[i].author,
+        cover: data[i].pic,
+        lyric: data[i].lrc,
+        link: data[i].url,
+      };
+      convertedJsons.push(convertedJson);
+    }
+
+    return convertedJsons;
+  };
   const handleSearch = () => {
     if (!searchTerm) {
       messageApi.error("您没有输入搜索内容哦~");
@@ -365,40 +320,19 @@ export default function SongSearchTable({ setcanlistplay }) {
     setSongs([]);
     setIsLoading(true);
     setwz("正在搜索中哦~\n搜索可能较慢，请耐心等待哦~");
-    setTimeout(() => {
-      $.ajax({
-        url: "https://api.gumengya.com/Api/Music",
-        type: "get",
-        dataType: "json",
-
-        data: {
-          text: `${searchTerm}`,
-          site: "netease",
-        },
-        beforeSend: function () {
-          //请求中执行的代码
-        },
-        complete: function () {
-          //请求完成执行的代码
-        },
-        error: function () {
+    SearchSong("netease", searchTerm)
+      .then((e) => {
+        if (Array.isArray(e)) {
+          setSongs(e);
+        } else {
           setSongs([]);
-          setIsLoading(false);
-        },
-        success: function (res) {
-          $.Deferred().resolve(res);
-          // 状态码 200 表示请求成功
-          if (res) {
-            const datac = ConvertJson(res.data);
-            setSongs(datac);
-            setIsLoading(false);
-          } else {
-            setSongs([]);
-            setIsLoading(false);
-          }
-        },
+        }
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        setSongs([]);
+        setIsLoading(false);
       });
-    }, 1500);
   };
   const ClearHistory = () => {
     localStorage.removeItem("SearchHistory");
@@ -662,7 +596,7 @@ export default function SongSearchTable({ setcanlistplay }) {
                       marginTop: "15px",
                       marginRight: "10px",
                     }}
-                    disabled={searchdesabled}
+                    // disabled={searchdesabled}
                   >
                     <span>搜索</span>
                   </Button>
