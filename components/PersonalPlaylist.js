@@ -20,6 +20,7 @@ import { useRouter } from "next/navigation";
 import { Drawer, List, Empty, message } from "antd";
 import { ExperimentTwoTone } from "@ant-design/icons";
 import supabase from "@/app/api/supabase";
+import { HandleListenSong } from "./common/fetchapi";
 const crypto = require("crypto");
 
 const PersonalPlaylist = () => {
@@ -225,41 +226,19 @@ const PersonalPlaylist = () => {
   // 播放歌曲的函数
   const handleListenClick = (songId) => {
     setdisabled(true);
-    setTimeout(() => {
-      $.ajax({
-        url: "https://api.paugram.com/netease/",
-        type: "get",
-        dataType: "json",
-
-        data: {
-          id: `${songId}`,
-        },
-        beforeSend: function () {
-          //请求中执行的代码
-        },
-        complete: function () {
-          //请求完成执行的代码
-        },
-        error: function () {
-          setdisabled(false);
-        },
-        success: function (res) {
-          $.Deferred().resolve(res);
-          // 状态码 200 表示请求成功
-          if (res) {
-            setdisabled(false);
-            setcanlistplay(true);
-            setplayingpage("LocalGD");
-            setLastPlayedSongIndex(
-              playList.findIndex((song) => song.songId === songId)
-            );
-            setCurrentSong(res);
-          } else {
-            setdisabled(false);
-          }
-        },
+    HandleListenSong(songId)
+      .then((e) => {
+        setdisabled(false);
+        setcanlistplay(true);
+        setplayingpage("LocalGD");
+        setLastPlayedSongIndex(
+          playList.findIndex((song) => song.songId === songId)
+        );
+        setCurrentSong(e);
+      })
+      .catch((error) => {
+        setdisabled(false);
       });
-    }, 1500);
   };
 
   const handleShare = async () => {
