@@ -186,6 +186,7 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
       audioRef.current.src = currentSong.link;
       audioRef.current.play();
       audioRef.current.addEventListener("play", () => setIsPlaying(true));
+      audioRef.current.addEventListener("timeupdate", handleAudioTimeUpdate);
       audioRef.current.addEventListener("pause", () => setIsPlaying(false));
       audioRef.current.addEventListener("ended", () => setIsPlaying(false));
 
