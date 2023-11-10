@@ -1,6 +1,6 @@
 "use client";
 import * as React from "react";
-import $ from "jquery";
+import $, { error } from "jquery";
 import { CurrentSongContext } from "../src/app/dashboard/page";
 import {
   Button,
@@ -23,6 +23,7 @@ import {
   ButtonGroup,
 } from "@mui/material";
 import { message } from "antd";
+import { HandleListenSong, HandlePlayList } from "./common/fetchapi";
 const playlists = [
   { name: "短视频各样卡点/热血音乐-燃到极致！", id: "5335051744" },
   { name: "纯爱硬曲 高燃漫剪BGM", id: "8550146295" },
@@ -73,75 +74,30 @@ const PlaylistComponent = ({ playlist }) => {
 
   const fetchMusicList = () => {
     const playlistId = playlist.id;
-    $.ajax({
-      url: "https://api.yimian.xyz/msc/",
-      type: "get",
-      dataType: "json",
-      data: {
-        type: "playlist",
-        id: `${playlistId}`,
-      },
-      beforeSend: function () {
-        //请求中执行的代码
-      },
-      complete: function () {
-        //请求完成执行的代码
-      },
-      error: function () {
+    HandlePlayList(playlistId)
+      .then((e) => {
+        setSongs(e);
+        setIsLoading(false);
+      })
+      .catch((error) => {
         setSongs([]);
         setIsLoading(false);
-      },
-      success: function (res) {
-        $.Deferred().resolve(res);
-        // 状态码 200 表示请求成功
-        if (res) {
-          setSongs(res);
-          setIsLoading(false);
-        } else {
-          setSongs([]);
-          setIsLoading(false);
-        }
-      },
-    });
+      });
   };
   const [disabled, setdisabled] = React.useState(false);
   const handleListenClick = (songId) => {
     setdisabled(true);
-    setTimeout(() => {
-      $.ajax({
-        url: "https://api.paugram.com/netease/",
-        type: "get",
-        dataType: "json",
-
-        data: {
-          id: `${songId}`,
-        },
-        beforeSend: function () {
-          //请求中执行的代码
-        },
-        complete: function () {
-          //请求完成执行的代码
-        },
-        error: function () {
-          setdisabled(false);
-        },
-        success: function (res) {
-          $.Deferred().resolve(res);
-          // 状态码 200 表示请求成功
-          if (res) {
-            setCurrentSong(res);
-            setdisabled(false);
-            setLastPlayedSongIndex(
-              songs.findIndex((song) => song.id === songId)
-            );
-            setcanlistplay(true);
-            setplayingpage(playlist.name);
-          } else {
-            setdisabled(false);
-          }
-        },
+    HandleListenSong(songId)
+      .then((e) => {
+        setCurrentSong(e);
+        setdisabled(false);
+        setLastPlayedSongIndex(songs.findIndex((song) => song.id === songId));
+        setcanlistplay(true);
+        setplayingpage(playlist.name);
+      })
+      .catch((error) => {
+        setdisabled(false);
       });
-    }, 1500);
   };
 
   const lastIndex = currentPage * itemsPerPage;

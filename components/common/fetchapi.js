@@ -19,6 +19,7 @@ const ConvertJson = function (serverJson) {
 
   return convertedJsons;
 };
+
 export const SearchSong = async (SearchPlatform, SearchTerm) => {
   return new Promise((resolve, reject) => {
     $.ajax({
@@ -45,6 +46,61 @@ export const SearchSong = async (SearchPlatform, SearchTerm) => {
         $.Deferred().resolve(res);
         const CCJson = ConvertJson(res.data);
         resolve(CCJson);
+      },
+    });
+  });
+};
+
+export const HandleListenSong = async (SongId) => {
+  return new Promise((resolve, reject) => {
+    $.ajax({
+      url: "https://api.paugram.com/netease/",
+      type: "get",
+      dataType: "json",
+      data: {
+        id: `${SongId}`,
+      },
+      beforeSend: function () {
+        //请求中执行的代码
+      },
+      complete: function () {
+        //请求完成执行的代码
+      },
+      error: function () {
+        $.Deferred().reject("请求失败，请稍后重试~");
+        reject("请求失败，请稍后重试~");
+      },
+      success: function (res) {
+        $.Deferred().resolve(res);
+        resolve(res);
+      },
+    });
+  });
+};
+
+export const HandlePlayList = async (ListId) => {
+  return new Promise((resolve, reject) => {
+    $.ajax({
+      url: "https://api.yimian.xyz/msc/",
+      type: "get",
+      dataType: "json",
+      data: {
+        type: "playlist",
+        id: `${ListId}`,
+      },
+      beforeSend: function () {
+        //请求中执行的代码
+      },
+      complete: function () {
+        //请求完成执行的代码
+      },
+      error: function () {
+        $.Deferred().reject("请求失败，请稍后重试~");
+        reject("请求失败，请稍后重试~");
+      },
+      success: function (res) {
+        $.Deferred().resolve(res);
+        resolve(res);
       },
     });
   });

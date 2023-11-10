@@ -15,8 +15,6 @@ import {
   TableBody,
   Table,
   Paper,
-  CardContent,
-  Card,
   TextField,
   Box,
   CircularProgress,
@@ -32,7 +30,7 @@ import { Turnstile } from "@marsidev/react-turnstile";
 import supabase from "@/app/api/supabase";
 import { message } from "antd";
 import copy from "copy-to-clipboard";
-import { SearchSong } from "./common/fetchapi";
+import { HandleListenSong, SearchSong } from "./common/fetchapi";
 
 export default function SongSearchTable({ setcanlistplay }) {
   const { setCurrentSong } = React.useContext(CurrentSongContext);
@@ -132,6 +130,7 @@ export default function SongSearchTable({ setcanlistplay }) {
     ref.current.reset();
     setisrobot(true);
   };
+
   const searchOpen = () => {
     if (searchTerm) {
       if (searchTerm != "") {
@@ -149,39 +148,18 @@ export default function SongSearchTable({ setcanlistplay }) {
     setSearchTerm(value);
   };
   const [disabled, setdisabled] = React.useState(false);
+
   const handleListenClick = (songId) => {
     setdisabled(true);
-    setTimeout(() => {
-      $.ajax({
-        url: "https://api.paugram.com/netease/",
-        type: "get",
-        dataType: "json",
-
-        data: {
-          id: `${songId}`,
-        },
-        beforeSend: function () {
-          //请求中执行的代码
-        },
-        complete: function () {
-          //请求完成执行的代码
-        },
-        error: function () {
-          setdisabled(false);
-        },
-        success: function (res) {
-          $.Deferred().resolve(res);
-          // 状态码 200 表示请求成功
-          if (res) {
-            setCurrentSong(res);
-            setdisabled(false);
-            setcanlistplay(false);
-          } else {
-            setdisabled(false);
-          }
-        },
+    HandleListenSong(songId)
+      .then((e) => {
+        setCurrentSong(e);
+        setdisabled(false);
+        setcanlistplay(false);
+      })
+      .catch((error) => {
+        setdisabled(false);
       });
-    }, 1500);
   };
 
   const addSongToLocalPlaylist = (song) => {
@@ -312,6 +290,7 @@ export default function SongSearchTable({ setcanlistplay }) {
 
     return convertedJsons;
   };
+
   const handleSearch = () => {
     if (!searchTerm) {
       messageApi.error("您没有输入搜索内容哦~");
@@ -334,6 +313,7 @@ export default function SongSearchTable({ setcanlistplay }) {
         setIsLoading(false);
       });
   };
+
   const ClearHistory = () => {
     localStorage.removeItem("SearchHistory");
     SetSearchHistory([]);
@@ -596,7 +576,7 @@ export default function SongSearchTable({ setcanlistplay }) {
                       marginTop: "15px",
                       marginRight: "10px",
                     }}
-                    // disabled={searchdesabled}
+                    disabled={searchdesabled}
                   >
                     <span>搜索</span>
                   </Button>

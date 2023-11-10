@@ -19,6 +19,7 @@ import {
   ButtonGroup,
 } from "@mui/material";
 import { message } from "antd";
+import { HandleListenSong, HandlePlayList } from "./common/fetchapi";
 export default function TopBar() {
   const [messageApi, contextHolder] = message.useMessage();
   const {
@@ -51,74 +52,30 @@ export default function TopBar() {
   }, [isPlayComplete]);
 
   const fetchMusicList = () => {
-    $.ajax({
-      url: "https://api.yimian.xyz/msc/",
-      type: "get",
-      dataType: "json",
-      data: {
-        type: "playlist",
-        id: `19723756`,
-      },
-      beforeSend: function () {
-        //请求中执行的代码
-      },
-      complete: function () {
-        //请求完成执行的代码
-      },
-      error: function () {
+    HandlePlayList("19723756")
+      .then((e) => {
+        setSongs(e);
+        setIsLoading(false);
+      })
+      .catch((error) => {
         setSongs([]);
         setIsLoading(false);
-      },
-      success: function (res) {
-        $.Deferred().resolve(res);
-        // 状态码 200 表示请求成功
-        if (res) {
-          setSongs(res);
-          setIsLoading(false);
-        } else {
-          setIsLoading(false);
-        }
-      },
-    });
+      });
   };
   const [disabled, setdisabled] = React.useState(false);
   const handleListenClick = (songId) => {
     setdisabled(true);
-    setTimeout(() => {
-      $.ajax({
-        url: "https://api.paugram.com/netease/",
-        type: "get",
-        dataType: "json",
-
-        data: {
-          id: `${songId}`,
-        },
-        beforeSend: function () {
-          //请求中执行的代码
-        },
-        complete: function () {
-          //请求完成执行的代码
-        },
-        error: function () {
-          setdisabled(false);
-        },
-        success: function (res) {
-          $.Deferred().resolve(res);
-          // 状态码 200 表示请求成功
-          if (res) {
-            setCurrentSong(res);
-            setdisabled(false);
-            setLastPlayedSongIndex(
-              songs.findIndex((song) => song.id === songId)
-            );
-            setcanlistplay(true);
-            setplayingpage("TopBarBS");
-          } else {
-            setdisabled(false);
-          }
-        },
+    HandleListenSong(songId)
+      .then((e) => {
+        setCurrentSong(e);
+        setdisabled(false);
+        setLastPlayedSongIndex(songs.findIndex((song) => song.id === songId));
+        setcanlistplay(true);
+        setplayingpage("TopBarBS");
+      })
+      .catch((error) => {
+        setdisabled(false);
       });
-    }, 1500);
   };
 
   const lastIndex = currentPage * itemsPerPage;
