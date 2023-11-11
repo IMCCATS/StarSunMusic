@@ -23,7 +23,7 @@ const ConvertJson = function (serverJson) {
   return convertedJsons;
 };
 
-export const SearchSong = cache(async (SearchPlatform, SearchTerm) => {
+export const SearchSong = async (SearchPlatform, SearchTerm) => {
   return new Promise((resolve, reject) => {
     $.ajax({
       url: "https://api.gumengya.com/Api/Music",
@@ -52,7 +52,7 @@ export const SearchSong = cache(async (SearchPlatform, SearchTerm) => {
       },
     });
   });
-});
+};
 
 export const HandleListenSong = cache(async (SongId) => {
   return new Promise((resolve, reject) => {
