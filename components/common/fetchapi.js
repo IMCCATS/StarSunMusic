@@ -1,4 +1,7 @@
 import $ from "jquery";
+import { cache } from "react";
+
+export const revalidate = 3600; //数据缓存时间
 
 const ConvertJson = function (serverJson) {
   const data = serverJson;
@@ -20,7 +23,7 @@ const ConvertJson = function (serverJson) {
   return convertedJsons;
 };
 
-export const SearchSong = async (SearchPlatform, SearchTerm) => {
+export const SearchSong = cache(async (SearchPlatform, SearchTerm) => {
   return new Promise((resolve, reject) => {
     $.ajax({
       url: "https://api.gumengya.com/Api/Music",
@@ -49,9 +52,9 @@ export const SearchSong = async (SearchPlatform, SearchTerm) => {
       },
     });
   });
-};
+});
 
-export const HandleListenSong = async (SongId) => {
+export const HandleListenSong = cache(async (SongId) => {
   return new Promise((resolve, reject) => {
     $.ajax({
       url: "https://api.paugram.com/netease/",
@@ -76,9 +79,9 @@ export const HandleListenSong = async (SongId) => {
       },
     });
   });
-};
+});
 
-export const HandlePlayList = async (ListId) => {
+export const HandlePlayList = cache(async (ListId) => {
   return new Promise((resolve, reject) => {
     $.ajax({
       url: "https://api.yimian.xyz/msc/",
@@ -104,4 +107,4 @@ export const HandlePlayList = async (ListId) => {
       },
     });
   });
-};
+});
