@@ -15,14 +15,6 @@ import JuanZeng from "../../../components/common/juanzeng";
 import ScrollToTopFab from "../../../components/common/ScrollToTopFab";
 import PersonalPlaylist from "../../../components/PersonalPlaylist";
 import UpdateDialog from "../../../components/common/updatedialog";
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  Button,
-  DialogActions,
-} from "@mui/material";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
@@ -57,7 +49,6 @@ export default function BasicCard() {
     window.addEventListener("storage", (e) => {
       if (e.key) {
         localStorage.setItem(e.key, e.oldValue);
-        // handleClickOpen();
       }
     });
   };
@@ -65,43 +56,12 @@ export default function BasicCard() {
     AddLocalStorageDebug();
     CheckPolicy();
   }, []);
-  const [openDialog, setOpenDialog] = React.useState(false);
-
-  const handleClickOpen = () => {
-    setOpenDialog(true);
-  };
-
-  const handleClose = () => {
-    setOpenDialog(false);
-  };
   return (
     <main>
       <link
         rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Noto+Sans+SC:100,300,400,500,700,900"
       />
-      <Dialog open={openDialog} onClose={handleClose}>
-        <DialogTitle>
-          <span>🚨不要修改程序的本地数据！！！</span>
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            <span>
-              如果您修改了程序的本地数据，轻则可能会导致程序无法正常运作，重则可能会导致程序出现不可意料的结果！！！
-            </span>
-            <br />
-            <br />
-            <span>
-              保持程序本地数据的合法性会让大家都有一个好的《星阳音乐系统》使用哦~
-            </span>
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>
-            <span>我知道啦~</span>
-          </Button>
-        </DialogActions>
-      </Dialog>
       <meta
         httpEquiv="Content-Security-Policy"
         content="upgrade-insecure-requests"

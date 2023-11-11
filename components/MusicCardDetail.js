@@ -18,17 +18,14 @@ import {
 import PropTypes from "prop-types";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import { useRouter } from "next/navigation";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
 import RepeatOneIcon from "@mui/icons-material/RepeatOne";
 
-const MusicCard = ({ currentSong, setisPlayComplete }) => {
+const MusicCard = ({ currentSong }) => {
   const [isAudioPlayable, setIsAudioPlayable] = React.useState(true);
   const [isPlaying, setIsPlaying] = React.useState(false);
-  const [volume, setVolume] = React.useState(100);
   const [value, setValue] = React.useState(0);
-  const router = useRouter();
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -291,7 +288,6 @@ const MusicCard = ({ currentSong, setisPlayComplete }) => {
   };
 
   const handleTogglePlay = () => {
-    audioRef.current.volume = volume / 100;
     if (isPlaying) {
       audioRef.current.pause(); // 暂停音频
     } else {
@@ -307,11 +303,6 @@ const MusicCard = ({ currentSong, setisPlayComplete }) => {
     } else if (isReplay === false) {
       setisReplay(true);
     }
-  };
-
-  const handleVolumeChange = (event, newValue) => {
-    setVolume(newValue);
-    audioRef.current.volume = newValue / 100;
   };
 
   const formatTime = (timeInSeconds) => {

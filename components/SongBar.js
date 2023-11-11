@@ -1,6 +1,5 @@
 "use client";
 import * as React from "react";
-import $, { error } from "jquery";
 import { CurrentSongContext } from "../src/app/dashboard/page";
 import {
   Button,

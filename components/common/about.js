@@ -123,6 +123,8 @@ export default function Advertisement() {
                 <br />
                 1.0.0_202310021218：搜索歌曲支持加载更多，修复了一些已知问题；
                 <br />
+                1.0.0_202311051500：修复了一些已知问题；
+                <br />
                 {appversion}：{appupdatecontent}
               </span>
             </Typography>
