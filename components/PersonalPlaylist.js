@@ -1,6 +1,5 @@
 import * as React from "react";
 import { CurrentSongContext } from "../src/app/dashboard/page";
-import $ from "jquery";
 import {
   Card,
   CardContent,

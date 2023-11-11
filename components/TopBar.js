@@ -1,9 +1,9 @@
 "use client";
 import * as React from "react";
-import $ from "jquery";
 import { CurrentSongContext } from "../src/app/dashboard/page";
 import {
   Button,
+  Typography,
   TableRow,
   TableHead,
   TableContainer,
@@ -114,6 +114,9 @@ export default function TopBar() {
       </Backdrop>
       <Card sx={{ minWidth: 275 }} style={{ marginTop: "15px" }}>
         <CardContent>
+          <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+            <span>热歌榜</span>
+          </Typography>
           <Paper>
             <TableContainer>
               {isLoading ? (
@@ -138,7 +141,7 @@ export default function TopBar() {
                     <TableHead>
                       <TableRow>
                         <TableCell>
-                          <span>热歌榜 · 排名</span>
+                          <span>排名</span>
                         </TableCell>
                         <TableCell>
                           <span>歌曲图片</span>
