@@ -20,12 +20,17 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { Box } from "@mui/material";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 export const CurrentSongContext = React.createContext(null);
-export default function BasicCard() {
+export const ColorModeContext = React.createContext({
+  toggleColorMode: () => {},
+});
+function StarSunMusic() {
   const router = useRouter();
   const [currentSong, setCurrentSong] = React.useState(null);
   const [isPlayComplete, setisPlayComplete] = React.useState(false);
@@ -130,5 +135,34 @@ export default function BasicCard() {
       <JuanZeng />
       <About />
     </main>
+  );
+}
+export default function ToggleColorMode() {
+  const [mode, setMode] = React.useState("light");
+  const colorMode = React.useMemo(
+    () => ({
+      toggleColorMode: () => {
+        setMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
+      },
+    }),
+    []
+  );
+
+  const theme = React.useMemo(
+    () =>
+      createTheme({
+        palette: {
+          mode,
+        },
+      }),
+    [mode]
+  );
+
+  return (
+    <ColorModeContext.Provider value={{ colorMode }}>
+      <ThemeProvider theme={theme}>
+        <StarSunMusic />
+      </ThemeProvider>
+    </ColorModeContext.Provider>
   );
 }
