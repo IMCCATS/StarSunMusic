@@ -16,11 +16,14 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import CircularProgress from "@mui/material/CircularProgress";
 import CloseIcon from "@mui/icons-material/Close";
 import UserAgreementAndPrivacyPolicy from "../../components/common/UserAgreementAndPrivacyPolicy";
+import { useRouter } from "next/navigation";
+
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 const HomePage = () => {
+  const router = useRouter();
   const [isLoading, setIsLoading] = React.useState(false);
   const [open, setOpen] = React.useState(false);
 
@@ -42,12 +45,12 @@ const HomePage = () => {
     localStorage.setItem("isAgreedPolicy", "1");
     setIsLoading(true);
     setOpen(false);
-    window.location.href = "/dashboard";
+    router.push("/dashboard");
   };
 
   const handleClickPolicyed = () => {
     setIsLoading(true);
-    window.location.href = "/dashboard";
+    router.push("/dashboard");
   };
 
   return (
