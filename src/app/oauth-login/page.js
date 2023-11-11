@@ -13,6 +13,7 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useRouter } from "next/navigation";
 import { message } from "antd";
+import Script from "next/script";
 const crypto = require("crypto");
 
 const LoginPage = () => {
@@ -69,57 +70,77 @@ const LoginPage = () => {
     setIsLoading(false);
   };
   const handleClickOpen = async () => {
-    if (checkPhone(username)) {
-      setIsLoading(true);
-      Jijian.verify({
-        appId: "b54246d06f6a68320927641a", //应用appId
-        show: "inner", // 包括 inner，dialog两种方式
-        option: "barcode", // 当 show='inner' 时，此处传元素的 id；当 show='dialog' 时，此值为 null；
-        mobile: username, //用户手机
-        success: function (mobileidc, token) {
-          function generateRandomString() {
-            var result = "";
-            var characters =
-              "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            var charactersLength = characters.length;
-            for (var i = 0; i < 6; i++) {
-              result += characters.charAt(
-                Math.floor(Math.random() * charactersLength)
-              );
+    initGeetest4(
+      {
+        captchaId: "c1677059124b92b9dfb3c8919755b459",
+        product: "bind",
+      },
+      function (captcha) {
+        // captcha为验证码实例
+        captcha.appendTo("#captcha");
+        captcha
+          .onReady(function () {
+            captcha.showCaptcha();
+          })
+          .onSuccess(function () {
+            if (checkPhone(username)) {
+              setIsLoading(true);
+              Jijian.verify({
+                appId: "b54246d06f6a68320927641a", //应用appId
+                show: "inner", // 包括 inner，dialog两种方式
+                option: "barcode", // 当 show='inner' 时，此处传元素的 id；当 show='dialog' 时，此值为 null；
+                mobile: username, //用户手机
+                success: function (mobileidc, token) {
+                  function generateRandomString() {
+                    var result = "";
+                    var characters =
+                      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+                    var charactersLength = characters.length;
+                    for (var i = 0; i < 6; i++) {
+                      result += characters.charAt(
+                        Math.floor(Math.random() * charactersLength)
+                      );
+                    }
+                    return result;
+                  }
+                  setlogined(true);
+                  localStorage.setItem("userprofile", mobileidc);
+                  localStorage.setItem("mobiletoken", token);
+                  const skey = generateRandomString();
+                  localStorage.setItem("skey", skey);
+                  async function sha256(input) {
+                    return crypto
+                      .createHash("sha256")
+                      .update(input)
+                      .digest("hex");
+                  }
+                  const text = skey + mobileidc + token + skey;
+                  sha256(text).then((ykey) => {
+                    localStorage.setItem("ykey", ykey);
+                  });
+                  setTimeout(function () {
+                    handleGo();
+                  }, 1000);
+                },
+                onshow: function (qrcode) {
+                  messageApi.success("快扫描二维码登录吧~");
+                },
+                cancel: function () {
+                  setIsLoading(false);
+                },
+                fail: function (msg) {
+                  setIsLoading(false);
+                },
+              });
             }
-            return result;
-          }
-          setlogined(true);
-          localStorage.setItem("userprofile", mobileidc);
-          localStorage.setItem("mobiletoken", token);
-          const skey = generateRandomString();
-          localStorage.setItem("skey", skey);
-          async function sha256(input) {
-            return crypto.createHash("sha256").update(input).digest("hex");
-          }
-          const text = skey + mobileidc + token + skey;
-          sha256(text).then((ykey) => {
-            localStorage.setItem("ykey", ykey);
           });
-          setTimeout(function () {
-            handleGo();
-          }, 1000);
-        },
-        onshow: function (qrcode) {
-          messageApi.success("快扫描二维码登录吧~");
-        },
-        cancel: function () {
-          setIsLoading(false);
-        },
-        fail: function (msg) {
-          setIsLoading(false);
-        },
-      });
-    }
+      }
+    );
   };
 
   return (
     <Container>
+      <Script src="https://static.geetest.com/v4/gt4.js" />
       <link
         rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Noto+Sans+SC:100,300,400,500,700,900"
@@ -143,6 +164,7 @@ const LoginPage = () => {
         <Typography variant="h4" component="h4" gutterBottom>
           <span>登录·星阳音乐系统</span>
         </Typography>
+        <div id="captcha" />
         {isLoading ? (
           <div>
             {logined ? (
