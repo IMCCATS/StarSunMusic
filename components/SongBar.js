@@ -24,6 +24,9 @@ import {
 import { message } from "antd";
 import { HandleListenSong, HandlePlayList } from "./common/fetchapi";
 const playlists = [
+  { name: "高考必背古诗文72篇", id: "2295399719" },
+  { name: "高考必背篇目", id: "7564558989" },
+  { name: "初中必背古诗词", id: "2112252573" },
   { name: "短视频各样卡点/热血音乐-燃到极致！", id: "5335051744" },
   { name: "纯爱硬曲 高燃漫剪BGM", id: "8550146295" },
   { name: "精神乌托邦 | 电音如烟花般绽放希望与美好", id: "8400492541" },
