@@ -21,7 +21,7 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { Box } from "@mui/material";
+import LikeSongBar from "../../../components/LikeSongsBar";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -128,6 +128,7 @@ function StarSunMusic() {
           </Accordion>
           <TopBar />
           <TopBarBS />
+          <LikeSongBar />
           <SongBar />
         </div>
         <ScrollToTopFab />
