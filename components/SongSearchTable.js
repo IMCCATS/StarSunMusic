@@ -32,7 +32,11 @@ import {
 import supabase from "@/app/api/supabase";
 import { message } from "antd";
 import copy from "copy-to-clipboard";
-import { HandleListenSong, SearchSong } from "./common/fetchapi";
+import {
+  HandleListenSong,
+  LoadMoreSearchSong,
+  SearchSong,
+} from "./common/fetchapi";
 import Script from "next/script";
 
 export default function SongSearchTable({ setcanlistplay }) {
@@ -305,25 +309,6 @@ export default function SongSearchTable({ setcanlistplay }) {
 
     return convertedJsons;
   };
-  const ConvertJson = function (serverJson) {
-    const data = serverJson;
-    const convertedJsons = [];
-
-    for (let i = 0; i < data.length; i++) {
-      const convertedJson = {
-        songid: data[i].songid,
-        title: data[i].title,
-        artist: data[i].author,
-        author: data[i].author,
-        cover: data[i].pic,
-        lyric: data[i].lrc,
-        link: data[i].url,
-      };
-      convertedJsons.push(convertedJson);
-    }
-
-    return convertedJsons;
-  };
 
   const handleSearch = async () => {
     if (!searchTerm) {
@@ -354,146 +339,41 @@ export default function SongSearchTable({ setcanlistplay }) {
 
   const loadmoresong = (PlatF) => {
     setdisabled(true);
+    if (!searchTermC) {
+      messageApi.error("您没有输入搜索内容哦~");
+      return;
+    }
+    let page;
     if (PlatF === "netease") {
-      if (!searchTermC) {
-        messageApi.error("您没有输入搜索内容哦~");
-        return;
-      }
-      setTimeout(() => {
-        $.ajax({
-          url: "https://api.gumengya.com/Api/Music",
-          type: "get",
-          dataType: "json",
-
-          data: {
-            text: `${searchTermC}`,
-            page: `${neteasesearchxh + 1}`,
-            site: "netease",
-          },
-          beforeSend: function () {
-            //请求中执行的代码
-          },
-          complete: function () {
-            //请求完成执行的代码
-          },
-          error: function () {
-            setdisabled(false);
-          },
-          success: function (res) {
-            $.Deferred().resolve(res);
-            // 状态码 200 表示请求成功
-            if (res) {
-              if (res.data) {
-                const newsongArray = res.data;
-                if (Array.isArray(newsongArray) && newsongArray.length > 0) {
-                  const newsongArrays = ConvertJson(newsongArray);
-                  setNeteaseSongs((prevSongs) =>
-                    prevSongs.concat(newsongArrays)
-                  );
-                  const newxh = neteasesearchxh + 1;
-                  setneteasesearchxh(newxh);
-                }
-              }
-              setdisabled(false);
-            } else {
-              setdisabled(false);
-            }
-          },
-        });
-      }, 1500);
+      page = neteasesearchxh;
+    } else if (PlatF === "kugou") {
+      page = kgsearchxh;
+    } else if (PlatF === "migu") {
+      page = mgsearchxh;
     }
-    if (PlatF === "kugou") {
-      if (!searchTermC) {
-        messageApi.error("您没有输入搜索内容哦~");
-        return;
-      }
-      setTimeout(() => {
-        $.ajax({
-          url: "https://api.gumengya.com/Api/Music",
-          type: "get",
-          dataType: "json",
-
-          data: {
-            text: `${searchTermC}`,
-            page: `${kgsearchxh + 1}`,
-            site: "kugou",
-          },
-          beforeSend: function () {
-            //请求中执行的代码
-          },
-          complete: function () {
-            //请求完成执行的代码
-          },
-          error: function () {
-            setdisabled(false);
-          },
-          success: function (res) {
-            $.Deferred().resolve(res);
-            // 状态码 200 表示请求成功
-            if (res) {
-              if (res.data) {
-                const newsongArray = res.data;
-                if (Array.isArray(newsongArray) && newsongArray.length > 0) {
-                  const newsongArrays = ConvertJson(newsongArray);
-                  setKGSongs((prevSongs) => prevSongs.concat(newsongArrays));
-                  const newxh = kgsearchxh + 1;
-                  setKGsearchxh(newxh);
-                }
-              }
-              setdisabled(false);
-            } else {
-              setdisabled(false);
-            }
-          },
-        });
-      }, 1500);
-    }
-    if (PlatF === "migu") {
-      if (!searchTermC) {
-        messageApi.error("您没有输入搜索内容哦~");
-        return;
-      }
-      setTimeout(() => {
-        $.ajax({
-          url: "https://api.gumengya.com/Api/Music",
-          type: "get",
-          dataType: "json",
-
-          data: {
-            text: `${searchTermC}`,
-            page: `${mgsearchxh + 1}`,
-            site: "migu",
-          },
-          beforeSend: function () {
-            //请求中执行的代码
-          },
-          complete: function () {
-            //请求完成执行的代码
-          },
-          error: function () {
-            setdisabled(false);
-          },
-          success: function (res) {
-            $.Deferred().resolve(res);
-            // 状态码 200 表示请求成功
-            if (res) {
-              if (res.data) {
-                const newsongArray = res.data;
-                if (Array.isArray(newsongArray) && newsongArray.length > 0) {
-                  const newsongArrays = ConvertJson(newsongArray);
-                  setMGSongs((prevSongs) => prevSongs.concat(newsongArrays));
-                  const newxh = mgsearchxh + 1;
-                  setMGsearchxh(newxh);
-                }
-              }
-              setdisabled(false);
-            } else {
-              setdisabled(false);
-            }
-          },
-        });
-      }, 1500);
-    }
+    const pagenow = page + 1;
+    LoadMoreSearchSong(searchTermC, PlatF, pagenow)
+      .then((res) => {
+        const newsongArray = res;
+        if (Array.isArray(newsongArray) && newsongArray.length > 0) {
+          if (PlatF === "netease") {
+            setNeteaseSongs((prevSongs) => prevSongs.concat(newsongArray));
+            setneteasesearchxh(pagenow);
+          } else if (PlatF === "kugou") {
+            setKGSongs((prevSongs) => prevSongs.concat(newsongArray));
+            setKGsearchxh(pagenow);
+          } else if (PlatF === "migu") {
+            setMGSongs((prevSongs) => prevSongs.concat(newsongArray));
+            setMGsearchxh(pagenow);
+          }
+        } else {
+          messageApi.info("暂无更多歌曲了哦！");
+        }
+        setdisabled(false);
+      })
+      .catch((error) => {
+        setdisabled(false);
+      });
   };
 
   return (

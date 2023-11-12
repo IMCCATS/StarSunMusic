@@ -108,3 +108,35 @@ export const HandlePlayList = cache(async (ListId) => {
     });
   });
 });
+
+export const LoadMoreSearchSong = cache(async (Term, Platform, Page) => {
+  return new Promise((resolve, reject) => {
+    $.ajax({
+      url: "https://api.gumengya.com/Api/Music",
+      type: "get",
+      dataType: "json",
+      data: {
+        format: "json",
+        text: `${Term}`,
+        site: `${Platform}`,
+        page: `${Page}`,
+      },
+      beforeSend: function () {
+        //请求中执行的代码
+      },
+      complete: function () {
+        //请求完成执行的代码
+      },
+      error: function () {
+        $.Deferred().reject("请求失败，请稍后重试~");
+        reject("请求失败，请稍后重试~");
+        return null;
+      },
+      success: function (res) {
+        $.Deferred().resolve(res);
+        const CCJson = ConvertJson(res.data);
+        resolve(CCJson);
+      },
+    });
+  });
+});
