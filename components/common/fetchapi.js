@@ -21,122 +21,93 @@ const ConvertJson = function (serverJson) {
   }
 
   return convertedJsons;
-};
+}; //转换服务器数据
+
+export const HandleAjax = cache(async (url, type, data) => {
+  return new Promise((resolve, reject) => {
+    $.ajax({
+      url: url,
+      type: type,
+      dataType: "json",
+      data: data,
+      beforeSend: function () {
+        //请求中执行的代码
+      },
+      complete: function () {
+        //请求完成执行的代码
+      },
+      error: function () {
+        $.Deferred().reject("请求失败，请稍后重试~");
+        reject("请求失败，请稍后重试~");
+      },
+      success: function (res) {
+        $.Deferred().resolve(res);
+        resolve(res);
+      },
+    });
+  });
+}); //全局网络请求函数
 
 export const SearchSong = cache(async (SearchPlatform, SearchTerm) => {
   return new Promise((resolve, reject) => {
-    $.ajax({
-      url: "https://api.gumengya.com/Api/Music",
-      type: "get",
-      dataType: "json",
-      data: {
-        format: "json",
-        text: `${SearchTerm}`,
-        site: `${SearchPlatform}`,
-      },
-      beforeSend: function () {
-        //请求中执行的代码
-      },
-      complete: function () {
-        //请求完成执行的代码
-      },
-      error: function () {
-        $.Deferred().reject("请求失败，请稍后重试~");
-        reject("请求失败，请稍后重试~");
-        return null;
-      },
-      success: function (res) {
-        $.Deferred().resolve(res);
+    HandleAjax("https://api.gumengya.com/Api/Music", "get", {
+      format: "json",
+      text: `${SearchTerm}`,
+      site: `${SearchPlatform}`,
+    })
+      .then((res) => {
         const CCJson = ConvertJson(res.data);
         resolve(CCJson);
-      },
-    });
+      })
+      .catch((error) => {
+        reject("请求失败，请稍后重试~");
+      });
   });
-});
+}); //歌曲搜索函数
 
 export const HandleListenSong = cache(async (SongId) => {
   return new Promise((resolve, reject) => {
-    $.ajax({
-      url: "https://api.paugram.com/netease/",
-      type: "get",
-      dataType: "json",
-      data: {
-        id: `${SongId}`,
-      },
-      beforeSend: function () {
-        //请求中执行的代码
-      },
-      complete: function () {
-        //请求完成执行的代码
-      },
-      error: function () {
-        $.Deferred().reject("请求失败，请稍后重试~");
-        reject("请求失败，请稍后重试~");
-      },
-      success: function (res) {
-        $.Deferred().resolve(res);
+    HandleAjax("https://api.paugram.com/netease/", "get", {
+      id: `${SongId}`,
+    })
+      .then((res) => {
         resolve(res);
-      },
-    });
+      })
+      .catch((error) => {
+        reject("请求失败，请稍后重试~");
+      });
   });
-});
+}); //歌曲解析函数
 
 export const HandlePlayList = cache(async (ListId) => {
   return new Promise((resolve, reject) => {
-    $.ajax({
-      url: "https://api.yimian.xyz/msc/",
-      type: "get",
-      dataType: "json",
-      data: {
-        type: "playlist",
-        id: `${ListId}`,
-      },
-      beforeSend: function () {
-        //请求中执行的代码
-      },
-      complete: function () {
-        //请求完成执行的代码
-      },
-      error: function () {
-        $.Deferred().reject("请求失败，请稍后重试~");
-        reject("请求失败，请稍后重试~");
-      },
-      success: function (res) {
-        $.Deferred().resolve(res);
+    HandleAjax("https://api.yimian.xyz/msc/", "get", {
+      type: "playlist",
+      id: `${ListId}`,
+    })
+      .then((res) => {
         resolve(res);
-      },
-    });
+      })
+      .catch((error) => {
+        reject("请求失败，请稍后重试~");
+      });
   });
-});
+}); //歌单解析函数
 
 export const LoadMoreSearchSong = cache(async (Term, Platform, Page) => {
   return new Promise((resolve, reject) => {
-    $.ajax({
-      url: "https://api.gumengya.com/Api/Music",
-      type: "get",
-      dataType: "json",
-      data: {
-        format: "json",
-        text: `${Term}`,
-        site: `${Platform}`,
-        page: `${Page}`,
-      },
-      beforeSend: function () {
-        //请求中执行的代码
-      },
-      complete: function () {
-        //请求完成执行的代码
-      },
-      error: function () {
-        $.Deferred().reject("请求失败，请稍后重试~");
-        reject("请求失败，请稍后重试~");
-        return null;
-      },
-      success: function (res) {
-        $.Deferred().resolve(res);
+    HandleAjax("https://api.gumengya.com/Api/Music", "get", {
+      format: "json",
+      text: `${Term}`,
+      site: `${Platform}`,
+      page: `${Page}`,
+    })
+      .then((res) => {
         const CCJson = ConvertJson(res.data);
         resolve(CCJson);
-      },
-    });
+      })
+      .catch((error) => {
+        reject("请求失败，请稍后重试~");
+      });
   });
-});
+}); //加载更多歌曲函数

@@ -6,6 +6,7 @@ import {
   AccordionSummary,
   AccordionDetails,
   Tooltip,
+  Link,
 } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import { appupdatecontent, appversion } from "@/app/api/appconfig";
@@ -231,6 +232,26 @@ export default function Advertisement() {
                 </Col>
               </Row>
             </Typography>
+          </AccordionDetails>
+        </Accordion>
+        <Accordion>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel1a-content"
+          >
+            <Typography>
+              <span>反馈与建议</span>
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Link
+              href="https://support.qq.com/product/615590"
+              underline="hover"
+              aria-label="点击前往反馈平台"
+              target="blank"
+            >
+              <span>星阳音乐系统-反馈与建议平台</span>
+            </Link>
           </AccordionDetails>
         </Accordion>
       </CardContent>

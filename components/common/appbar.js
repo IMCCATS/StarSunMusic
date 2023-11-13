@@ -23,6 +23,14 @@ export default function PrimarySearchAppBar() {
     setOpen(true);
   };
 
+  const CheckStatus = () => {
+    const status = localStorage.getItem("DarkModeChecked");
+    if (status !== "yes") {
+      localStorage.setItem("DarkModeChecked", "yes");
+      handleClickOpen();
+    }
+  };
+
   const handleClose = () => {
     setOpen(false);
   };
@@ -33,11 +41,9 @@ export default function PrimarySearchAppBar() {
       <React.Fragment>
         <Dialog open={open} onClose={handleClose}>
           <DialogTitle>
-            <span>
-              发现了一个
-              <ExperimentTwoTone />
-              实验性功能！
-            </span>
+            <span>发现了一个</span>
+            <ExperimentTwoTone />
+            <span>实验性功能！</span>
           </DialogTitle>
           <DialogContent>
             <DialogContentText>
@@ -47,15 +53,15 @@ export default function PrimarySearchAppBar() {
                 这个功能可能存在着一定的问题或者Bug，导致程序出现异常，如果小主发现了异常，请告诉开发者哦~
                 反馈平台：
               </span>
-              <Link
-                href="https://support.qq.com/product/615590"
-                underline="hover"
-                aria-label="点击前往反馈平台"
-                target="blank"
-              >
-                <span>星阳音乐系统-反馈与建议平台</span>
-              </Link>
             </DialogContentText>
+            <Link
+              href="https://support.qq.com/product/615590"
+              underline="hover"
+              aria-label="点击前往反馈平台"
+              target="blank"
+            >
+              <span>星阳音乐系统-反馈与建议平台</span>
+            </Link>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose}>好哒~</Button>
@@ -73,7 +79,7 @@ export default function PrimarySearchAppBar() {
               sx={{ mr: 1 }}
               onClick={() => {
                 colorMode.toggleColorMode();
-                handleClickOpen();
+                CheckStatus();
               }}
             >
               <MusicNoteIcon />
