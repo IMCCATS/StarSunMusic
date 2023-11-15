@@ -26,6 +26,11 @@ const HomePage = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = React.useState(false);
   const [open, setOpen] = React.useState(false);
+  const [state, setstate] = React.useState(false);
+
+  React.useEffect(() => {
+    setstate(true);
+  }, []);
 
   const handleClickOpen = () => {
     const state = localStorage.getItem("isAgreedPolicy");
@@ -123,21 +128,33 @@ const HomePage = () => {
             </p>
           </div>
         ) : (
-          <Button
-            variant="contained"
-            startIcon={<DashboardIcon />}
-            onClick={handleClickOpen}
-            style={{
-              marginTop: "2px",
-              backgroundColor: "#2196f3",
-              color: "#fff",
-              "&:hover": {
-                backgroundColor: "#1976d2",
-              },
-            }}
-          >
-            <span>点击进入</span>
-          </Button>
+          <>
+            {state ? (
+              <Button
+                variant="contained"
+                startIcon={<DashboardIcon />}
+                onClick={handleClickOpen}
+                style={{
+                  marginTop: "2px",
+                  backgroundColor: "#2196f3",
+                  color: "#fff",
+                  "&:hover": {
+                    backgroundColor: "#1976d2",
+                  },
+                }}
+              >
+                <span>点击进入</span>
+              </Button>
+            ) : (
+              <span
+                style={{
+                  marginTop: "2px",
+                }}
+              >
+                正在加载中....
+              </span>
+            )}
+          </>
         )}
         <div
           style={{
