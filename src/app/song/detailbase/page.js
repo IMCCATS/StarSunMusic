@@ -2,7 +2,7 @@
 import MusicCard from "../../../../components/MusicCardDetail";
 import * as React from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { HandleListenSong } from "../../../../components/common/fetchapi";
+import { HandleListenSongDatabase } from "../../../../components/common/fetchapi";
 
 export const CurrentSongContext = React.createContext(null);
 export default function BasicCard() {
@@ -23,7 +23,7 @@ export default function BasicCard() {
   };
   const handleListenClick = (songId) => {
     if (params.songID || params.songID !== "") {
-      HandleListenSong(songId)
+      HandleListenSongDatabase(songId)
         .then((e) => {
           setCurrentSong(e);
           setcanlistplay(false);

@@ -506,7 +506,7 @@ const MusicCard = ({ currentSong }) => {
                   ? `${formatTime(audioRef.current.currentTime)} / ${formatTime(
                       audioRef.current.duration
                     )}`
-                  : "无时间信息"}
+                  : "歌曲加载中"}
               </span>
             </Typography>
             <IconButton

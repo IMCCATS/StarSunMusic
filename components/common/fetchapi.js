@@ -1,5 +1,6 @@
 import $ from "jquery";
 import { cache } from "react";
+import supabase from "@/app/api/supabase";
 
 export const revalidate = 3600; //数据缓存时间
 
@@ -22,6 +23,26 @@ const ConvertJson = function (serverJson) {
 
   return convertedJsons;
 }; //转换服务器数据
+
+const ConvertJsonSJK = function (serverJson) {
+  const data = serverJson;
+  const convertedJsons = [];
+
+  for (let i = 0; i < data.length; i++) {
+    const convertedJson = {
+      songid: data[i].id,
+      title: data[i].title,
+      artist: data[i].artist,
+      author: data[i].artist,
+      cover: data[i].cover,
+      lyric: data[i].lyric,
+      link: atob(data[i].link),
+    };
+    convertedJsons.push(convertedJson);
+  }
+
+  return convertedJsons;
+};
 
 export const HandleAjax = cache(async (url, type, data) => {
   return new Promise((resolve, reject) => {
@@ -76,6 +97,24 @@ export const HandleListenSong = cache(async (SongId) => {
       .catch((error) => {
         reject("请求失败，请稍后重试~");
       });
+  });
+}); //歌曲解析函数
+
+export const HandleListenSongDatabase = cache(async (SongId) => {
+  return new Promise(async (resolve, reject) => {
+    const { data, error } = await supabase
+      .from("MusicSearch")
+      .select("*")
+      .eq("id", SongId);
+    if (error) {
+      reject(error);
+    }
+    const datajson = ConvertJsonSJK(data);
+    if (Array.isArray(datajson) && datajson.length > 0) {
+      resolve(datajson[0]);
+    } else {
+      reject("请求错误了哦~");
+    }
   });
 }); //歌曲解析函数
 
