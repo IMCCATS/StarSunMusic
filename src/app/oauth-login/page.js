@@ -129,6 +129,7 @@ const LoginPage = () => {
                   setIsLoading(false);
                 },
                 fail: function (msg) {
+                  console.error(msg);
                   setIsLoading(false);
                 },
               });

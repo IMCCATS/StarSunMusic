@@ -54,7 +54,6 @@ export default function SongSearchTable({ setcanlistplay }) {
   const [jzwz3, setmgwz] = React.useState("搜索功能加载中...");
   const [jzwz4, setsjkwz] = React.useState("搜索功能加载中...");
   const [searchTerm, setSearchTerm] = React.useState("");
-  const [open, setOpen] = React.useState(false);
   const [fxopen, fxsetOpen] = React.useState(false);
   const [shareurl, setshareurl] = React.useState("暂无~");
   const [neteasesearchxh, setneteasesearchxh] = React.useState(1);
@@ -128,14 +127,6 @@ export default function SongSearchTable({ setcanlistplay }) {
     }
   };
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
   const fxhandleClose = () => {
     fxsetOpen(false);
   };
@@ -143,8 +134,7 @@ export default function SongSearchTable({ setcanlistplay }) {
     fxsetOpen(true);
   };
 
-  const close1 = async () => {
-    setOpen(false);
+  const SearchFunction = async () => {
     AddHistory(searchTerm);
     setSearchTermC(searchTerm);
     setIsneteaseLoading(true);
@@ -173,7 +163,7 @@ export default function SongSearchTable({ setcanlistplay }) {
                 captcha.showCaptcha();
               })
               .onSuccess(function () {
-                handleClickOpen();
+                SearchFunction();
               });
           }
         );
@@ -386,29 +376,6 @@ export default function SongSearchTable({ setcanlistplay }) {
         <CircularProgress color="inherit" />
         <span style={{ marginLeft: "15px" }}>正在加载歌曲</span>
       </Backdrop>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          <span>确认搜索内容</span>
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            <span>您的搜索内容是：{searchTerm}，确认搜索吗？</span>
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={close1}>
-            <span>确认</span>
-          </Button>
-          <Button onClick={handleClose}>
-            <span>取消</span>
-          </Button>
-        </DialogActions>
-      </Dialog>
       <Dialog
         open={fxopen}
         onClose={fxhandleClose}

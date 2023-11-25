@@ -202,6 +202,28 @@ export default function Advertisement() {
                 icon="/logo.png"
               />
             </Typography>
+            <Typography variant="p" style={{ fontSize: "14px" }}>
+              <span>
+                若您使用安卓等支持APK程序的设备，可下载客户端。客户端支持后台自动列表播放，无需频繁返回前台。链接：
+                <a
+                  onClick={() => {
+                    window.open(
+                      "https://cowtransfer.com/s/281d926c73f741",
+                      "mozillaTab",
+                      "noopener,noreferrer"
+                    );
+                  }}
+                >
+                  <Link
+                    underline="hover"
+                    aria-label="点击下载安卓客户端"
+                    target="blank"
+                  >
+                    点击下载安卓客户端（传输口令 vetmy9）
+                  </Link>
+                </a>
+              </span>
+            </Typography>
           </AccordionDetails>
         </Accordion>
         <Accordion>
