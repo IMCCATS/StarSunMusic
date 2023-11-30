@@ -22,7 +22,11 @@ import {
   ButtonGroup,
 } from "@mui/material";
 import { message } from "antd";
-import { HandleListenSong, HandlePlayList } from "./common/fetchapi";
+import {
+  HandleListenSong,
+  HandlePlayList,
+  HandlePlayListBeiXuan,
+} from "./common/fetchapi";
 const playlists = [
   { name: "高考必背古诗文72篇", id: "2295399719" },
   { name: "高考必背篇目", id: "7564558989" },
@@ -83,9 +87,22 @@ const PlaylistComponent = ({ playlist }) => {
       })
       .catch((error) => {
         setSongs([]);
+        fetchMusicListBeiXuan(playlistId);
+      });
+  };
+
+  const fetchMusicListBeiXuan = (playlistId) => {
+    HandlePlayListBeiXuan(playlistId)
+      .then((e) => {
+        setSongs(e);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        setSongs([]);
         setIsLoading(false);
       });
   };
+
   const [disabled, setdisabled] = React.useState(false);
   const handleListenClick = (songId) => {
     setdisabled(true);

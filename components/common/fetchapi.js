@@ -133,6 +133,39 @@ export const HandlePlayList = cache(async (ListId) => {
   });
 }); //歌单解析函数
 
+const ConvertJsonBeiXuanPlaylist = function (serverJson) {
+  const data = serverJson;
+  const convertedJsons = [];
+
+  for (let i = 0; i < data.length; i++) {
+    const convertedJson = {
+      id: data[i].song_id,
+      name: data[i].name,
+      artist: data[i].artist,
+      cover: data[i].cover,
+    };
+    convertedJsons.push(convertedJson);
+  }
+
+  return convertedJsons;
+};
+
+export const HandlePlayListBeiXuan = cache(async (ListId) => {
+  return new Promise((resolve, reject) => {
+    HandleAjax(
+      `https://api.gumengya.com/Api/MusicList?format=json&url=https://music.163.com/playlist?id=${ListId}`,
+      "get"
+    )
+      .then((res) => {
+        const C = ConvertJsonBeiXuanPlaylist(res.data);
+        resolve(C);
+      })
+      .catch((error) => {
+        reject("请求失败，请稍后重试~");
+      });
+  });
+}); //备选歌单解析函数
+
 export const LoadMoreSearchSong = cache(async (Term, Platform, Page) => {
   return new Promise((resolve, reject) => {
     HandleAjax("https://api.gumengya.com/Api/Music", "get", {
