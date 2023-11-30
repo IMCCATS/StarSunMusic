@@ -31,7 +31,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { message } from "antd";
-import { HandleListenSong, HandlePlayList } from "./common/fetchapi";
+import { HandleListenSong, HandlePlayList, HandlePlayListBeiXuan } from "./common/fetchapi";
 
 const PlaylistComponent = ({ playlist, index }) => {
   const [messageApi, contextHolder] = message.useMessage();
@@ -80,9 +80,22 @@ const PlaylistComponent = ({ playlist, index }) => {
       })
       .catch((error) => {
         setSongs([]);
+        fetchMusicListBeiXuan(playlistId);
+      });
+  };
+
+  const fetchMusicListBeiXuan = (playlistId) => {
+    HandlePlayListBeiXuan(playlistId)
+      .then((e) => {
+        setSongs(e);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        setSongs([]);
         setIsLoading(false);
       });
   };
+
   const [disabled, setdisabled] = React.useState(false);
   const handleListenClick = (songId) => {
     setdisabled(true);

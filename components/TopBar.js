@@ -19,7 +19,11 @@ import {
   ButtonGroup,
 } from "@mui/material";
 import { message } from "antd";
-import { HandleListenSong, HandlePlayList } from "./common/fetchapi";
+import {
+  HandleListenSong,
+  HandlePlayList,
+  HandlePlayListBeiXuan,
+} from "./common/fetchapi";
 export default function TopBar() {
   const [messageApi, contextHolder] = message.useMessage();
   const {
@@ -59,6 +63,18 @@ export default function TopBar() {
       })
       .catch((error) => {
         setSongs([]);
+        fetchMusicListBeiXuan();
+      });
+  };
+
+  const fetchMusicListBeiXuan = () => {
+    setIsLoading(true);
+    HandlePlayListBeiXuan("3778678")
+      .then((e) => {
+        setSongs(e);
+        setIsLoading(false);
+      })
+      .catch((error) => {
         setIsLoading(false);
       });
   };
