@@ -22,6 +22,7 @@ import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import LikeSongBar from "../../../components/LikeSongsBar";
+import YiYan from "../../../components/common/YiYan";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -135,6 +136,7 @@ function StarSunMusic() {
       </CurrentSongContext.Provider>
       <JuanZeng />
       <About />
+      <YiYan />
     </main>
   );
 }

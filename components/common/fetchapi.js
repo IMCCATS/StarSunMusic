@@ -44,6 +44,38 @@ const ConvertJsonSJK = function (serverJson) {
   return convertedJsons;
 };
 
+const ConvertJsonSong = function (serverJson) {
+  if (
+    serverJson.data &&
+    serverJson.data.songid &&
+    serverJson.data.title &&
+    serverJson.data.author &&
+    serverJson.data.pic &&
+    serverJson.data.url &&
+    serverJson.data.lrc
+  ) {
+    return {
+      id: serverJson.data.songid,
+      title: serverJson.data.title,
+      artist: serverJson.data.author,
+      cover: serverJson.data.pic,
+      link: serverJson.data.url,
+      lyric: serverJson.data.lrc,
+    };
+  } else {
+    return {
+      id: 1965822544,
+      title: "钉钉视频会议来电铃声（电音完整版)",
+      artist: "不会低调的狗",
+      cover:
+        "https://p2.music.126.net/W9fKQlL6b3YzcoTlZoT7nA==/109951167402688889.jpg?param=250y250",
+      lyric:
+        "[00:00.00] 作词 : 不会低调的狗\n[00:01.00] 作曲 : 不会低调的狗\n[00:02.00] 编曲 : 不会低调的狗\n[99:00.00]纯音乐，请欣赏\n",
+      link: "https://music.163.com/song/media/outer/url?id=1965822544",
+    };
+  }
+};
+
 export const HandleAjax = cache(async (url, type, data) => {
   return new Promise((resolve, reject) => {
     $.ajax({
@@ -95,7 +127,17 @@ export const HandleListenSong = cache(async (SongId) => {
         resolve(res);
       })
       .catch((error) => {
-        reject("请求失败，请稍后重试~");
+        HandleAjax("https://api.gumengya.com/Api/Netease", "get", {
+          id: `${SongId}`,
+          format: "json",
+        })
+          .then((res) => {
+            const C = ConvertJsonSong(res);
+            resolve(C);
+          })
+          .catch((error) => {
+            reject("请求失败，请稍后重试~");
+          });
       });
   });
 }); //歌曲解析函数
@@ -183,3 +225,27 @@ export const LoadMoreSearchSong = cache(async (Term, Platform, Page) => {
       });
   });
 }); //加载更多歌曲函数
+
+export const GetYiYan = cache(async () => {
+  return new Promise((resolve, reject) => {
+    HandleAjax("https://v1.hitokoto.cn", "get", {
+      c: "i",
+    })
+      .then((res) => {
+        if (res && res.hitokoto && res.from) {
+          resolve({
+            text: res.hitokoto,
+            from: res.from,
+          });
+        } else {
+          resolve({
+            text: "我自横刀向天笑，去留肝胆两昆仑。",
+            from: "狱中题壁",
+          });
+        }
+      })
+      .catch((error) => {
+        reject("请求失败，请稍后重试~");
+      });
+  });
+}); //加载一言

@@ -31,7 +31,11 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { message } from "antd";
-import { HandleListenSong, HandlePlayList, HandlePlayListBeiXuan } from "./common/fetchapi";
+import {
+  HandleListenSong,
+  HandlePlayList,
+  HandlePlayListBeiXuan,
+} from "./common/fetchapi";
 
 const PlaylistComponent = ({ playlist, index }) => {
   const [messageApi, contextHolder] = message.useMessage();
@@ -403,6 +407,8 @@ export default function LikeSongBar() {
                     style={{ margin: "8px auto" }}
                   >
                     歌单{index + 1}
+                    <br />
+                    ID:{playlist.id}
                   </Button>
                 ))}
               </>
