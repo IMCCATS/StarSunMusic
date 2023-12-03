@@ -539,7 +539,9 @@ const MusicCard = ({ currentSong }) => {
                 本歌曲由 星阳音乐系统 · 单曲播放功能 提供 | 畅哥科技&trade;
                 强力驱动 |{" "}
                 <Link
-                  href="https://music.lcahy.cn/"
+                  onClick={() => {
+                    window.open("https://music.lcahy.cn/");
+                  }}
                   underline="hover"
                   aria-label="前往星阳音乐系统"
                 >
