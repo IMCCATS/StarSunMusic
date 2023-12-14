@@ -25,7 +25,12 @@ import RepeatOneIcon from "@mui/icons-material/RepeatOne";
 import FileIcon from "@mui/icons-material/Article";
 import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
 
-const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
+const MusicCard = ({
+  currentSong,
+  setCurrentSong,
+  setisPlayComplete,
+  canlistplay,
+}) => {
   const [isAudioPlayable, setIsAudioPlayable] = React.useState(true);
   const [isPlaying, setIsPlaying] = React.useState(false);
   const [volume, setVolume] = React.useState(100);
@@ -35,11 +40,12 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
   const [Fullscreen, setFullscreen] = React.useState(false);
   const [progress, setProgress] = React.useState(0);
   const [lyrics, setLyrics] = React.useState([]);
   const [lyricsFY, setLyricsFY] = React.useState([]);
-  const [listplaying, setlistplaying] = React.useState(false);
+  const [listplaying, setlistplaying] = React.useState(true);
   const [currentLyricIndexFY, setCurrentLyricIndexFY] = React.useState(0);
   const [currentLyricIndex, setCurrentLyricIndex] = React.useState(0);
   const audioRef = React.useRef(null);
@@ -210,9 +216,11 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
   const formatLyrics = () => {
     if (!isAudioPlayable) {
       document.title = "首页 · 星阳音乐系统";
+      audioRef.current.src = "/fail.mp3";
+      audioRef.current.play();
       return (
         <Typography variant="body1">
-          <span>本歌曲暂不支持播放哦~</span>
+          <span>本歌曲暂不支持播放哦，请尝试切换通道~</span>
         </Typography>
       );
     } else {
