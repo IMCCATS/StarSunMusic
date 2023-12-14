@@ -63,7 +63,14 @@ function StarSunMusic() {
     CheckPolicy();
   }, []);
   return (
-    <main>
+    <main
+      style={{
+        WebkitUserSelect: "none",
+        MozUserSelect: "none",
+        msUserSelect: "none",
+        userSelect: "none",
+      }}
+    >
       <link
         rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Noto+Sans+SC:100,300,400,500,700,900"

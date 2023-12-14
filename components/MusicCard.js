@@ -24,6 +24,7 @@ import FullscreenExitIcon from "@mui/icons-material/FullscreenExit";
 import RepeatOneIcon from "@mui/icons-material/RepeatOne";
 import FileIcon from "@mui/icons-material/Article";
 import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
+import { Flex } from "antd";
 
 const MusicCard = ({
   currentSong,
@@ -427,7 +428,16 @@ const MusicCard = ({
       <CardContent id="MusicCard">
         {!currentSong && (
           <Typography variant="body1">
-            <span>您还没有操作播放歌曲呢~</span>
+            <span
+              style={{
+                WebkitUserSelect: "none",
+                MozUserSelect: "none",
+                msUserSelect: "none",
+                userSelect: "none",
+              }}
+            >
+              您还没有操作播放歌曲呢~
+            </span>
           </Typography>
         )}
         {currentSong && (
@@ -444,7 +454,16 @@ const MusicCard = ({
                 <CustomTabPanel value={value} index={0}>
                   {!currentSong && (
                     <Typography variant="body1">
-                      <span>暂无歌词信息哦！</span>
+                      <span
+                        style={{
+                          WebkitUserSelect: "none",
+                          MozUserSelect: "none",
+                          msUserSelect: "none",
+                          userSelect: "none",
+                        }}
+                      >
+                        暂无歌词信息哦！
+                      </span>
                     </Typography>
                   )}
                   {currentSong &&
@@ -476,24 +495,49 @@ const MusicCard = ({
                           ""
                         );
                         return (
-                          <main>
+                          <div
+                            style={{
+                              WebkitUserSelect: "none",
+                              MozUserSelect: "none",
+                              msUserSelect: "none",
+                              userSelect: "none",
+                            }}
+                          >
                             <span key={index} style={{ fontSize, color }}>
                               {cleanedLine}
                             </span>
                             <br />
-                          </main>
+                          </div>
                         );
                       })}
                 </CustomTabPanel>
                 <CustomTabPanel value={value} index={1}>
                   {!currentSong && (
                     <Typography variant="body1">
-                      <span>暂无歌词信息哦！</span>
+                      <span
+                        style={{
+                          WebkitUserSelect: "none",
+                          MozUserSelect: "none",
+                          msUserSelect: "none",
+                          userSelect: "none",
+                        }}
+                      >
+                        暂无歌词信息哦！
+                      </span>
                     </Typography>
                   )}
                   {currentSong && !currentSong.sub_lyric ? (
                     <Typography variant="body1" style={{ color: "#808080" }}>
-                      <span>本歌曲暂无翻译歌词哦~</span>
+                      <span
+                        style={{
+                          WebkitUserSelect: "none",
+                          MozUserSelect: "none",
+                          msUserSelect: "none",
+                          userSelect: "none",
+                        }}
+                      >
+                        本歌曲暂无翻译歌词哦~
+                      </span>
                     </Typography>
                   ) : (
                     <></>
@@ -530,12 +574,19 @@ const MusicCard = ({
                               ""
                             );
                             return (
-                              <main>
+                              <div
+                                style={{
+                                  WebkitUserSelect: "none",
+                                  MozUserSelect: "none",
+                                  msUserSelect: "none",
+                                  userSelect: "none",
+                                }}
+                              >
                                 <span key={index} style={{ fontSize, color }}>
                                   {cleanedLine}
                                 </span>
                                 <br />
-                              </main>
+                              </div>
                             );
                           })}
                     </div>
@@ -550,23 +601,34 @@ const MusicCard = ({
                 </Button>
               </DialogActions>
             </Dialog>
-            <Typography variant="h5">
-              <span>{currentSong.title}</span>
-            </Typography>
-            <Typography variant="subtitle1">
-              <span>{currentSong.artist}</span>
-            </Typography>
-            {currentSong.cover && (
-              <img
-                src={currentSong.cover}
-                alt="Thumbnail"
-                height="64"
-                onError={() => {}}
-              />
-            )}
-            {!currentSong.cover && "暂无图片哦~"}
-            <div>{formatLyrics()}</div>
-            <div>{formatLyricsFY()}</div>
+            <Flex>
+              {currentSong.cover ? (
+                <img
+                  src={currentSong.cover}
+                  alt="Thumbnail"
+                  height="64"
+                  onError={() => {}}
+                />
+              ) : (
+                "暂无图片哦~"
+              )}
+              <Flex vertical="vertical" style={{ marginLeft: "15px" }}>
+                <Typography variant="h5">
+                  <span>{currentSong.title}</span>
+                </Typography>
+                <Typography
+                  variant="subtitle1"
+                  color="text.secondary"
+                  gutterBottom
+                >
+                  <span>{currentSong.artist}</span>
+                </Typography>
+              </Flex>
+            </Flex>
+            <Flex vertical="vertical">
+              <div>{formatLyrics()}</div>
+              <div>{formatLyricsFY()}</div>
+            </Flex>
             <audio ref={audioRef} onEnded={handleReplay} />
             <Slider
               value={progress}
