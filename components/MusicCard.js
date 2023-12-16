@@ -27,7 +27,12 @@ import FileIcon from "@mui/icons-material/Article";
 import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
 import { Flex } from "antd";
 
-const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
+const MusicCard = ({
+  currentSong,
+  setCurrentSong,
+  setisPlayComplete,
+  canlistplay,
+}) => {
   const [isAudioPlayable, setIsAudioPlayable] = React.useState(true);
   const [isPlaying, setIsPlaying] = React.useState(false);
   const [volume, setVolume] = React.useState(100);
@@ -144,6 +149,8 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
     };
 
     const handleError = () => {
+      audioRef.current.src = "/fail.mp3";
+      audioRef.current.play();
       setIsAudioPlayable(false);
     };
 

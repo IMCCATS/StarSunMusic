@@ -104,6 +104,7 @@ function StarSunMusic() {
             currentSong={currentSong}
             setisPlayComplete={setisPlayComplete}
             canlistplay={canlistplay}
+            setCurrentSong={setCurrentSong}
             setcanlistplay={setcanlistplay}
           />
           <Accordion>
