@@ -120,6 +120,39 @@ const MusicCard = ({
     return lyrics;
   };
 
+  const SetMetaData = () => {
+    if (currentSong) {
+      if ("mediaSession" in navigator) {
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: currentSong.title,
+          artist: currentSong.artist,
+          album: currentSong.title,
+          artwork: [
+            {
+              src: currentSong.cover,
+              sizes: "96x96",
+              type: "image/png",
+            },
+          ],
+        });
+      }
+    }
+  };
+
+  React.useEffect(() => {
+    SetMetaData();
+  }, [currentSong]);
+
+  React.useEffect(() => {
+    if (listplaying) {
+      navigator.mediaSession.setActionHandler("nexttrack", () => {
+        audioRef.current.currentTime = audioRef.current.duration;
+      });
+    } else {
+      navigator.mediaSession.setActionHandler("nexttrack", null);
+    }
+  }, [listplaying]);
+
   React.useEffect(() => {
     const updateLyrics = async () => {
       if (currentSong) {
