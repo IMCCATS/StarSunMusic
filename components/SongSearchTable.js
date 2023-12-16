@@ -39,7 +39,14 @@ import {
 import Script from "next/script";
 
 export default function SongSearchTable({ setcanlistplay }) {
-  const { setCurrentSong } = React.useContext(CurrentSongContext);
+  const {
+    playingpage,
+    setplayingpage,
+    isPlayComplete,
+    setCurrentSong,
+    setisPlayComplete,
+  } = React.useContext(CurrentSongContext);
+  const [lastPlayedSongIndex, setLastPlayedSongIndex] = React.useState(0);
   const [isneteaseLoading, setIsneteaseLoading] = React.useState(true);
   const [iskgLoading, setIskgLoading] = React.useState(true);
   const [ismgLoading, setIsmgLoading] = React.useState(true);
@@ -62,6 +69,25 @@ export default function SongSearchTable({ setcanlistplay }) {
   const [searchTermC, setSearchTermC] = React.useState("");
   const [SearchHistory, SetSearchHistory] = React.useState([]);
   const [value, setValue] = React.useState(0);
+
+  const handleNextSongClick = () => {
+    const index = lastPlayedSongIndex + 1;
+    // 检查索引是否越界
+    if (index >= netease_songs.length) {
+      messageApi.success("列表播放已完成");
+      return;
+    }
+    if (netease_songs[index] && netease_songs[index].songid) {
+      handleListenClick(netease_songs[index].songid);
+      setisPlayComplete(false);
+    }
+  };
+
+  React.useEffect(() => {
+    if (isPlayComplete && playingpage === "NeteaseSearch") {
+      handleNextSongClick();
+    }
+  }, [isPlayComplete]);
 
   const handleChangeValue = (event, newValue) => {
     setValue(newValue);
@@ -186,8 +212,12 @@ export default function SongSearchTable({ setcanlistplay }) {
     HandleListenSong(songId)
       .then((e) => {
         setCurrentSong(e);
+        setLastPlayedSongIndex(
+          netease_songs.findIndex((song) => song.songid === songId)
+        );
+        setcanlistplay(true);
+        setplayingpage("NeteaseSearch");
         setdisabled(false);
-        setcanlistplay(false);
       })
       .catch((error) => {
         setdisabled(false);
@@ -590,9 +620,9 @@ export default function SongSearchTable({ setcanlistplay }) {
                             <TableCell>
                               <Tooltip title={song.author}>
                                 <span>
-                                  {song.author.length <= 8
+                                  {song.author.length <= 10
                                     ? song.author
-                                    : `${song.author.slice(0, 8)}...`}
+                                    : `${song.author.slice(0, 10)}...`}
                                 </span>
                               </Tooltip>
                             </TableCell>

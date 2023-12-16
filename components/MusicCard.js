@@ -16,6 +16,7 @@ import {
 import PropTypes from "prop-types";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
+import SkipNextIcon from "@mui/icons-material/SkipNext";
 import QueueMusicIcon from "@mui/icons-material/QueueMusic";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
@@ -26,12 +27,7 @@ import FileIcon from "@mui/icons-material/Article";
 import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
 import { Flex } from "antd";
 
-const MusicCard = ({
-  currentSong,
-  setCurrentSong,
-  setisPlayComplete,
-  canlistplay,
-}) => {
+const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
   const [isAudioPlayable, setIsAudioPlayable] = React.useState(true);
   const [isPlaying, setIsPlaying] = React.useState(false);
   const [volume, setVolume] = React.useState(100);
@@ -217,8 +213,6 @@ const MusicCard = ({
   const formatLyrics = () => {
     if (!isAudioPlayable) {
       document.title = "首页 · 星阳音乐系统";
-      audioRef.current.src = "/fail.mp3";
-      audioRef.current.play();
       return (
         <Typography variant="body1">
           <span>本歌曲暂不支持播放哦，请尝试切换通道~</span>
@@ -604,10 +598,27 @@ const MusicCard = ({
             <Flex>
               {currentSong.cover ? (
                 <img
+                  style={{
+                    borderRadius: "50%",
+                    // animation: "spin 10s linear infinite",
+                  }}
                   src={currentSong.cover}
                   alt="Thumbnail"
                   height="64"
                   onError={() => {}}
+                  // onLoad={() => {
+                  //   var style = document.createElement("style");
+                  //   style.innerHTML = `
+                  //   @keyframes spin {
+                  //     from {
+                  //       transform: rotate(0deg);
+                  //     }
+                  //     to {
+                  //       transform: rotate(360deg);
+                  //     }
+                  //   }`;
+                  //   document.head.appendChild(style);
+                  // }}
                 />
               ) : (
                 "暂无图片哦~"
@@ -625,7 +636,7 @@ const MusicCard = ({
                 </Typography>
               </Flex>
             </Flex>
-            <Flex vertical="vertical">
+            <Flex vertical="vertical" style={{ marginTop: "10px" }}>
               <div>{formatLyrics()}</div>
               <div>{formatLyricsFY()}</div>
             </Flex>
@@ -655,6 +666,20 @@ const MusicCard = ({
             >
               {isPlaying ? <PauseIcon /> : <PlayArrowIcon />}
             </IconButton>
+            <Tooltip title="列表下一曲" placement="top">
+              <IconButton
+                onClick={() =>
+                  (audioRef.current.currentTime = audioRef.current.duration)
+                }
+                disabled={
+                  listplaying === false ||
+                  isAudioPlayable === false ||
+                  canlistplay === false
+                }
+              >
+                <SkipNextIcon />
+              </IconButton>
+            </Tooltip>
             <Tooltip title="单曲循环" placement="top">
               <IconButton
                 onClick={handleSetReplay}

@@ -63,6 +63,11 @@ const PersonalPlaylist = () => {
 
   const handleNextSongClick = () => {
     const index = lastPlayedSongIndex + 1;
+    // 检查索引是否越界
+    if (index >= playList.length) {
+      messageApi.success("列表播放已完成");
+      return;
+    }
     if (playList[index] && playList[index].songId) {
       handleListenClick(playList[index].songId);
       setisPlayComplete(false);

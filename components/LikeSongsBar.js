@@ -63,6 +63,11 @@ const PlaylistComponent = ({ playlist, index }) => {
 
   const handleNextSongClick = () => {
     const index = lastPlayedSongIndex + 1;
+    // 检查索引是否越界
+    if (index >= songs.length) {
+      messageApi.success("列表播放已完成");
+      return;
+    }
     if (songs[index] && songs[index].id) {
       handleListenClick(songs[index].id);
       setisPlayComplete(false);
