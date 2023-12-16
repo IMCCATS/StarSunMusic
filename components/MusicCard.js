@@ -144,12 +144,16 @@ const MusicCard = ({
   }, [currentSong]);
 
   React.useEffect(() => {
-    if (listplaying) {
-      navigator.mediaSession.setActionHandler("nexttrack", () => {
-        audioRef.current.currentTime = audioRef.current.duration;
-      });
-    } else {
-      navigator.mediaSession.setActionHandler("nexttrack", null);
+    if (currentSong) {
+      if ("mediaSession" in navigator) {
+        if (listplaying) {
+          navigator.mediaSession.setActionHandler("nexttrack", () => {
+            audioRef.current.currentTime = audioRef.current.duration;
+          });
+        } else {
+          navigator.mediaSession.setActionHandler("nexttrack", null);
+        }
+      }
     }
   }, [listplaying]);
 
