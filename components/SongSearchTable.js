@@ -37,6 +37,7 @@ import {
   SearchSong,
 } from "./common/fetchapi";
 import Script from "next/script";
+import { scroller, Element } from "react-scroll";
 
 export default function SongSearchTable({ setcanlistplay }) {
   const {
@@ -167,11 +168,18 @@ export default function SongSearchTable({ setcanlistplay }) {
     setIskgLoading(true);
     setIsmgLoading(true);
     setIssjkLoading(true);
+    AddSearchHistory();
+    setValue(0);
     await handleSearch();
+    scroller.scrollTo("SearchCard", {
+      duration: 1500,
+      delay: 0,
+      smooth: "easeOutQuad",
+      offset: -200,
+    });
     await handleSearchKG();
     await handleSearchMG();
     await handleSearchSJK();
-    AddSearchHistory();
   };
   const searchOpen = () => {
     if (searchTerm) {
@@ -438,584 +446,590 @@ export default function SongSearchTable({ setcanlistplay }) {
           </Button>
         </DialogActions>
       </Dialog>
-      <Box
-        sx={{
-          "& > :not(style)": { m: 1 },
-        }}
-        noValidate
-        autoComplete="off"
-      >
-        {Array.isArray(SearchHistory) && SearchHistory.length > 0 ? (
-          <Autocomplete
-            freeSolo
-            disableClearable
-            onChange={ChangeSearch}
-            options={SearchHistory.map((option) => option)}
-            renderInput={(params) => (
-              <div>
-                <TextField
-                  {...params}
-                  label="搜索..."
-                  id="search"
-                  variant="outlined"
-                  onChange={handleChange}
-                  InputProps={{
-                    ...params.InputProps,
-                    type: "search",
-                  }}
-                />
-                <Box
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    height: "100%",
-                    marginTop: "10px",
-                  }}
-                >
-                  <Button
-                    onClick={searchOpen}
-                    variant="contained"
-                    sx={{
-                      height: "63px",
-                      marginTop: "15px",
-                      marginRight: "10px",
+      <Element name="SearchCard">
+        <Box
+          sx={{
+            "& > :not(style)": { m: 1 },
+          }}
+          noValidate
+          autoComplete="off"
+        >
+          {Array.isArray(SearchHistory) && SearchHistory.length > 0 ? (
+            <Autocomplete
+              freeSolo
+              disableClearable
+              onChange={ChangeSearch}
+              options={SearchHistory.map((option) => option)}
+              renderInput={(params) => (
+                <div>
+                  <TextField
+                    {...params}
+                    label="搜索..."
+                    id="search"
+                    variant="outlined"
+                    onChange={handleChange}
+                    InputProps={{
+                      ...params.InputProps,
+                      type: "search",
+                    }}
+                  />
+                  <Box
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      height: "100%",
+                      marginTop: "10px",
                     }}
                   >
-                    <span>搜索</span>
-                  </Button>
-                  <Button
-                    onClick={ClearHistory}
-                    variant="contained"
-                    sx={{
-                      height: "63px",
-                      marginTop: "15px",
-                      marginRight: "10px",
-                    }}
-                  >
-                    <span>清除搜索历史记录</span>
-                  </Button>
-                </Box>
-              </div>
-            )}
-          />
-        ) : (
-          <div>
-            <TextField
-              label="搜索..."
-              fullWidth
-              id="search"
-              variant="outlined"
-              onChange={handleChange}
+                    <Button
+                      onClick={searchOpen}
+                      variant="contained"
+                      sx={{
+                        height: "63px",
+                        marginTop: "15px",
+                        marginRight: "10px",
+                      }}
+                    >
+                      <span>搜索</span>
+                    </Button>
+                    <Button
+                      onClick={ClearHistory}
+                      variant="contained"
+                      sx={{
+                        height: "63px",
+                        marginTop: "15px",
+                        marginRight: "10px",
+                      }}
+                    >
+                      <span>清除搜索历史记录</span>
+                    </Button>
+                  </Box>
+                </div>
+              )}
             />
+          ) : (
+            <div>
+              <TextField
+                label="搜索..."
+                fullWidth
+                id="search"
+                variant="outlined"
+                onChange={handleChange}
+              />
 
-            <Box
-              style={{
-                display: "flex",
-                alignItems: "center",
-                height: "100%",
-                marginTop: "10px",
-              }}
-            >
-              <Button
-                onClick={searchOpen}
-                variant="contained"
-                sx={{
-                  height: "63px",
-                  marginTop: "15px",
-                  marginRight: "10px",
+              <Box
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  height: "100%",
+                  marginTop: "10px",
                 }}
               >
-                <span>搜索</span>
-              </Button>
+                <Button
+                  onClick={searchOpen}
+                  variant="contained"
+                  sx={{
+                    height: "63px",
+                    marginTop: "15px",
+                    marginRight: "10px",
+                  }}
+                >
+                  <span>搜索</span>
+                </Button>
+              </Box>
+            </div>
+          )}
+        </Box>
+        <div id="captcha" />
+        <Paper style={{ marginBottom: "10px", marginTop: "10px" }}>
+          <TableContainer>
+            <Box sx={{ width: "100%" }}>
+              <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                <Tabs
+                  value={value}
+                  onChange={handleChangeValue}
+                  aria-label="basic tabs example"
+                >
+                  <Tab label="通道一" {...a11yProps(0)} />
+                  <Tab label="通道二" {...a11yProps(1)} />
+                  <Tab label="通道三" {...a11yProps(2)} />
+                  <Tab label="通道四" {...a11yProps(2)} />
+                </Tabs>
+              </Box>
+              <CustomTabPanel value={value} index={0}>
+                {isneteaseLoading ? (
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      height: "200px",
+                    }}
+                  >
+                    {jzwz1 !== "搜索功能加载完成啦~\n请搜索歌曲哦~" ? (
+                      <CircularProgress />
+                    ) : (
+                      <CheckCircleIcon color="success" fontSize="large" />
+                    )}
+                    <p style={{ marginLeft: "10px", whiteSpace: "pre" }}>
+                      {jzwz1}
+                    </p>
+                  </div>
+                ) : (
+                  <>
+                    {netease_songs.length === 0 ? (
+                      <div style={{ textAlign: "center", padding: "20px" }}>
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            height: "100%",
+                          }}
+                        >
+                          <p style={{ marginLeft: "10px", whiteSpace: "pre" }}>
+                            未搜索到内容哦，查看一下其他通道吧~
+                          </p>
+                        </div>
+                      </div>
+                    ) : (
+                      <Table>
+                        <TableHead>
+                          <TableRow>
+                            <TableCell>
+                              <span>封面</span>
+                            </TableCell>
+                            <TableCell>
+                              <span>标题</span>
+                            </TableCell>
+                            <TableCell>
+                              <span>作者</span>
+                            </TableCell>
+                            <TableCell>
+                              <span>操作</span>
+                            </TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {netease_songs.map((song) => (
+                            <TableRow key={song.songid}>
+                              <TableCell>
+                                {song.cover && (
+                                  <img
+                                    src={song.cover}
+                                    alt="CoverImage"
+                                    height="64"
+                                    onError={() => {}}
+                                  />
+                                )}
+                              </TableCell>
+                              <TableCell>
+                                <span>{song.title}</span>
+                              </TableCell>
+                              <TableCell>
+                                <Tooltip title={song.author}>
+                                  <span>
+                                    {song.author.length <= 10
+                                      ? song.author
+                                      : `${song.author.slice(0, 10)}...`}
+                                  </span>
+                                </Tooltip>
+                              </TableCell>
+                              <TableCell>
+                                <ButtonGroup>
+                                  <Grid
+                                    container
+                                    direction="column"
+                                    spacing={2}
+                                  >
+                                    <Grid item>
+                                      <Button
+                                        onClick={() =>
+                                          handleListenClick(song.songid)
+                                        }
+                                        variant="contained"
+                                        disabled={disabled}
+                                      >
+                                        <span>听歌曲</span>
+                                      </Button>
+                                    </Grid>
+                                    <Grid item>
+                                      <Button
+                                        onClick={() =>
+                                          addSongToLocalPlaylist({
+                                            title: song.title,
+                                            artist: song.author,
+                                            songId: song.songid,
+                                          })
+                                        }
+                                        variant="contained"
+                                        disabled={disabled}
+                                      >
+                                        <span>加歌单</span>
+                                      </Button>
+                                    </Grid>
+                                    <Grid item>
+                                      <Button
+                                        onClick={() => {
+                                          setshareurl(
+                                            "https://music.lcahy.cn/song/detail?songID=" +
+                                              song.songid
+                                          );
+                                          fxhandleClickOpen();
+                                        }}
+                                        variant="contained"
+                                        disabled={disabled}
+                                      >
+                                        <span>分享它</span>
+                                      </Button>
+                                    </Grid>
+                                  </Grid>
+                                </ButtonGroup>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                          <Button
+                            disabled={disabled}
+                            onClick={() => {
+                              loadmoresong("netease");
+                            }}
+                          >
+                            <span>加载更多歌曲</span>
+                          </Button>
+                        </TableBody>
+                      </Table>
+                    )}
+                  </>
+                )}
+              </CustomTabPanel>
+              <CustomTabPanel value={value} index={1}>
+                {iskgLoading ? (
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      height: "200px",
+                    }}
+                  >
+                    {jzwz2 !== "搜索功能加载完成啦~\n请搜索歌曲哦~" ? (
+                      <CircularProgress />
+                    ) : (
+                      <CheckCircleIcon color="success" fontSize="large" />
+                    )}
+                    <p style={{ marginLeft: "10px", whiteSpace: "pre" }}>
+                      {jzwz2}
+                    </p>
+                  </div>
+                ) : (
+                  <>
+                    {kugou_songs.length === 0 ? (
+                      <div style={{ textAlign: "center", padding: "20px" }}>
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            height: "100%",
+                          }}
+                        >
+                          <p style={{ marginLeft: "10px", whiteSpace: "pre" }}>
+                            未搜索到内容哦，查看一下其他通道吧~
+                          </p>
+                        </div>
+                      </div>
+                    ) : (
+                      <Table>
+                        <TableHead>
+                          <TableRow>
+                            <TableCell>
+                              <span>封面</span>
+                            </TableCell>
+                            <TableCell>
+                              <span>标题</span>
+                            </TableCell>
+                            <TableCell>
+                              <span>作者</span>
+                            </TableCell>
+                            <TableCell>
+                              <span>操作</span>
+                            </TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {kugou_songs.map((song) => (
+                            <TableRow key={song.songid}>
+                              <TableCell>
+                                {song.cover && (
+                                  <img
+                                    src={song.cover}
+                                    alt="CoverImage"
+                                    height="64"
+                                    onError={() => {}}
+                                  />
+                                )}
+                              </TableCell>
+                              <TableCell>
+                                <span>{song.title}</span>
+                              </TableCell>
+                              <TableCell>
+                                <Tooltip title={song.author}>
+                                  <span>
+                                    {song.author.length <= 8
+                                      ? song.author
+                                      : `${song.author.slice(0, 8)}...`}
+                                  </span>
+                                </Tooltip>
+                              </TableCell>
+                              <TableCell>
+                                <ButtonGroup>
+                                  <Button
+                                    onClick={() =>
+                                      handleListenClickLinethree(song)
+                                    }
+                                    variant="contained"
+                                    disabled={disabled}
+                                  >
+                                    <span>听歌曲</span>
+                                  </Button>
+                                </ButtonGroup>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                          <Button
+                            disabled={disabled}
+                            onClick={() => {
+                              loadmoresong("kugou");
+                            }}
+                          >
+                            <span>加载更多歌曲</span>
+                          </Button>
+                        </TableBody>
+                      </Table>
+                    )}
+                  </>
+                )}
+              </CustomTabPanel>
+              <CustomTabPanel value={value} index={2}>
+                {ismgLoading ? (
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      height: "200px",
+                    }}
+                  >
+                    {jzwz3 !== "搜索功能加载完成啦~\n请搜索歌曲哦~" ? (
+                      <CircularProgress />
+                    ) : (
+                      <CheckCircleIcon color="success" fontSize="large" />
+                    )}
+                    <p style={{ marginLeft: "10px", whiteSpace: "pre" }}>
+                      {jzwz3}
+                    </p>
+                  </div>
+                ) : (
+                  <>
+                    {migu_songs.length === 0 ? (
+                      <div style={{ textAlign: "center", padding: "20px" }}>
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            height: "100%",
+                          }}
+                        >
+                          <p style={{ marginLeft: "10px", whiteSpace: "pre" }}>
+                            未搜索到内容哦，查看一下其他通道吧~
+                          </p>
+                        </div>
+                      </div>
+                    ) : (
+                      <Table>
+                        <TableHead>
+                          <TableRow>
+                            <TableCell>
+                              <span>封面</span>
+                            </TableCell>
+                            <TableCell>
+                              <span>标题</span>
+                            </TableCell>
+                            <TableCell>
+                              <span>作者</span>
+                            </TableCell>
+                            <TableCell>
+                              <span>操作</span>
+                            </TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {migu_songs.map((song) => (
+                            <TableRow key={song.songid}>
+                              <TableCell>
+                                {song.cover && (
+                                  <img
+                                    src={song.cover}
+                                    alt="CoverImage"
+                                    height="64"
+                                    onError={() => {}}
+                                  />
+                                )}
+                              </TableCell>
+                              <TableCell>
+                                <span>{song.title}</span>
+                              </TableCell>
+                              <TableCell>
+                                <Tooltip title={song.author}>
+                                  <span>
+                                    {song.author.length <= 8
+                                      ? song.author
+                                      : `${song.author.slice(0, 8)}...`}
+                                  </span>
+                                </Tooltip>
+                              </TableCell>
+                              <TableCell>
+                                <ButtonGroup>
+                                  <Button
+                                    onClick={() =>
+                                      handleListenClickLinethree(song)
+                                    }
+                                    variant="contained"
+                                    disabled={disabled}
+                                  >
+                                    <span>听歌曲</span>
+                                  </Button>
+                                </ButtonGroup>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                          <Button
+                            disabled={disabled}
+                            onClick={() => {
+                              loadmoresong("migu");
+                            }}
+                          >
+                            <span>加载更多歌曲</span>
+                          </Button>
+                        </TableBody>
+                      </Table>
+                    )}
+                  </>
+                )}
+              </CustomTabPanel>
+              <CustomTabPanel value={value} index={3}>
+                {issjkLoading ? (
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      height: "200px",
+                    }}
+                  >
+                    {jzwz4 !== "搜索功能加载完成啦~\n请搜索歌曲哦~" ? (
+                      <CircularProgress />
+                    ) : (
+                      <CheckCircleIcon color="success" fontSize="large" />
+                    )}
+                    <p style={{ marginLeft: "10px", whiteSpace: "pre" }}>
+                      {jzwz4}
+                    </p>
+                  </div>
+                ) : (
+                  <>
+                    {sjk_songs.length === 0 ? (
+                      <div style={{ textAlign: "center", padding: "20px" }}>
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            height: "100%",
+                          }}
+                        >
+                          <p style={{ marginLeft: "10px", whiteSpace: "pre" }}>
+                            未搜索到内容哦，查看一下其他通道吧~
+                          </p>
+                        </div>
+                      </div>
+                    ) : (
+                      <Table>
+                        <TableHead>
+                          <TableRow>
+                            <TableCell>
+                              <span>封面</span>
+                            </TableCell>
+                            <TableCell>
+                              <span>标题</span>
+                            </TableCell>
+                            <TableCell>
+                              <span>作者</span>
+                            </TableCell>
+                            <TableCell>
+                              <span>操作</span>
+                            </TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {sjk_songs.map((song) => (
+                            <TableRow key={song.songid}>
+                              <TableCell>
+                                {song.cover && (
+                                  <img
+                                    src={song.cover}
+                                    alt="CoverImage"
+                                    height="64"
+                                    onError={() => {}}
+                                  />
+                                )}
+                              </TableCell>
+                              <TableCell>
+                                <span>{song.title}</span>
+                              </TableCell>
+                              <TableCell>
+                                <Tooltip title={song.author}>
+                                  <span>
+                                    {song.author.length <= 8
+                                      ? song.author
+                                      : `${song.author.slice(0, 8)}...`}
+                                  </span>
+                                </Tooltip>
+                              </TableCell>
+                              <TableCell>
+                                <ButtonGroup>
+                                  <Button
+                                    onClick={() =>
+                                      handleListenClickLinethree(song)
+                                    }
+                                    variant="contained"
+                                    disabled={disabled}
+                                  >
+                                    <span>听歌曲</span>
+                                  </Button>
+                                </ButtonGroup>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                          <Button
+                            disabled={disabled}
+                            onClick={() => {
+                              loadmoresong("sjk");
+                            }}
+                          >
+                            <span>加载更多歌曲</span>
+                          </Button>
+                        </TableBody>
+                      </Table>
+                    )}
+                  </>
+                )}
+              </CustomTabPanel>
             </Box>
-          </div>
-        )}
-      </Box>
-      <div id="captcha" />
-      <Paper style={{ marginBottom: "10px", marginTop: "10px" }}>
-        <TableContainer>
-          <Box sx={{ width: "100%" }}>
-            <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-              <Tabs
-                value={value}
-                onChange={handleChangeValue}
-                aria-label="basic tabs example"
-              >
-                <Tab label="通道一" {...a11yProps(0)} />
-                <Tab label="通道二" {...a11yProps(1)} />
-                <Tab label="通道三" {...a11yProps(2)} />
-                <Tab label="通道四" {...a11yProps(2)} />
-              </Tabs>
-            </Box>
-            <CustomTabPanel value={value} index={0}>
-              {isneteaseLoading ? (
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    height: "200px",
-                  }}
-                >
-                  {jzwz1 !== "搜索功能加载完成啦~\n请搜索歌曲哦~" ? (
-                    <CircularProgress />
-                  ) : (
-                    <CheckCircleIcon color="success" fontSize="large" />
-                  )}
-                  <p style={{ marginLeft: "10px", whiteSpace: "pre" }}>
-                    {jzwz1}
-                  </p>
-                </div>
-              ) : (
-                <>
-                  {netease_songs.length === 0 ? (
-                    <div style={{ textAlign: "center", padding: "20px" }}>
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          height: "100%",
-                        }}
-                      >
-                        <p style={{ marginLeft: "10px", whiteSpace: "pre" }}>
-                          未搜索到内容哦，查看一下其他通道吧~
-                        </p>
-                      </div>
-                    </div>
-                  ) : (
-                    <Table>
-                      <TableHead>
-                        <TableRow>
-                          <TableCell>
-                            <span>封面</span>
-                          </TableCell>
-                          <TableCell>
-                            <span>标题</span>
-                          </TableCell>
-                          <TableCell>
-                            <span>作者</span>
-                          </TableCell>
-                          <TableCell>
-                            <span>操作</span>
-                          </TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {netease_songs.map((song) => (
-                          <TableRow key={song.songid}>
-                            <TableCell>
-                              {song.cover && (
-                                <img
-                                  src={song.cover}
-                                  alt="CoverImage"
-                                  height="64"
-                                  onError={() => {}}
-                                />
-                              )}
-                            </TableCell>
-                            <TableCell>
-                              <span>{song.title}</span>
-                            </TableCell>
-                            <TableCell>
-                              <Tooltip title={song.author}>
-                                <span>
-                                  {song.author.length <= 10
-                                    ? song.author
-                                    : `${song.author.slice(0, 10)}...`}
-                                </span>
-                              </Tooltip>
-                            </TableCell>
-                            <TableCell>
-                              <ButtonGroup>
-                                <Grid container direction="column" spacing={2}>
-                                  <Grid item>
-                                    <Button
-                                      onClick={() =>
-                                        handleListenClick(song.songid)
-                                      }
-                                      variant="contained"
-                                      disabled={disabled}
-                                    >
-                                      <span>听歌曲</span>
-                                    </Button>
-                                  </Grid>
-                                  <Grid item>
-                                    <Button
-                                      onClick={() =>
-                                        addSongToLocalPlaylist({
-                                          title: song.title,
-                                          artist: song.author,
-                                          songId: song.songid,
-                                        })
-                                      }
-                                      variant="contained"
-                                      disabled={disabled}
-                                    >
-                                      <span>加歌单</span>
-                                    </Button>
-                                  </Grid>
-                                  <Grid item>
-                                    <Button
-                                      onClick={() => {
-                                        setshareurl(
-                                          "https://music.lcahy.cn/song/detail?songID=" +
-                                            song.songid
-                                        );
-                                        fxhandleClickOpen();
-                                      }}
-                                      variant="contained"
-                                      disabled={disabled}
-                                    >
-                                      <span>分享它</span>
-                                    </Button>
-                                  </Grid>
-                                </Grid>
-                              </ButtonGroup>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                        <Button
-                          disabled={disabled}
-                          onClick={() => {
-                            loadmoresong("netease");
-                          }}
-                        >
-                          <span>加载更多歌曲</span>
-                        </Button>
-                      </TableBody>
-                    </Table>
-                  )}
-                </>
-              )}
-            </CustomTabPanel>
-            <CustomTabPanel value={value} index={1}>
-              {iskgLoading ? (
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    height: "200px",
-                  }}
-                >
-                  {jzwz2 !== "搜索功能加载完成啦~\n请搜索歌曲哦~" ? (
-                    <CircularProgress />
-                  ) : (
-                    <CheckCircleIcon color="success" fontSize="large" />
-                  )}
-                  <p style={{ marginLeft: "10px", whiteSpace: "pre" }}>
-                    {jzwz2}
-                  </p>
-                </div>
-              ) : (
-                <>
-                  {kugou_songs.length === 0 ? (
-                    <div style={{ textAlign: "center", padding: "20px" }}>
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          height: "100%",
-                        }}
-                      >
-                        <p style={{ marginLeft: "10px", whiteSpace: "pre" }}>
-                          未搜索到内容哦，查看一下其他通道吧~
-                        </p>
-                      </div>
-                    </div>
-                  ) : (
-                    <Table>
-                      <TableHead>
-                        <TableRow>
-                          <TableCell>
-                            <span>封面</span>
-                          </TableCell>
-                          <TableCell>
-                            <span>标题</span>
-                          </TableCell>
-                          <TableCell>
-                            <span>作者</span>
-                          </TableCell>
-                          <TableCell>
-                            <span>操作</span>
-                          </TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {kugou_songs.map((song) => (
-                          <TableRow key={song.songid}>
-                            <TableCell>
-                              {song.cover && (
-                                <img
-                                  src={song.cover}
-                                  alt="CoverImage"
-                                  height="64"
-                                  onError={() => {}}
-                                />
-                              )}
-                            </TableCell>
-                            <TableCell>
-                              <span>{song.title}</span>
-                            </TableCell>
-                            <TableCell>
-                              <Tooltip title={song.author}>
-                                <span>
-                                  {song.author.length <= 8
-                                    ? song.author
-                                    : `${song.author.slice(0, 8)}...`}
-                                </span>
-                              </Tooltip>
-                            </TableCell>
-                            <TableCell>
-                              <ButtonGroup>
-                                <Button
-                                  onClick={() =>
-                                    handleListenClickLinethree(song)
-                                  }
-                                  variant="contained"
-                                  disabled={disabled}
-                                >
-                                  <span>听歌曲</span>
-                                </Button>
-                              </ButtonGroup>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                        <Button
-                          disabled={disabled}
-                          onClick={() => {
-                            loadmoresong("kugou");
-                          }}
-                        >
-                          <span>加载更多歌曲</span>
-                        </Button>
-                      </TableBody>
-                    </Table>
-                  )}
-                </>
-              )}
-            </CustomTabPanel>
-            <CustomTabPanel value={value} index={2}>
-              {ismgLoading ? (
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    height: "200px",
-                  }}
-                >
-                  {jzwz3 !== "搜索功能加载完成啦~\n请搜索歌曲哦~" ? (
-                    <CircularProgress />
-                  ) : (
-                    <CheckCircleIcon color="success" fontSize="large" />
-                  )}
-                  <p style={{ marginLeft: "10px", whiteSpace: "pre" }}>
-                    {jzwz3}
-                  </p>
-                </div>
-              ) : (
-                <>
-                  {migu_songs.length === 0 ? (
-                    <div style={{ textAlign: "center", padding: "20px" }}>
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          height: "100%",
-                        }}
-                      >
-                        <p style={{ marginLeft: "10px", whiteSpace: "pre" }}>
-                          未搜索到内容哦，查看一下其他通道吧~
-                        </p>
-                      </div>
-                    </div>
-                  ) : (
-                    <Table>
-                      <TableHead>
-                        <TableRow>
-                          <TableCell>
-                            <span>封面</span>
-                          </TableCell>
-                          <TableCell>
-                            <span>标题</span>
-                          </TableCell>
-                          <TableCell>
-                            <span>作者</span>
-                          </TableCell>
-                          <TableCell>
-                            <span>操作</span>
-                          </TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {migu_songs.map((song) => (
-                          <TableRow key={song.songid}>
-                            <TableCell>
-                              {song.cover && (
-                                <img
-                                  src={song.cover}
-                                  alt="CoverImage"
-                                  height="64"
-                                  onError={() => {}}
-                                />
-                              )}
-                            </TableCell>
-                            <TableCell>
-                              <span>{song.title}</span>
-                            </TableCell>
-                            <TableCell>
-                              <Tooltip title={song.author}>
-                                <span>
-                                  {song.author.length <= 8
-                                    ? song.author
-                                    : `${song.author.slice(0, 8)}...`}
-                                </span>
-                              </Tooltip>
-                            </TableCell>
-                            <TableCell>
-                              <ButtonGroup>
-                                <Button
-                                  onClick={() =>
-                                    handleListenClickLinethree(song)
-                                  }
-                                  variant="contained"
-                                  disabled={disabled}
-                                >
-                                  <span>听歌曲</span>
-                                </Button>
-                              </ButtonGroup>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                        <Button
-                          disabled={disabled}
-                          onClick={() => {
-                            loadmoresong("migu");
-                          }}
-                        >
-                          <span>加载更多歌曲</span>
-                        </Button>
-                      </TableBody>
-                    </Table>
-                  )}
-                </>
-              )}
-            </CustomTabPanel>
-            <CustomTabPanel value={value} index={3}>
-              {issjkLoading ? (
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    height: "200px",
-                  }}
-                >
-                  {jzwz4 !== "搜索功能加载完成啦~\n请搜索歌曲哦~" ? (
-                    <CircularProgress />
-                  ) : (
-                    <CheckCircleIcon color="success" fontSize="large" />
-                  )}
-                  <p style={{ marginLeft: "10px", whiteSpace: "pre" }}>
-                    {jzwz4}
-                  </p>
-                </div>
-              ) : (
-                <>
-                  {sjk_songs.length === 0 ? (
-                    <div style={{ textAlign: "center", padding: "20px" }}>
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          height: "100%",
-                        }}
-                      >
-                        <p style={{ marginLeft: "10px", whiteSpace: "pre" }}>
-                          未搜索到内容哦，查看一下其他通道吧~
-                        </p>
-                      </div>
-                    </div>
-                  ) : (
-                    <Table>
-                      <TableHead>
-                        <TableRow>
-                          <TableCell>
-                            <span>封面</span>
-                          </TableCell>
-                          <TableCell>
-                            <span>标题</span>
-                          </TableCell>
-                          <TableCell>
-                            <span>作者</span>
-                          </TableCell>
-                          <TableCell>
-                            <span>操作</span>
-                          </TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {sjk_songs.map((song) => (
-                          <TableRow key={song.songid}>
-                            <TableCell>
-                              {song.cover && (
-                                <img
-                                  src={song.cover}
-                                  alt="CoverImage"
-                                  height="64"
-                                  onError={() => {}}
-                                />
-                              )}
-                            </TableCell>
-                            <TableCell>
-                              <span>{song.title}</span>
-                            </TableCell>
-                            <TableCell>
-                              <Tooltip title={song.author}>
-                                <span>
-                                  {song.author.length <= 8
-                                    ? song.author
-                                    : `${song.author.slice(0, 8)}...`}
-                                </span>
-                              </Tooltip>
-                            </TableCell>
-                            <TableCell>
-                              <ButtonGroup>
-                                <Button
-                                  onClick={() =>
-                                    handleListenClickLinethree(song)
-                                  }
-                                  variant="contained"
-                                  disabled={disabled}
-                                >
-                                  <span>听歌曲</span>
-                                </Button>
-                              </ButtonGroup>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                        <Button
-                          disabled={disabled}
-                          onClick={() => {
-                            loadmoresong("sjk");
-                          }}
-                        >
-                          <span>加载更多歌曲</span>
-                        </Button>
-                      </TableBody>
-                    </Table>
-                  )}
-                </>
-              )}
-            </CustomTabPanel>
-          </Box>
-        </TableContainer>
-      </Paper>
+          </TableContainer>
+        </Paper>
+      </Element>
     </main>
   );
 }

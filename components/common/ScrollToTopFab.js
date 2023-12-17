@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Fab } from "@mui/material";
+import { Fab, Typography } from "@mui/material";
 import NavigationIcon from "@mui/icons-material/Navigation";
 import { useTheme } from "@mui/material/styles";
 
@@ -47,8 +47,14 @@ const ScrollToTopFab = () => {
           alignItems: "center",
         }}
       >
-        <NavigationIcon sx={{ mr: 1 }} />
-        <span>回到顶部</span>
+        <NavigationIcon />
+        <Typography
+          noWrap
+          component="div"
+          sx={{ ml: 1, display: { xs: "none", sm: "block" } }}
+        >
+          <span>回到顶部</span>
+        </Typography>
       </div>
     </Fab>
   );
