@@ -155,7 +155,7 @@ const MusicCard = ({
         }
       }
     }
-  }, [listplaying]);
+  }, [listplaying, currentSong]);
 
   React.useEffect(() => {
     const updateLyrics = async () => {
