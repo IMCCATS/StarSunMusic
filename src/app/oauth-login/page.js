@@ -1,19 +1,21 @@
 "use client";
-import * as React from "react";
+import DashboardIcon from "@mui/icons-material/Dashboard";
 import {
-  Button,
-  Typography,
-  Container,
-  TextField,
   Box,
+  Button,
   Card,
   CardContent,
+  Container,
+  TextField,
+  Typography,
 } from "@mui/material";
-import DashboardIcon from "@mui/icons-material/Dashboard";
 import CircularProgress from "@mui/material/CircularProgress";
+import { Flex, message } from "antd";
 import { useRouter } from "next/navigation";
-import { message } from "antd";
 import Script from "next/script";
+import * as React from "react";
+import { CodeLogin, GetRegCode } from "../../../components/common/fetchapi";
+import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 const crypto = require("crypto");
 
 const LoginPage = () => {
@@ -28,15 +30,6 @@ const LoginPage = () => {
         router.push("/dashboard");
         return null;
       }, 1500);
-    } else {
-      const script = document.createElement("script");
-      script.src = "https://cdn.jijiancode.com/jijian-sdk.min.js";
-      script.async = true;
-      document.body.appendChild(script);
-      // 在组件卸载前移除JS文件
-      return () => {
-        document.body.removeChild(script);
-      };
     }
   };
   React.useEffect(() => {
@@ -45,8 +38,12 @@ const LoginPage = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = React.useState(false);
   const [username, setusername] = React.useState("");
+  const [pass, setpass] = React.useState("");
   const handleUserNameChange = (event) => {
     setusername(event.target.value); // 更新状态为输入框的值
+  };
+  const handlePassChange = (event) => {
+    setpass(event.target.value); // 更新状态为输入框的值
   };
   const handleGo = () => {
     router.push("/dashboard");
@@ -66,9 +63,40 @@ const LoginPage = () => {
         return true;
       }
     }
-    messageApi.error("手机号未输入或格式无效！");
+    messageApi.error("信息未输入或有误，请检查后重试");
     setIsLoading(false);
   };
+
+  const Suc = (mobileidc, token) => {
+    function generateRandomString() {
+      var result = "";
+      var characters =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      var charactersLength = characters.length;
+      for (var i = 0; i < 6; i++) {
+        result += characters.charAt(
+          Math.floor(Math.random() * charactersLength)
+        );
+      }
+      return result;
+    }
+    setlogined(true);
+    localStorage.setItem("userprofile", mobileidc);
+    localStorage.setItem("mobiletoken", token);
+    const skey = generateRandomString();
+    localStorage.setItem("skey", skey);
+    async function sha256(input) {
+      return crypto.createHash("sha256").update(input).digest("hex");
+    }
+    const text = skey + mobileidc + token + skey;
+    sha256(text).then((ykey) => {
+      localStorage.setItem("ykey", ykey);
+    });
+    setTimeout(function () {
+      handleGo();
+    }, 1000);
+  };
+
   const handleClickOpen = async () => {
     initGeetest4(
       {
@@ -85,54 +113,48 @@ const LoginPage = () => {
           .onSuccess(function () {
             if (checkPhone(username)) {
               setIsLoading(true);
-              Jijian.verify({
-                appId: "b54246d06f6a68320927641a", //应用appId
-                show: "inner", // 包括 inner，dialog两种方式
-                option: "barcode", // 当 show='inner' 时，此处传元素的 id；当 show='dialog' 时，此值为 null；
-                mobile: username, //用户手机
-                success: function (mobileidc, token) {
-                  function generateRandomString() {
-                    var result = "";
-                    var characters =
-                      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-                    var charactersLength = characters.length;
-                    for (var i = 0; i < 6; i++) {
-                      result += characters.charAt(
-                        Math.floor(Math.random() * charactersLength)
-                      );
-                    }
-                    return result;
-                  }
-                  setlogined(true);
-                  localStorage.setItem("userprofile", mobileidc);
-                  localStorage.setItem("mobiletoken", token);
-                  const skey = generateRandomString();
-                  localStorage.setItem("skey", skey);
-                  async function sha256(input) {
-                    return crypto
-                      .createHash("sha256")
-                      .update(input)
-                      .digest("hex");
-                  }
-                  const text = skey + mobileidc + token + skey;
-                  sha256(text).then((ykey) => {
-                    localStorage.setItem("ykey", ykey);
-                  });
-                  setTimeout(function () {
-                    handleGo();
-                  }, 1000);
-                },
-                onshow: function (qrcode) {
-                  messageApi.success("快扫描二维码登录吧~");
-                },
-                cancel: function () {
+              CodeLogin(username, pass)
+                .then((e) => {
+                  Suc(e.mobile, e.tk);
+                })
+                .catch((e) => {
+                  messageApi.error(e);
                   setIsLoading(false);
-                },
-                fail: function (msg) {
-                  console.error(msg);
-                  setIsLoading(false);
-                },
-              });
+                });
+            }
+          });
+      }
+    );
+  };
+
+  const [disabledc, setdisabledc] = React.useState(false);
+
+  const handleClickGetCode = async () => {
+    initGeetest4(
+      {
+        captchaId: "c1677059124b92b9dfb3c8919755b459",
+        product: "bind",
+      },
+      function (captcha) {
+        // captcha为验证码实例
+        captcha.appendTo("#captcha");
+        captcha
+          .onReady(function () {
+            captcha.showCaptcha();
+          })
+          .onSuccess(function () {
+            if (checkPhone(username)) {
+              GetRegCode(username)
+                .then((e) => {
+                  setdisabledc(true);
+                  setTimeout(() => {
+                    setdisabledc(false);
+                  }, 60000);
+                  messageApi.success("验证码发送成功，请注意查收");
+                })
+                .catch((e) => {
+                  messageApi.error("发送失败，可能是间隔时间太短");
+                });
             }
           });
       }
@@ -192,60 +214,55 @@ const LoginPage = () => {
                 }}
               >
                 <Card>
-                  <CardContent>
-                    <div id="barcode"></div>
-                  </CardContent>
+                  <CardContent>正在登录中...</CardContent>
                 </Card>
               </div>
             )}
           </div>
         ) : (
           <div>
-            <Box
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                height: "100%",
-              }}
-            >
-              <Button
-                variant="contained"
-                startIcon={<DashboardIcon />}
-                onClick={handleClickOpen}
-                style={{
-                  marginBottom: "10px",
-                  backgroundColor: "#2196f3",
-                  color: "#fff",
-                  "&:hover": {
-                    backgroundColor: "#1976d2",
-                  },
-                }}
-              >
-                <span>点击登录</span>
-              </Button>
-            </Box>
             <div>
               <Box style={{ marginTop: "10px" }}>
-                <TextField
-                  id="outlined-basic"
-                  label="手机号"
-                  variant="outlined"
-                  required
-                  value={username}
-                  onChange={handleUserNameChange}
-                  style={{ marginRight: "5px" }}
-                />
+                <Flex vertical="vertical" gap="middle">
+                  <Flex gap="middle">
+                    <TextField
+                      id="outlined-basic"
+                      label="手机号"
+                      variant="outlined"
+                      required
+                      value={username}
+                      onChange={handleUserNameChange}
+                      style={{ marginRight: "5px" }}
+                    />
+                    <Button
+                      variant="contained"
+                      startIcon={<DashboardIcon />}
+                      onClick={handleClickGetCode}
+                      disabled={disabledc}
+                    >
+                      <span>获取验证码</span>
+                    </Button>
+                  </Flex>
+                  <Flex gap="middle">
+                    <TextField
+                      id="outlined-basic"
+                      label="验证码"
+                      variant="outlined"
+                      required
+                      value={pass}
+                      onChange={handlePassChange}
+                      style={{ marginRight: "5px" }}
+                    />
+                    <Button
+                      variant="contained"
+                      startIcon={<KeyboardDoubleArrowRightIcon />}
+                      onClick={handleClickOpen}
+                    >
+                      <span>去登录账号</span>
+                    </Button>
+                  </Flex>
+                </Flex>
               </Box>
-              <Box
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  height: "100%",
-                  marginTop: "10px",
-                }}
-              ></Box>
             </div>
           </div>
         )}

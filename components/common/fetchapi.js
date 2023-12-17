@@ -1,6 +1,7 @@
 import $ from "jquery";
 import { cache } from "react";
 import supabase from "@/app/api/supabase";
+import { getShuanQApiClient } from "@/app/api/Api";
 
 export const revalidate = 3600; //数据缓存时间
 
@@ -291,3 +292,179 @@ export default function speak(
 
   return speechUtterance;
 }
+
+// export const Login = async (account, password, machine_code, machine_info) => {
+//   return new Promise((resolve, reject) => {
+//     const LoginApi = getShuanQApiClient();
+//     LoginApi.setRequestApi("/api/member_app/login");
+
+//     //开始添加参数
+//     LoginApi.addRequestParam("account", account);
+//     LoginApi.addRequestParam("machine_info", machine_info);
+//     LoginApi.addRequestParam("password", password);
+//     LoginApi.addRequestParam("machine_code", machine_code);
+//     //参数添加完成
+
+//     LoginApi.sendRequest()
+//       .then((response) => {
+//         const responseJson = LoginApi.getResponseJsonObject(); //获取响应json对象
+//         const responseCode = responseJson.code; //得到请求响应返回状态码
+//         const responseMessage = responseJson.message; //得到请求响应返回信息
+//         if (responseCode !== 1) {
+//           //接口业务码响应非成功-将服务器返回信息提示
+//           console.warn(responseMessage);
+//           if (responseMessage == "用户名或密码错误不存在") {
+//             reject("用户名或密码错误");
+//           } else {
+//             reject("请求错误，登录失败。请检查信息是否正确！");
+//           }
+//           return;
+//         }
+//         if (!LoginApi.requestDataSignatureVerify()) {
+//           //响应数据验签检测未通过
+//           console.warn("响应数据验签失败");
+//           return;
+//         }
+//         if (!LoginApi.requestSafeCodeVerify()) {
+//           //防劫持验证检测未通过
+//           console.warn("检测到数据被劫持篡改了，请检查网络环境是否安全！");
+//           return;
+//         }
+//         if (!LoginApi.requestDataTimeDifferenceVerify()) {
+//           //响应数据检测验证不通过
+//           console.warn(
+//             "响应数据异常，与服务器时差相差过多，请检查系统时钟是否正确！"
+//           );
+//           return;
+//         }
+//         const dataJson = LoginApi.getDecryptResponseData(); // 解密aes得到原始未加密的dataJson数据
+
+//         let data = JSON.parse(dataJson);
+//         //console.log("data：", JSON.stringify(data));
+
+//         //业务代码
+
+//         resolve({
+//           mobile: data.data.userInfo.account,
+//           tk: data.user_token,
+//         });
+//       })
+//       .catch((error) => {
+//         console.log("请求失败" + error);
+//         reject("请求失败");
+//       });
+//   });
+// }; //登录
+
+export const GetRegCode = async (phone) => {
+  return new Promise((resolve, reject) => {
+    const GetRegisterCodeApi = getShuanQApiClient();
+    GetRegisterCodeApi.setRequestApi("/api/member_app/get_login_sms_code");
+
+    //开始添加参数
+    GetRegisterCodeApi.addRequestParam("phone", phone);
+    //参数添加完成
+
+    GetRegisterCodeApi.sendRequest()
+      .then((response) => {
+        const responseJson = GetRegisterCodeApi.getResponseJsonObject(); //获取响应json对象
+        const responseCode = responseJson.code; //得到请求响应返回状态码
+        const responseMessage = responseJson.message; //得到请求响应返回信息
+        if (responseCode !== 1) {
+          //接口业务码响应非成功-将服务器返回信息提示
+          console.warn(responseMessage);
+          reject("请求失败");
+          return;
+        }
+        if (!GetRegisterCodeApi.requestDataSignatureVerify()) {
+          //响应数据验签检测未通过
+          console.warn("响应数据验签失败");
+          return;
+        }
+        if (!GetRegisterCodeApi.requestSafeCodeVerify()) {
+          //防劫持验证检测未通过
+          console.warn("检测到数据被劫持篡改了，请检查网络环境是否安全！");
+          return;
+        }
+        if (!GetRegisterCodeApi.requestDataTimeDifferenceVerify()) {
+          //响应数据检测验证不通过
+          console.warn(
+            "响应数据异常，与服务器时差相差过多，请检查系统时钟是否正确！"
+          );
+          return;
+        }
+        const dataJson = GetRegisterCodeApi.getDecryptResponseData(); // 解密aes得到原始未加密的dataJson数据
+
+        let data = JSON.parse(dataJson);
+        //console.log("data：", JSON.stringify(data));
+
+        //业务代码
+        resolve("发送成功");
+      })
+      .catch((error) => {
+        console.log("请求失败" + error);
+        reject("请求失败");
+      });
+  });
+};
+
+export const CodeLogin = async (phone, code) => {
+  return new Promise((resolve, reject) => {
+    const CodeLoginApi = getShuanQApiClient();
+    CodeLoginApi.setRequestApi("/api/member_app/phone_login");
+
+    //开始添加参数
+    CodeLoginApi.addRequestParam("phone", phone);
+    CodeLoginApi.addRequestParam("code", code);
+    CodeLoginApi.addRequestParam("machine_code", phone);
+    //参数添加完成
+
+    CodeLoginApi.sendRequest()
+      .then((response) => {
+        const responseJson = CodeLoginApi.getResponseJsonObject(); //获取响应json对象
+        const responseCode = responseJson.code; //得到请求响应返回状态码
+        const responseMessage = responseJson.message; //得到请求响应返回信息
+        if (responseCode !== 1) {
+          //接口业务码响应非成功-将服务器返回信息提示
+          console.warn(responseMessage);
+          if (responseMessage == "手机验证码错误") {
+            reject("验证码错误或已到期");
+          } else {
+            reject("请求错误，登录失败。请检查信息是否正确！");
+          }
+          return;
+        }
+        if (!CodeLoginApi.requestDataSignatureVerify()) {
+          //响应数据验签检测未通过
+          console.warn("响应数据验签失败");
+          return;
+        }
+        if (!CodeLoginApi.requestSafeCodeVerify()) {
+          //防劫持验证检测未通过
+          console.warn("检测到数据被劫持篡改了，请检查网络环境是否安全！");
+          return;
+        }
+        if (!CodeLoginApi.requestDataTimeDifferenceVerify()) {
+          //响应数据检测验证不通过
+          console.warn(
+            "响应数据异常，与服务器时差相差过多，请检查系统时钟是否正确！"
+          );
+          return;
+        }
+        const dataJson = CodeLoginApi.getDecryptResponseData(); // 解密aes得到原始未加密的dataJson数据
+
+        let data = JSON.parse(dataJson);
+        //console.log("data：", JSON.stringify(data));
+
+        //业务代码
+        resolve({
+          mobile: data.data.userInfo.account,
+          tk: data.user_token,
+        });
+      })
+      .catch((error) => {
+        console.log("请求失败" + error);
+        reject("请求失败");
+      });
+  });
+};
