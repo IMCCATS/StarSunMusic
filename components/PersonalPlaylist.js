@@ -78,6 +78,11 @@ const PersonalPlaylist = () => {
       });
   };
 
+  let user = "";
+  if (localStorage.getItem("userprofile")) {
+    user = "当前登录用户：" + localStorage.getItem("userprofile");
+  }
+
   React.useEffect(() => {
     const b = localStorage.getItem("mobiletoken");
     const c = localStorage.getItem("userprofile");
@@ -112,7 +117,7 @@ const PersonalPlaylist = () => {
     } else {
       setprofile(false);
     }
-  }, [isPlayComplete]);
+  }, []);
 
   // 获取播放列表的函数
   const getPlayList = () => {
@@ -331,18 +336,21 @@ const PersonalPlaylist = () => {
         </DialogActions>
       </Dialog>
       {profile ? (
-        <Button
-          onClick={handleQuitLogin}
-          variant="contained"
-          disabled={disabled}
-          sx={{
-            height: "56px",
-            marginTop: "10px",
-            marginRight: "10px",
-          }}
-        >
-          <span>退出登录</span>
-        </Button>
+        <>
+          <p>{user}</p>
+          <Button
+            onClick={handleQuitLogin}
+            variant="contained"
+            disabled={disabled}
+            sx={{
+              height: "56px",
+              marginTop: "10px",
+              marginRight: "10px",
+            }}
+          >
+            <span>退出登录</span>
+          </Button>
+        </>
       ) : (
         <Button
           onClick={handleLogin}
