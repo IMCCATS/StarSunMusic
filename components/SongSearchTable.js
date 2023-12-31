@@ -25,7 +25,6 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Backdrop,
   Autocomplete,
 } from "@mui/material";
 import supabase from "@/app/api/supabase";
@@ -41,13 +40,12 @@ import { scroller, Element } from "react-scroll";
 
 export default function SongSearchTable({ setcanlistplay }) {
   const {
-    playingpage,
-    setplayingpage,
-    isPlayComplete,
     setCurrentSong,
-    setisPlayComplete,
+    SetPlayingSongs,
+    disabled,
+    setdisabled,
+    handleInsectSongClick,
   } = React.useContext(CurrentSongContext);
-  const [lastPlayedSongIndex, setLastPlayedSongIndex] = React.useState(0);
   const [isneteaseLoading, setIsneteaseLoading] = React.useState(true);
   const [iskgLoading, setIskgLoading] = React.useState(true);
   const [ismgLoading, setIsmgLoading] = React.useState(true);
@@ -70,25 +68,6 @@ export default function SongSearchTable({ setcanlistplay }) {
   const [searchTermC, setSearchTermC] = React.useState("");
   const [SearchHistory, SetSearchHistory] = React.useState([]);
   const [value, setValue] = React.useState(0);
-
-  const handleNextSongClick = () => {
-    const index = lastPlayedSongIndex + 1;
-    // 检查索引是否越界
-    if (index >= netease_songs.length) {
-      messageApi.success("列表播放已完成");
-      return;
-    }
-    if (netease_songs[index] && netease_songs[index].songid) {
-      handleListenClick(netease_songs[index].songid);
-      setisPlayComplete(false);
-    }
-  };
-
-  React.useEffect(() => {
-    if (isPlayComplete && playingpage === "NeteaseSearch") {
-      handleNextSongClick();
-    }
-  }, [isPlayComplete]);
 
   const handleChangeValue = (event, newValue) => {
     setValue(newValue);
@@ -213,18 +192,14 @@ export default function SongSearchTable({ setcanlistplay }) {
   const ChangeSearch = (event, value) => {
     setSearchTerm(value);
   };
-  const [disabled, setdisabled] = React.useState(false);
 
   const handleListenClick = (songId) => {
     setdisabled(true);
     HandleListenSong(songId)
       .then((e) => {
         setCurrentSong(e);
-        setLastPlayedSongIndex(
-          netease_songs.findIndex((song) => song.songid === songId)
-        );
+        SetPlayingSongs(netease_songs);
         setcanlistplay(true);
-        setplayingpage("NeteaseSearch");
         setdisabled(false);
       })
       .catch((error) => {
@@ -323,7 +298,7 @@ export default function SongSearchTable({ setcanlistplay }) {
 
     for (let i = 0; i < data.length; i++) {
       const convertedJson = {
-        songid: data[i].id,
+        id: data[i].id,
         title: data[i].title,
         artist: data[i].artist,
         author: data[i].artist,
@@ -407,13 +382,6 @@ export default function SongSearchTable({ setcanlistplay }) {
     <main>
       {contextHolder}
       <Script src="https://static.geetest.com/v4/gt4.js" />
-      <Backdrop
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={disabled}
-      >
-        <CircularProgress color="inherit" />
-        <span style={{ marginLeft: "15px" }}>正在加载歌曲</span>
-      </Backdrop>
       <Dialog
         open={fxopen}
         onClose={fxhandleClose}
@@ -612,7 +580,7 @@ export default function SongSearchTable({ setcanlistplay }) {
                         </TableHead>
                         <TableBody>
                           {netease_songs.map((song) => (
-                            <TableRow key={song.songid}>
+                            <TableRow key={song.id}>
                               <TableCell>
                                 {song.cover && (
                                   <img
@@ -645,7 +613,7 @@ export default function SongSearchTable({ setcanlistplay }) {
                                     <Grid item>
                                       <Button
                                         onClick={() =>
-                                          handleListenClick(song.songid)
+                                          handleListenClick(song.id)
                                         }
                                         variant="contained"
                                         disabled={disabled}
@@ -659,7 +627,7 @@ export default function SongSearchTable({ setcanlistplay }) {
                                           addSongToLocalPlaylist({
                                             title: song.title,
                                             artist: song.author,
-                                            songId: song.songid,
+                                            songId: song.id,
                                           })
                                         }
                                         variant="contained"
@@ -670,10 +638,25 @@ export default function SongSearchTable({ setcanlistplay }) {
                                     </Grid>
                                     <Grid item>
                                       <Button
+                                        onClick={() =>
+                                          handleInsectSongClick({
+                                            id: song.id,
+                                            name: song.title,
+                                            artist: song.author,
+                                          })
+                                        }
+                                        variant="contained"
+                                        disabled={disabled}
+                                      >
+                                        <span>下首播</span>
+                                      </Button>
+                                    </Grid>
+                                    <Grid item>
+                                      <Button
                                         onClick={() => {
                                           setshareurl(
                                             "https://music.lcahy.cn/song/detail?songID=" +
-                                              song.songid
+                                              song.id
                                           );
                                           fxhandleClickOpen();
                                         }}
@@ -758,7 +741,7 @@ export default function SongSearchTable({ setcanlistplay }) {
                         </TableHead>
                         <TableBody>
                           {kugou_songs.map((song) => (
-                            <TableRow key={song.songid}>
+                            <TableRow key={song.id}>
                               <TableCell>
                                 {song.cover && (
                                   <img
@@ -866,7 +849,7 @@ export default function SongSearchTable({ setcanlistplay }) {
                         </TableHead>
                         <TableBody>
                           {migu_songs.map((song) => (
-                            <TableRow key={song.songid}>
+                            <TableRow key={song.id}>
                               <TableCell>
                                 {song.cover && (
                                   <img
@@ -974,7 +957,7 @@ export default function SongSearchTable({ setcanlistplay }) {
                         </TableHead>
                         <TableBody>
                           {sjk_songs.map((song) => (
-                            <TableRow key={song.songid}>
+                            <TableRow key={song.id}>
                               <TableCell>
                                 {song.cover && (
                                   <img

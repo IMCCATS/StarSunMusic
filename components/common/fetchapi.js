@@ -11,7 +11,7 @@ const ConvertJson = function (serverJson) {
 
   for (let i = 0; i < data.length; i++) {
     const convertedJson = {
-      songid: data[i].songid,
+      id: data[i].songid,
       title: data[i].title,
       artist: data[i].author,
       author: data[i].author,
@@ -31,7 +31,7 @@ const ConvertJsonSJK = function (serverJson) {
 
   for (let i = 0; i < data.length; i++) {
     const convertedJson = {
-      songid: data[i].id,
+      id: data[i].id,
       title: data[i].title,
       artist: data[i].artist,
       author: data[i].artist,

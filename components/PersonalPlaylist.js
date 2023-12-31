@@ -46,38 +46,39 @@ const PersonalPlaylist = () => {
   const [open, setOpen] = React.useState(false);
   const [uuidtext, setuuid] = React.useState("");
   const [playList, setPlayList] = React.useState([]);
-  const [disabled, setdisabled] = React.useState(false);
   const [gedanidshow, setgedanidshow] = React.useState(false);
   const [sharedisabled, setsharedisabled] = React.useState(false);
   const [checkisabled, setcheckisabled] = React.useState(false);
   const [gedanidc, setgedanidc] = React.useState("");
   const {
-    playingpage,
-    setplayingpage,
     isPlayComplete,
+    SetPlayingSongs,
     setCurrentSong,
-    setisPlayComplete,
+    setLastPlayedSongIndex,
     setcanlistplay,
+    setdisabled,
+    disabled,
+    handleInsectSongClick,
   } = React.useContext(CurrentSongContext);
-  const [lastPlayedSongIndex, setLastPlayedSongIndex] = React.useState(0);
 
-  const handleNextSongClick = () => {
-    const index = lastPlayedSongIndex + 1;
-    // 检查索引是否越界
-    if (index >= playList.length) {
-      messageApi.success("列表播放已完成");
-      return;
-    }
-    if (playList[index] && playList[index].songId) {
-      handleListenClick(playList[index].songId);
-      setisPlayComplete(false);
-    }
+  const handleListenClick = (songId) => {
+    setdisabled(true);
+    HandleListenSong(songId)
+      .then((e) => {
+        setCurrentSong(e);
+        SetPlayingSongs(playList);
+        setLastPlayedSongIndex(
+          playList.findIndex((song) => song.id === songId)
+        );
+        setcanlistplay(true);
+        setdisabled(false);
+      })
+      .catch((error) => {
+        setdisabled(false);
+      });
   };
 
   React.useEffect(() => {
-    if (isPlayComplete && playingpage === "LocalGD") {
-      handleNextSongClick();
-    }
     const b = localStorage.getItem("mobiletoken");
     const c = localStorage.getItem("userprofile");
     if (c) {
@@ -236,24 +237,6 @@ const PersonalPlaylist = () => {
     }
   };
 
-  // 播放歌曲的函数
-  const handleListenClick = (songId) => {
-    setdisabled(true);
-    HandleListenSong(songId)
-      .then((e) => {
-        setdisabled(false);
-        setcanlistplay(true);
-        setplayingpage("LocalGD");
-        setLastPlayedSongIndex(
-          playList.findIndex((song) => song.songId === songId)
-        );
-        setCurrentSong(e);
-      })
-      .catch((error) => {
-        setdisabled(false);
-      });
-  };
-
   const handleShare = async () => {
     if (playList && Array.isArray(playList) && playList.length >= 10) {
       setdisabled(true);
@@ -347,13 +330,6 @@ const PersonalPlaylist = () => {
           </Button>
         </DialogActions>
       </Dialog>
-      <Backdrop
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={disabled}
-      >
-        <CircularProgress color="inherit" />
-        <span style={{ marginLeft: "15px" }}>正在加载</span>
-      </Backdrop>
       {profile ? (
         <Button
           onClick={handleQuitLogin}
@@ -442,6 +418,19 @@ const PersonalPlaylist = () => {
                         disabled={disabled}
                       >
                         <span>删除</span>
+                      </Button>
+                      <Button
+                        onClick={() =>
+                          handleInsectSongClick({
+                            id: song.songId,
+                            name: song.title,
+                            artist: song.artist,
+                          })
+                        }
+                        variant="contained"
+                        disabled={disabled}
+                      >
+                        <span>下首播</span>
                       </Button>
                     </ButtonGroup>
                   </ListItem>

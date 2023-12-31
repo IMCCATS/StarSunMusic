@@ -24,7 +24,6 @@ import {
   TextField,
   Link,
 } from "@mui/material";
-import { ExperimentTwoTone } from "@ant-design/icons";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -40,14 +39,14 @@ import {
 const PlaylistComponent = ({ playlist, index }) => {
   const [messageApi, contextHolder] = message.useMessage();
   const {
-    playingpage,
-    setplayingpage,
-    isPlayComplete,
+    SetPlayingSongs,
     setCurrentSong,
-    setisPlayComplete,
+    setLastPlayedSongIndex,
     setcanlistplay,
+    setdisabled,
+    disabled,
+    handleInsectSongClick,
   } = React.useContext(CurrentSongContext);
-  const [lastPlayedSongIndex, setLastPlayedSongIndex] = React.useState(0);
   const [isLoading, setIsLoading] = React.useState(false);
   const [songs, setSongs] = React.useState([]);
   const [currentPage, setCurrentPage] = React.useState(1);
@@ -60,25 +59,6 @@ const PlaylistComponent = ({ playlist, index }) => {
       fetchMusicList();
     }, 1000);
   };
-
-  const handleNextSongClick = () => {
-    const index = lastPlayedSongIndex + 1;
-    // 检查索引是否越界
-    if (index >= songs.length) {
-      messageApi.success("列表播放已完成");
-      return;
-    }
-    if (songs[index] && songs[index].id) {
-      handleListenClick(songs[index].id);
-      setisPlayComplete(false);
-    }
-  };
-
-  React.useEffect(() => {
-    if (isPlayComplete && playingpage === playlist.name) {
-      handleNextSongClick();
-    }
-  }, [isPlayComplete]);
 
   const fetchMusicList = () => {
     const playlistId = playlist.id;
@@ -105,16 +85,15 @@ const PlaylistComponent = ({ playlist, index }) => {
       });
   };
 
-  const [disabled, setdisabled] = React.useState(false);
   const handleListenClick = (songId) => {
     setdisabled(true);
     HandleListenSong(songId)
       .then((e) => {
         setCurrentSong(e);
-        setdisabled(false);
+        SetPlayingSongs(songs);
         setLastPlayedSongIndex(songs.findIndex((song) => song.id === songId));
         setcanlistplay(true);
-        setplayingpage(playlist.name);
+        setdisabled(false);
       })
       .catch((error) => {
         setdisabled(false);
@@ -147,13 +126,6 @@ const PlaylistComponent = ({ playlist, index }) => {
   return (
     <main>
       {contextHolder}
-      <Backdrop
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={disabled}
-      >
-        <CircularProgress color="inherit" />
-        <span style={{ marginLeft: "15px" }}>正在加载歌曲</span>
-      </Backdrop>
       <Accordion key={playlist.id}>
         <AccordionSummary>
           <Typography>
@@ -247,6 +219,19 @@ const PlaylistComponent = ({ playlist, index }) => {
                               disabled={disabled}
                             >
                               <span>加歌单</span>
+                            </Button>
+                            <Button
+                              onClick={() =>
+                                handleInsectSongClick({
+                                  id: song.id,
+                                  name: song.name,
+                                  artist: song.artist,
+                                })
+                              }
+                              variant="contained"
+                              disabled={disabled}
+                            >
+                              <span>下首播</span>
                             </Button>
                           </ButtonGroup>
                         </TableCell>
@@ -429,9 +414,7 @@ export default function LikeSongBar() {
       <Card sx={{ minWidth: 275 }} style={{ marginTop: "15px" }}>
         <CardContent>
           <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-            <span>
-              本地歌单列表
-            </span>
+            <span>本地歌单列表</span>
           </Typography>
           {/* 使用动态组件渲染每个歌单 */}
           {Array.isArray(playlists) && playlists.length > 0 ? (
