@@ -56,7 +56,7 @@ const UpdateDialog = () => {
   return (
     <div>
       <Dialog open={open} onClose={handleClose}>
-        <DialogContent style={{ whiteSpace: "pre" }}>
+        <DialogContent style={{ whiteSpace: "pre-wrap" }}>
           <h2>🌟新版本更新啦🎇~</h2>
           <p>⭐新版本：{newVersion}</p>
           <p>⭐更新时间：{updateTime}</p>

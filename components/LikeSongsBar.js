@@ -430,9 +430,7 @@ export default function LikeSongBar() {
         <CardContent>
           <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
             <span>
-              本地歌单列表（
-              <ExperimentTwoTone />
-              实验性功能）
+              本地歌单列表
             </span>
           </Typography>
           {/* 使用动态组件渲染每个歌单 */}

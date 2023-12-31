@@ -3,10 +3,10 @@ import axios from "axios";
 
 //全局验证配置对象
 const ShuanQConfig = {
-  ShuanQ_Host: "https://managec.singtstudios.cn", //后台配置-站点地址
+  ShuanQ_Host: process.env.ShuanQ_Host, //后台配置-站点地址
   ShuanQ_AppId: "2", //后台配置-应用ID-在应用列表获得
-  ShuanQ_AppKey: "ff979452cc21d3e07ddcc19e33ec1d54", //后台配置-应用密钥-在应用列表获得
-  ShuanQ_AesKey: "d6dc59865deb8980", //后台配置-算法密钥aes-在 接口通信与加密配置 里生成
+  ShuanQ_AppKey: process.env.ShuanQ_AppKey, //后台配置-应用密钥-在应用列表获得
+  ShuanQ_AesKey: process.env.ShuanQ_AesKey, //后台配置-算法密钥aes-在 接口通信与加密配置 里生成
   ShuanQ_SignatureTimeLimitMinimum: 90, //本地配置-允许请求时差最小值-单位为秒
   ShuanQ_SignatureTimeLimitMaximum: 90, //本地配置-允许请求时差最大值-单位为秒
   ShuanQ_HeartbeatFrequency: 300, //本地配置-心跳验证间隔频率-单位为秒
