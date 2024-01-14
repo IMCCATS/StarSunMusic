@@ -331,7 +331,7 @@ const PersonalPlaylist = () => {
             <span>取消</span>
           </Button>
           <Button onClick={handleCheckUUID}>
-            <span>加歌单</span>
+            <span>收藏它</span>
           </Button>
         </DialogActions>
       </Dialog>

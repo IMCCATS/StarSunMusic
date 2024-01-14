@@ -222,7 +222,7 @@ const PlaylistComponent = ({ playlist }) => {
                               variant="contained"
                               disabled={disabled}
                             >
-                              <span>加歌单</span>
+                              <span>收藏它</span>
                             </Button>
                             <Button
                               onClick={() =>

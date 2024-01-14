@@ -633,7 +633,7 @@ export default function SongSearchTable({ setcanlistplay }) {
                                         variant="contained"
                                         disabled={disabled}
                                       >
-                                        <span>加歌单</span>
+                                        <span>收藏它</span>
                                       </Button>
                                     </Grid>
                                     <Grid item>

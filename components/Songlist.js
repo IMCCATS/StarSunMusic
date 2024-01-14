@@ -7,7 +7,7 @@ import {
   Pagination,
 } from "@mui/material";
 import { CurrentSongContext } from "@/app/dashboard/page";
-import { Flex, Modal } from "antd";
+import { Flex, Modal, Tag } from "antd";
 import { HandleListenSong } from "./common/fetchapi";
 
 export default function SongList() {
@@ -15,6 +15,7 @@ export default function SongList() {
   const [songsPerPage] = useState(10);
 
   const {
+    lastPlayedSongIndex,
     SetPlayingSongs,
     setCurrentSong,
     setLastPlayedSongIndex,
@@ -96,12 +97,39 @@ export default function SongList() {
 
   return (
     <>
+      {currentSongs && lastPlayedSongIndex && PlayingSongs ? (
+        <>
+          <p>
+            当前正在播放 播放列表第{lastPlayedSongIndex + 1}首歌曲：
+            {PlayingSongs[lastPlayedSongIndex].name}—
+            {PlayingSongs[lastPlayedSongIndex].artist}
+          </p>
+        </>
+      ) : (
+        <></>
+      )}
       <List>
         {currentSongs.length > 0 ? (
           currentSongs.map((song, index) => (
             <ListItem key={song.id}>
-              <ListItemText primary={song.name} secondary={song.artist} />
+              <ListItemText
+                primary={`第${getGlobalIndexFromCurrentPage(index + 1)}首—${
+                  song.name
+                }`}
+                secondary={`${song.artist}`}
+              />
               <Flex gap="small">
+                <>
+                  {lastPlayedSongIndex ===
+                  getGlobalIndexFromCurrentPage(index) ? (
+                    <Tag color="success">播放中</Tag>
+                  ) : lastPlayedSongIndex ===
+                    getGlobalIndexFromCurrentPage(index - 1) ? (
+                    <Tag color="blue">下一曲</Tag>
+                  ) : (
+                    <></>
+                  )}
+                </>
                 <Button
                   color="primary"
                   onClick={() => moveUp(index)}
