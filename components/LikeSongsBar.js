@@ -3,11 +3,6 @@ import * as React from "react";
 import { CurrentSongContext } from "../src/app/dashboard/page";
 import {
   Button,
-  TableRow,
-  TableHead,
-  TableCell,
-  TableBody,
-  Table,
   TableContainer,
   CardContent,
   Card,
@@ -18,11 +13,15 @@ import {
   AccordionDetails,
   Typography,
   Paper,
-  Backdrop,
-  ButtonGroup,
   CardActions,
   TextField,
   Link,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemButton,
+  ListItemAvatar,
+  Avatar,
 } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -109,7 +108,6 @@ const PlaylistComponent = ({ playlist, index }) => {
     setCurrentPage(value);
   };
 
-
   return (
     <main>
       {contextHolder}
@@ -150,69 +148,45 @@ const PlaylistComponent = ({ playlist, index }) => {
                   </span>
                 </div>
               ) : (
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>
-                        <span>序号</span>
-                      </TableCell>
-                      <TableCell>
-                        <span>歌曲图片</span>
-                      </TableCell>
-                      <TableCell>
-                        <span>标题</span>
-                      </TableCell>
-                      <TableCell>
-                        <span>作者</span>
-                      </TableCell>
-                      <TableCell>
-                        <span>操作</span>
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {currentSongs.map((song, index) => (
-                      <TableRow key={song.id}>
-                        <TableCell>
-                          <span>{firstIndex + index + 1}</span>
-                        </TableCell>
-                        <TableCell>
-                          <img src={song.cover} alt="Thumbnail" height="64" />
-                        </TableCell>
-                        <TableCell>
-                          <span>{song.name}</span>
-                        </TableCell>
-                        <TableCell>
-                          <span>{song.artist}</span>
-                        </TableCell>
-                        <TableCell>
-                          <ButtonGroup>
-                            <Button
-                              onClick={() => handleListenClick(song.id)}
-                              variant="contained"
-                              disabled={disabled}
-                            >
-                              <span>听歌曲</span>
-                            </Button>
-                            <Button
-                              onClick={() =>
-                                handleInsectSongClick({
-                                  id: song.id,
-                                  name: song.name,
-                                  artist: song.artist,
-                                })
-                              }
-                              variant="contained"
-                              disabled={disabled}
-                            >
-                              <span>下首播</span>
-                            </Button>
-                          </ButtonGroup>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                <List>
+                  {currentSongs.map((song, index) => (
+                    <ListItem>
+                      <ListItemAvatar
+                        onClick={() => {
+                          handleInsectSongClick({
+                            id: song.id,
+                            name: song.name,
+                            artist: song.artist,
+                          });
+                        }}
+                      >
+                        <Avatar src={song.cover} />
+                      </ListItemAvatar>
+                      <ListItemButton
+                        onClick={() => {
+                          handleListenClick(song.id);
+                        }}
+                      >
+                        <ListItemText
+                          primary={song.name}
+                          secondary={
+                            <React.Fragment>
+                              <Typography
+                                sx={{ display: "inline" }}
+                                component="span"
+                                variant="body2"
+                                color="text.primary"
+                              >
+                                {song.artist}
+                              </Typography>
+                              {` — 排名${firstIndex + index + 1}`}
+                            </React.Fragment>
+                          }
+                        />
+                      </ListItemButton>
+                    </ListItem>
+                  ))}
+                </List>
               )}
             </TableContainer>
           </Paper>
