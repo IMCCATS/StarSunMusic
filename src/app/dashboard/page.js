@@ -22,7 +22,6 @@ import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import LikeSongBar from "../../../components/LikeSongsBar";
-import YiYan from "../../../components/common/YiYan";
 import { message } from "antd";
 import { HandleListenSong } from "../../../components/common/fetchapi";
 import { Backdrop, CircularProgress } from "@mui/material";
@@ -242,7 +241,6 @@ function StarSunMusic() {
       </CurrentSongContext.Provider>
       <JuanZeng />
       <About />
-      <YiYan />
     </main>
   );
 }

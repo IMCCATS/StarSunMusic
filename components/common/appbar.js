@@ -68,7 +68,7 @@ export default function PrimarySearchAppBar() {
           </DialogActions>
         </Dialog>
       </React.Fragment>
-      <Box sx={{ flexGrow: 1 }}>
+      <Box sx={{ flexGrow: 1, mb: "10px" }}>
         <AppBar position="static">
           <Toolbar>
             <IconButton

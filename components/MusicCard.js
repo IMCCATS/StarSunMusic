@@ -1,19 +1,24 @@
 import * as React from "react";
 import {
-  Card,
   Button,
-  CardContent,
   Typography,
   IconButton,
-  Slider,
   Dialog,
   DialogContent,
   DialogTitle,
   DialogActions,
   Tooltip,
   Box,
+  AppBar,
+  Toolbar,
+  Slider,
+  Card,
+  CardContent,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import PropTypes from "prop-types";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import SkipNextIcon from "@mui/icons-material/SkipNext";
@@ -290,6 +295,45 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
     }
   };
 
+  const formatLyricsH5 = () => {
+    if (!isAudioPlayable) {
+      return (
+        <Typography variant="body1" color="#DCDCDC">
+          <span>本歌曲暂不支持播放哦，请尝试切换通道~</span>
+        </Typography>
+      );
+    } else {
+      if (lyrics && lyrics.length > 0) {
+        return (
+          <Typography
+            key={
+              currentLyricIndex >= 0 && lyrics[currentLyricIndex] !== undefined
+                ? lyrics[currentLyricIndex].time
+                : undefined
+            }
+            variant="body1"
+            style={{ whiteSpace: "pre-line" }}
+            color="#DCDCDC"
+          >
+            {currentLyricIndex >= 0 &&
+            lyrics[currentLyricIndex] !== undefined &&
+            lyrics[currentLyricIndex].text ? (
+              <span>{lyrics[currentLyricIndex].text}</span>
+            ) : (
+              <span>~</span>
+            )}
+          </Typography>
+        );
+      } else {
+        return (
+          <Typography variant="body1" color="#DCDCDC">
+            <span>暂无歌词信息哦，可尝试点击查看完整歌词~</span>
+          </Typography>
+        );
+      }
+    }
+  };
+
   const formatLyricsFY = () => {
     if (!isAudioPlayable) {
       return <></>;
@@ -456,9 +500,16 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
       "aria-controls": `simple-tabpanel-${index}`,
     };
   }
+
+  const [Panelopen, setPanelOpen] = React.useState(false);
+
+  const handleExpandPanel = () => {
+    setPanelOpen(!Panelopen);
+  };
+
   return (
-    <Card style={{ marginTop: "15px" }}>
-      <CardContent id="MusicCard">
+    <AppBar position="fixed" color="primary" sx={{ top: "auto", bottom: 0 }}>
+      <Toolbar>
         {!currentSong && (
           <Typography variant="body1">
             <span
@@ -634,7 +685,7 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
                 </Button>
               </DialogActions>
             </Dialog>
-            <Flex>
+            <Flex style={{ padding: "15px", flexGrow: 1 }}>
               {currentSong.cover ? (
                 <img
                   style={{
@@ -663,43 +714,32 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
                 "暂无图片哦~"
               )}
               <Flex vertical="vertical" style={{ marginLeft: "15px" }}>
-                <Typography variant="h5">
-                  <span>{currentSong.title}</span>
-                </Typography>
-                <Typography
-                  variant="subtitle1"
-                  color="text.secondary"
-                  gutterBottom
-                >
-                  <span>{currentSong.artist}</span>
-                </Typography>
+                {Panelopen ? (
+                  <>
+                    <Typography variant="h5" color="inherit">
+                      <span>{currentSong.title}</span>
+                    </Typography>
+                    <Typography
+                      color="inherit"
+                      variant="subtitle1"
+                      gutterBottom
+                    >
+                      <span>{currentSong.artist}</span>
+                    </Typography>
+                  </>
+                ) : (
+                  <>
+                    <Typography color="inherit" variant="h5">
+                      <span>{`${currentSong.title} — ${currentSong.artist}`}</span>
+                    </Typography>
+                    <div>{formatLyricsH5()}</div>
+                  </>
+                )}
               </Flex>
             </Flex>
-            <Flex vertical="vertical" style={{ marginTop: "10px" }}>
-              <div>{formatLyrics()}</div>
-              <div>{formatLyricsFY()}</div>
-            </Flex>
             <audio ref={audioRef} onEnded={handleReplay} />
-            <Slider
-              value={progress}
-              onChange={handleSliderChange}
-              onDragEnd={handleSliderDragEnd}
-              disabled={isAudioPlayable === false}
-            />
-            <Typography variant="caption" style={{ margin: "8px 0" }}>
-              <span>
-                {audioRef.current &&
-                typeof audioRef.current.currentTime === "number" &&
-                !isNaN(audioRef.current.currentTime) &&
-                typeof audioRef.current.duration === "number" &&
-                !isNaN(audioRef.current.duration)
-                  ? `${formatTime(audioRef.current.currentTime)} / ${formatTime(
-                      audioRef.current.duration
-                    )}`
-                  : "无时间信息"}
-              </span>
-            </Typography>
             <IconButton
+              color="inherit"
               onClick={handleTogglePlay}
               disabled={isAudioPlayable === false}
             >
@@ -707,6 +747,7 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
             </IconButton>
             <Tooltip title="列表下一曲" placement="top">
               <IconButton
+                color="inherit"
                 onClick={() =>
                   (audioRef.current.currentTime = audioRef.current.duration)
                 }
@@ -721,6 +762,7 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
             </Tooltip>
             <Tooltip title="单曲循环" placement="top">
               <IconButton
+                color="inherit"
                 onClick={handleSetReplay}
                 disabled={isAudioPlayable === false}
               >
@@ -731,68 +773,116 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
                 )}
               </IconButton>
             </Tooltip>
-            <Tooltip title="列表播放" placement="top">
-              <IconButton
-                onClick={() => {
-                  setlistplaying(!listplaying);
-                }}
-                disabled={
-                  islistplayable === false ||
-                  isAudioPlayable === false ||
-                  canlistplay === false
-                }
-              >
-                {canlistplay ? (
-                  listplaying ? (
-                    <QueueMusicIcon color="primary" />
-                  ) : (
-                    <QueueMusicIcon />
-                  )
-                ) : (
-                  <QueueMusicIcon />
-                )}
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="查看歌词" placement="top">
-              <IconButton
-                aria-label="file button"
-                onClick={handleClickOpen}
-                disabled={isAudioPlayable === false}
-              >
-                <FileIcon />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="全屏" placement="top">
-              <IconButton
-                onClick={handleFullScreen}
-                disabled={isAudioPlayable === false}
-              >
-                {Fullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="MV(将跳转外部网站)" placement="top">
-              <IconButton
-                onClick={() => {
-                  const name = currentSong.title + " ";
-                  handleVedioClick(name);
-                }}
-                disabled={isAudioPlayable === false}
-              >
-                <OndemandVideoIcon />
-              </IconButton>
-            </Tooltip>
-            <Slider
-              value={volume}
-              onChange={handleVolumeChange}
+            <IconButton
+              color="inherit"
+              onClick={handleExpandPanel}
               disabled={isAudioPlayable === false}
-            />
-            <Typography variant="caption" style={{ margin: "8px 0" }}>
-              <span>音量: {volume}%</span>
-            </Typography>
+            >
+              {Panelopen ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+            </IconButton>
+            {Panelopen ? (
+              <>
+                <Card>
+                  <CardContent>
+                    <Flex vertical="vertical" style={{ flexGrow: 1 }}>
+                      <div>{formatLyrics()}</div>
+                      <div>{formatLyricsFY()}</div>
+                    </Flex>
+                    <Slider
+                      value={progress}
+                      onChange={handleSliderChange}
+                      onDragEnd={handleSliderDragEnd}
+                      disabled={isAudioPlayable === false}
+                    />
+                    <Typography variant="caption" style={{ margin: "8px 0" }}>
+                      <span>
+                        {audioRef.current &&
+                        typeof audioRef.current.currentTime === "number" &&
+                        !isNaN(audioRef.current.currentTime) &&
+                        typeof audioRef.current.duration === "number" &&
+                        !isNaN(audioRef.current.duration)
+                          ? `${formatTime(
+                              audioRef.current.currentTime
+                            )} / ${formatTime(audioRef.current.duration)}`
+                          : "无时间信息"}
+                      </span>
+                    </Typography>
+                    <Tooltip title="列表播放" placement="top">
+                      <IconButton
+                        color="inherit"
+                        onClick={() => {
+                          setlistplaying(!listplaying);
+                        }}
+                        disabled={
+                          islistplayable === false ||
+                          isAudioPlayable === false ||
+                          canlistplay === false
+                        }
+                      >
+                        {canlistplay ? (
+                          listplaying ? (
+                            <QueueMusicIcon color="primary" />
+                          ) : (
+                            <QueueMusicIcon />
+                          )
+                        ) : (
+                          <QueueMusicIcon />
+                        )}
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="查看歌词" placement="top">
+                      <IconButton
+                        color="inherit"
+                        aria-label="file button"
+                        onClick={handleClickOpen}
+                        disabled={isAudioPlayable === false}
+                      >
+                        <FileIcon />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="全屏" placement="top">
+                      <IconButton
+                        color="inherit"
+                        onClick={handleFullScreen}
+                        disabled={isAudioPlayable === false}
+                      >
+                        {Fullscreen ? (
+                          <FullscreenExitIcon />
+                        ) : (
+                          <FullscreenIcon />
+                        )}
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="MV(将跳转外部网站)" placement="top">
+                      <IconButton
+                        color="inherit"
+                        onClick={() => {
+                          const name = currentSong.title + " ";
+                          handleVedioClick(name);
+                        }}
+                        disabled={isAudioPlayable === false}
+                      >
+                        <OndemandVideoIcon />
+                      </IconButton>
+                    </Tooltip>
+                    <Slider
+                      value={volume}
+                      onChange={handleVolumeChange}
+                      disabled={isAudioPlayable === false}
+                    />
+                    <Typography variant="caption" style={{ margin: "8px 0" }}>
+                      <span>音量: {volume}%</span>
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </>
+            ) : (
+              <></>
+            )}
           </>
         )}
-      </CardContent>
-    </Card>
+      </Toolbar>
+    </AppBar>
   );
 };
 

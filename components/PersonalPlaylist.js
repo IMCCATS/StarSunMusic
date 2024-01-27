@@ -376,7 +376,7 @@ const PersonalPlaylist = () => {
       >
         <span>打开个人歌单</span>
       </Button>
-      <Dialog onClose={onClose} open={open}>
+      <Dialog fullScreen onClose={onClose} open={open}>
         <AppBar sx={{ position: "relative" }}>
           <Toolbar>
             <IconButton
