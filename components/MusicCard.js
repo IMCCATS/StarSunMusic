@@ -767,7 +767,7 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
                 disabled={isAudioPlayable === false}
               >
                 {isReplay ? (
-                  <RepeatOneIcon color="primary" />
+                  <RepeatOneIcon color="success" />
                 ) : (
                   <RepeatOneIcon />
                 )}
@@ -821,7 +821,7 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
                       >
                         {canlistplay ? (
                           listplaying ? (
-                            <QueueMusicIcon color="primary" />
+                            <QueueMusicIcon color="success" />
                           ) : (
                             <QueueMusicIcon />
                           )
