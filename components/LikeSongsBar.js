@@ -109,19 +109,6 @@ const PlaylistComponent = ({ playlist, index }) => {
     setCurrentPage(value);
   };
 
-  const addSongToLocalPlaylist = (song) => {
-    const playList = JSON.parse(localStorage.getItem("playList")) || [];
-    const existingSongIndex = playList.findIndex(
-      (s) => s.songId === song.songId
-    );
-    if (existingSongIndex === -1) {
-      playList.push(song);
-      localStorage.setItem("playList", JSON.stringify(playList));
-      messageApi.success("添加成功啦~");
-    } else {
-      message.info("歌单已存在本歌曲了哦~");
-    }
-  };
 
   return (
     <main>
@@ -206,19 +193,6 @@ const PlaylistComponent = ({ playlist, index }) => {
                               disabled={disabled}
                             >
                               <span>听歌曲</span>
-                            </Button>
-                            <Button
-                              onClick={() =>
-                                addSongToLocalPlaylist({
-                                  title: song.name,
-                                  artist: song.artist,
-                                  songId: song.id,
-                                })
-                              }
-                              variant="contained"
-                              disabled={disabled}
-                            >
-                              <span>收藏它</span>
                             </Button>
                             <Button
                               onClick={() =>

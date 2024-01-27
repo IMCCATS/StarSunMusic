@@ -130,20 +130,20 @@ const LoginPage = () => {
   const [disabledc, setdisabledc] = React.useState(false);
 
   const handleClickGetCode = async () => {
-    initGeetest4(
-      {
-        captchaId: "c1677059124b92b9dfb3c8919755b459",
-        product: "bind",
-      },
-      function (captcha) {
-        // captcha为验证码实例
-        captcha.appendTo("#captcha");
-        captcha
-          .onReady(function () {
-            captcha.showCaptcha();
-          })
-          .onSuccess(function () {
-            if (checkPhone(username)) {
+    if (checkPhone(username)) {
+      initGeetest4(
+        {
+          captchaId: "c1677059124b92b9dfb3c8919755b459",
+          product: "bind",
+        },
+        function (captcha) {
+          // captcha为验证码实例
+          captcha.appendTo("#captcha");
+          captcha
+            .onReady(function () {
+              captcha.showCaptcha();
+            })
+            .onSuccess(function () {
               GetRegCode(username)
                 .then((e) => {
                   setdisabledc(true);
@@ -155,10 +155,10 @@ const LoginPage = () => {
                 .catch((e) => {
                   messageApi.error("发送失败，可能是间隔时间太短");
                 });
-            }
-          });
-      }
-    );
+            });
+        }
+      );
+    }
   };
 
   return (

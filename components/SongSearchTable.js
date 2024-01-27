@@ -160,26 +160,12 @@ export default function SongSearchTable({ setcanlistplay }) {
     await handleSearchMG();
     await handleSearchSJK();
   };
+  const [lastsearch, setlastsearch] = React.useState("");
   const searchOpen = () => {
     if (searchTerm) {
-      if (searchTerm !== "") {
-        initGeetest4(
-          {
-            captchaId: "cbf4e068bc17eb10afa9e3b8a84d51d0",
-            product: "bind",
-          },
-          function (captcha) {
-            // captcha为验证码实例
-            captcha.appendTo("#captcha");
-            captcha
-              .onReady(function () {
-                captcha.showCaptcha();
-              })
-              .onSuccess(function () {
-                SearchFunction();
-              });
-          }
-        );
+      if (searchTerm !== "" && searchTerm !== lastsearch) {
+        setlastsearch(searchTerm);
+        SearchFunction();
       }
     } else {
       messageApi.error("您没有输入搜索内容哦~");
@@ -207,19 +193,6 @@ export default function SongSearchTable({ setcanlistplay }) {
       });
   };
 
-  const addSongToLocalPlaylist = (song) => {
-    const playList = JSON.parse(localStorage.getItem("playList")) || [];
-    const existingSongIndex = playList.findIndex(
-      (s) => s.songId === song.songId
-    );
-    if (existingSongIndex === -1) {
-      playList.push(song);
-      localStorage.setItem("playList", JSON.stringify(playList));
-      messageApi.success("添加成功啦~");
-    } else {
-      message.info("歌单已存在本歌曲了哦~");
-    }
-  };
 
   const handleListenClickLinethree = (song) => {
     setcanlistplay(false);
@@ -619,21 +592,6 @@ export default function SongSearchTable({ setcanlistplay }) {
                                         disabled={disabled}
                                       >
                                         <span>听歌曲</span>
-                                      </Button>
-                                    </Grid>
-                                    <Grid item>
-                                      <Button
-                                        onClick={() =>
-                                          addSongToLocalPlaylist({
-                                            title: song.title,
-                                            artist: song.author,
-                                            songId: song.id,
-                                          })
-                                        }
-                                        variant="contained"
-                                        disabled={disabled}
-                                      >
-                                        <span>收藏它</span>
                                       </Button>
                                     </Grid>
                                     <Grid item>

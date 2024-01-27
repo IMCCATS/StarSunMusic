@@ -38,6 +38,8 @@ const playlists = [
   { name: "【流行伤感】还是会有遗憾对吧", id: "8187890892" },
   { name: "身法大佬素材曲", id: "3192057802" },
   { name: "超燃战歌", id: "6791698520" },
+  { name: "那些你熟悉却又不知道名字的轻音乐", id: "26467411" },
+  { name: "治愈轻音｜宁静致远 安抚心绪 净化心灵", id: "8846341333" },
 ];
 
 const PlaylistComponent = ({ playlist }) => {
@@ -111,20 +113,6 @@ const PlaylistComponent = ({ playlist }) => {
 
   const handlePaginationChange = (event, value) => {
     setCurrentPage(value);
-  };
-
-  const addSongToLocalPlaylist = (song) => {
-    const playList = JSON.parse(localStorage.getItem("playList")) || [];
-    const existingSongIndex = playList.findIndex(
-      (s) => s.songId === song.songId
-    );
-    if (existingSongIndex === -1) {
-      playList.push(song);
-      localStorage.setItem("playList", JSON.stringify(playList));
-      messageApi.success("添加成功啦~");
-    } else {
-      message.info("歌单已存在本歌曲了哦~");
-    }
   };
 
   return (
@@ -210,19 +198,6 @@ const PlaylistComponent = ({ playlist }) => {
                               disabled={disabled}
                             >
                               <span>听歌曲</span>
-                            </Button>
-                            <Button
-                              onClick={() =>
-                                addSongToLocalPlaylist({
-                                  title: song.name,
-                                  artist: song.artist,
-                                  songId: song.id,
-                                })
-                              }
-                              variant="contained"
-                              disabled={disabled}
-                            >
-                              <span>收藏它</span>
                             </Button>
                             <Button
                               onClick={() =>
