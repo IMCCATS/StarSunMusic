@@ -22,10 +22,11 @@ import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import LikeSongBar from "../../../components/LikeSongsBar";
-import { message } from "antd";
+import { ConfigProvider, message } from "antd";
 import { HandleListenSong } from "../../../components/common/fetchapi";
 import { Backdrop, CircularProgress } from "@mui/material";
 import SongList from "../../../components/Songlist";
+import zhCN from "antd/locale/zh_CN";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -268,7 +269,9 @@ export default function ToggleColorMode() {
   return (
     <ColorModeContext.Provider value={{ colorMode }}>
       <ThemeProvider theme={theme}>
-        <StarSunMusic />
+        <ConfigProvider locale={zhCN}>
+          <StarSunMusic />
+        </ConfigProvider>
       </ThemeProvider>
     </ColorModeContext.Provider>
   );
