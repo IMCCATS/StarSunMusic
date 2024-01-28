@@ -301,7 +301,7 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
   const formatLyricsH5 = () => {
     if (!isAudioPlayable) {
       return (
-        <Typography variant="body1" color="#DCDCDC">
+        <Typography style={{ fontSize: "1.5vmax" }} color="#DCDCDC">
           <span>本歌曲暂不支持播放哦，请尝试切换通道~</span>
         </Typography>
       );
@@ -314,8 +314,7 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
                 ? lyrics[currentLyricIndex].time
                 : undefined
             }
-            variant="body1"
-            style={{ whiteSpace: "pre-line" }}
+            style={{ whiteSpace: "pre-line", fontSize: "1.5vmax" }}
             color="#DCDCDC"
           >
             {currentLyricIndex >= 0 &&
@@ -329,7 +328,7 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
         );
       } else {
         return (
-          <Typography variant="body1" color="#DCDCDC">
+          <Typography style={{ fontSize: "1.5vmax" }} color="#DCDCDC">
             <span>暂无歌词信息哦，可尝试点击查看完整歌词~</span>
           </Typography>
         );
@@ -735,15 +734,25 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
                     ) : (
                       "暂无图片哦~"
                     )}
-                    <Flex vertical="vertical" style={{ marginLeft: "15px" }}>
+                    <Flex
+                      vertical="vertical"
+                      style={{
+                        marginLeft: "15px",
+                        display: "flex",
+                        justifyContent: "center",
+                      }}
+                    >
                       {Panelopen ? (
                         <>
-                          <Typography variant="h5" color="inherit">
+                          <Typography
+                            style={{ fontSize: "2vmax" }}
+                            color="inherit"
+                          >
                             <span>{currentSong.title}</span>
                           </Typography>
                           <Typography
-                            color="inherit"
-                            variant="subtitle1"
+                            color="#DCDCDC"
+                            style={{ fontSize: "1.5vmax" }}
                             gutterBottom
                           >
                             <span>{currentSong.artist}</span>
@@ -751,7 +760,10 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
                         </>
                       ) : (
                         <>
-                          <Typography color="inherit" variant="h5">
+                          <Typography
+                            color="inherit"
+                            style={{ fontSize: "2vmax" }}
+                          >
                             <span>{`${currentSong.title} — ${currentSong.artist}`}</span>
                           </Typography>
                           <div>{formatLyricsH5()}</div>
