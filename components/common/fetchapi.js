@@ -18,6 +18,7 @@ const ConvertJson = function (serverJson) {
       cover: data[i].pic,
       lyric: data[i].lrc,
       link: data[i].url,
+      name: data[i].title,
     };
     convertedJsons.push(convertedJson);
   }
