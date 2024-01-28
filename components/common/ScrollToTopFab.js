@@ -29,7 +29,7 @@ const ScrollToTopFab = () => {
     <Fab
       style={{
         position: "fixed",
-        bottom: theme.spacing(2),
+        bottom: theme.spacing(8),
         right: theme.spacing(2),
         opacity: isFabVisible ? 1 : 0,
         transform: isFabVisible ? "scale(1)" : "scale(0)",

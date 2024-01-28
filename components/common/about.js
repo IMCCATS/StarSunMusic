@@ -23,7 +23,7 @@ const calculateDays = (dateString) => {
 const formatter = (value) => <CountUp end={value} separator="," />;
 export default function Advertisement() {
   return (
-    <Card sx={{ minWidth: 275 }} style={{ marginTop: "15px" }}>
+    <Card sx={{ minWidth: 275, mb: "20px" }} style={{ marginTop: "15px" }}>
       <CardContent>
         <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
           <span>关于本系统</span>
