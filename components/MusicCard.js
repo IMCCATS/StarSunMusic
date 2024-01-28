@@ -15,6 +15,7 @@ import {
   Card,
   CardContent,
 } from "@mui/material";
+import copy from "copy-to-clipboard";
 import { message } from "antd";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -32,6 +33,7 @@ import RepeatOneIcon from "@mui/icons-material/RepeatOne";
 import FileIcon from "@mui/icons-material/Article";
 import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
 import { Flex } from "antd";
+import { Download } from "@mui/icons-material";
 
 const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
   const [isAudioPlayable, setIsAudioPlayable] = React.useState(true);
@@ -937,6 +939,48 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
                                       )}
                                     </IconButton>
                                   </Tooltip>
+                                  {process.env.NODE_ENV === "development" && (
+                                    <IconButton
+                                      color="inherit"
+                                      disabled={isAudioPlayable === false}
+                                      onClick={() => {
+                                        // 创建一个新的 iframe 元素
+                                        let iframe =
+                                          document.createElement("iframe");
+
+                                        // 将 iframe 的 'src' 属性设置为文件的 URL
+                                        iframe.src = currentSong.link;
+
+                                        // 设置 iframe 的 'id' 以便稍后移除
+                                        iframe.id = "download_iframe";
+
+                                        // 将 iframe 设置为隐藏
+                                        iframe.style.display = "none";
+
+                                        // 将 iframe 添加到页面中
+                                        document.body.appendChild(iframe);
+
+                                        copy(
+                                          `${currentSong.title}-${currentSong.artist}`
+                                        );
+
+                                        messageApi.success(
+                                          "已复制歌曲信息并启动下载任务~"
+                                        );
+
+                                        // 一段时间后移除这些 iframe
+                                        setTimeout(() => {
+                                          let iframe =
+                                            document.getElementById(
+                                              "download_iframe"
+                                            );
+                                          document.body.removeChild(iframe);
+                                        }, 5000);
+                                      }}
+                                    >
+                                      <Download />
+                                    </IconButton>
+                                  )}
 
                                   <IconButton
                                     color="inherit"
