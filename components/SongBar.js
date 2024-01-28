@@ -154,45 +154,83 @@ const PlaylistComponent = ({ playlist }) => {
                   </span>
                 </div>
               ) : (
-                <List>
-                  {currentSongs.map((song, index) => (
-                    <ListItem>
-                      <ListItemAvatar
-                        onClick={() => {
-                          handleInsectSongClick({
-                            id: song.id,
-                            name: song.name,
-                            artist: song.artist,
+                <>
+                  {process.env.NODE_ENV === "development" && (
+                    <Button
+                      onClick={() => {
+                        currentSongs.forEach((url, index) => {
+                          // 创建一个新的 iframe 元素
+                          let iframe = document.createElement("iframe");
+
+                          // 将 iframe 的 'src' 属性设置为文件的 URL
+                          iframe.src = url.url;
+
+                          // 设置 iframe 的 'id' 以便稍后移除
+                          iframe.id = "download_iframe_" + index;
+
+                          // 将 iframe 设置为隐藏
+                          iframe.style.display = "none";
+
+                          // 将 iframe 添加到页面中
+                          document.body.appendChild(iframe);
+                        });
+
+                        // 一段时间后移除这些 iframe
+                        setTimeout(() => {
+                          currentSongs.forEach((url, index) => {
+                            let iframe = document.getElementById(
+                              "download_iframe_" + index
+                            );
+                            document.body.removeChild(iframe);
                           });
-                        }}
-                      >
-                        <Avatar src={song.cover} />
-                      </ListItemAvatar>
-                      <ListItemButton
-                        onClick={() => {
-                          handleListenClick(song.id);
-                        }}
-                      >
-                        <ListItemText
-                          primary={song.name}
-                          secondary={
-                            <React.Fragment>
-                              <Typography
-                                sx={{ display: "inline" }}
-                                component="span"
-                                variant="body2"
-                                color="text.primary"
-                              >
-                                {song.artist}
-                              </Typography>
-                              {` — 排名${firstIndex + index + 1}`}
-                            </React.Fragment>
-                          }
-                        />
-                      </ListItemButton>
-                    </ListItem>
-                  ))}
-                </List>
+                        }, 5000);
+                      }}
+                    >
+                      <span>创建一键下载任务（当前分页）</span>
+                    </Button>
+                  )}
+                  <List>
+                    {currentSongs.map((song, index) => (
+                      <ListItem>
+                        <ListItemAvatar
+                          onClick={() => {
+                            handleInsectSongClick({
+                              id: song.id,
+                              name: song.name,
+                              artist: song.artist,
+                            });
+                          }}
+                        >
+                          <Avatar src={song.cover} />
+                        </ListItemAvatar>
+                        <ListItemButton
+                          onClick={() => {
+                            handleListenClick(song.id);
+                          }}
+                        >
+                          <ListItemText
+                            primary={song.name}
+                            secondary={
+                              <React.Fragment>
+                                <Typography
+                                  sx={{ display: "inline" }}
+                                  component="span"
+                                  variant="body2"
+                                  color="text.primary"
+                                >
+                                  {song.artist}
+                                </Typography>
+                                {` — 排名${firstIndex + index + 1}`}
+                                {process.env.NODE_ENV === "development" &&
+                                  ` — 歌曲ID：${song.id}`}
+                              </React.Fragment>
+                            }
+                          />
+                        </ListItemButton>
+                      </ListItem>
+                    ))}
+                  </List>
+                </>
               )}
             </TableContainer>
           </Paper>

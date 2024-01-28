@@ -24,9 +24,10 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import LikeSongBar from "../../../components/LikeSongsBar";
 import { ConfigProvider, message } from "antd";
 import { HandleListenSong } from "../../../components/common/fetchapi";
-import { Backdrop, CircularProgress } from "@mui/material";
+import { Backdrop, Card, CardContent, CircularProgress } from "@mui/material";
 import SongList from "../../../components/Songlist";
 import zhCN from "antd/locale/zh_CN";
+import FingerprintJS from "@fingerprintjs/fingerprintjs";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -120,6 +121,17 @@ function StarSunMusic() {
   };
 
   const [disabled, setdisabled] = React.useState(false);
+  const [fingerprintidc, setfingerprintidc] = React.useState("");
+
+  React.useEffect(() => {
+    FingerprintJS.load().then((fp) => {
+      fp.get().then((result) => {
+        const visitorId = result.visitorId;
+        setfingerprintidc(visitorId);
+        localStorage.setItem("fingerprintidc", visitorId);
+      });
+    });
+  }, []);
 
   return (
     <main
@@ -179,6 +191,75 @@ function StarSunMusic() {
             setisPlayComplete={setisPlayComplete}
             canlistplay={canlistplay}
           />
+          {process.env.NODE_ENV === "development" && (
+            <Accordion
+              expanded={expanded === "操作区开发专用"}
+              onChange={handleChange("操作区开发专用")}
+              TransitionProps={{ unmountOnExit: true }}
+            >
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+              >
+                <Typography>
+                  <span>操作区—开发专用</span>
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Card>
+                  <CardContent>
+                    {currentSong && (
+                      <>
+                        <Typography
+                          sx={{ fontSize: 14 }}
+                          color="text.secondary"
+                          gutterBottom
+                        >
+                          <span>当前歌曲信息：</span>
+                        </Typography>
+                        <Typography
+                          sx={{ fontSize: 14 }}
+                          color="text.secondary"
+                          gutterBottom
+                        >
+                          <p>歌曲名：{currentSong.title}</p>
+                          <p>歌作者：{currentSong.artist}</p>
+                          <p>歌ID：{currentSong.id}</p>
+                          <p>歌封面：{currentSong.cover}</p>
+                        </Typography>
+                      </>
+                    )}
+                    {!currentSong && (
+                      <>
+                        <Typography
+                          sx={{ fontSize: 14 }}
+                          color="text.secondary"
+                          gutterBottom
+                        >
+                          <p>暂无歌曲播放中</p>
+                        </Typography>
+                      </>
+                    )}
+                    <Typography
+                      sx={{ fontSize: 14 }}
+                      color="text.secondary"
+                      gutterBottom
+                    >
+                      <p>UA：{navigator.userAgent.toLowerCase()}</p>
+                    </Typography>
+                    <Typography
+                      sx={{ fontSize: 14 }}
+                      color="text.secondary"
+                      gutterBottom
+                    >
+                      <p>FingerPrint：{fingerprintidc}</p>
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </AccordionDetails>
+            </Accordion>
+          )}
           <Accordion
             expanded={expanded === "操作区"}
             onChange={handleChange("操作区")}

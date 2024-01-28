@@ -15,8 +15,9 @@ import {
   ListItemButton,
   ListItemAvatar,
   Avatar,
+  Button,
 } from "@mui/material";
-import {  message } from "antd";
+import { message } from "antd";
 import {
   HandleListenSong,
   HandlePlayList,
@@ -100,6 +101,40 @@ export default function TopBar() {
           <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
             <span>热歌榜</span>
           </Typography>
+          {process.env.NODE_ENV === "development" && (
+            <Button
+              onClick={() => {
+                currentSongs.forEach((url, index) => {
+                  // 创建一个新的 iframe 元素
+                  let iframe = document.createElement("iframe");
+
+                  // 将 iframe 的 'src' 属性设置为文件的 URL
+                  iframe.src = url.url;
+
+                  // 设置 iframe 的 'id' 以便稍后移除
+                  iframe.id = "download_iframe_" + index;
+
+                  // 将 iframe 设置为隐藏
+                  iframe.style.display = "none";
+
+                  // 将 iframe 添加到页面中
+                  document.body.appendChild(iframe);
+                });
+
+                // 一段时间后移除这些 iframe
+                setTimeout(() => {
+                  currentSongs.forEach((url, index) => {
+                    let iframe = document.getElementById(
+                      "download_iframe_" + index
+                    );
+                    document.body.removeChild(iframe);
+                  });
+                }, 5000);
+              }}
+            >
+              <span>创建一键下载任务（当前分页）</span>
+            </Button>
+          )}
           <Paper>
             <TableContainer>
               {isLoading ? (
@@ -154,6 +189,8 @@ export default function TopBar() {
                                   {song.artist}
                                 </Typography>
                                 {` — 排名${firstIndex + index + 1}`}
+                                {process.env.NODE_ENV === "development" &&
+                                  ` — 歌曲ID：${song.id}`}
                               </React.Fragment>
                             }
                           />
