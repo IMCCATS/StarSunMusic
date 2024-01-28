@@ -711,25 +711,28 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
                       <img
                         style={{
                           borderRadius: "50%",
-                          // animation: "spin 10s linear infinite",
+                          border: "5px solid black",
+                          animation: isPlaying
+                            ? "spin 10s linear infinite"
+                            : "none",
                         }}
                         src={currentSong.cover}
                         alt="Thumbnail"
                         height="64"
                         onError={() => {}}
-                        // onLoad={() => {
-                        //   var style = document.createElement("style");
-                        //   style.innerHTML = `
-                        //   @keyframes spin {
-                        //     from {
-                        //       transform: rotate(0deg);
-                        //     }
-                        //     to {
-                        //       transform: rotate(360deg);
-                        //     }
-                        //   }`;
-                        //   document.head.appendChild(style);
-                        // }}
+                        onLoad={() => {
+                          var style = document.createElement("style");
+                          style.innerHTML = `
+                          @keyframes spin {
+                            from {
+                              transform: rotate(360deg);
+                            }
+                            to {
+                              transform: rotate(0deg);
+                            }
+                          }`;
+                          document.head.appendChild(style);
+                        }}
                       />
                     ) : (
                       "暂无图片哦~"
