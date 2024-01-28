@@ -291,7 +291,9 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
         document.title = "首页 · 星阳音乐系统";
         return (
           <Typography variant="body1">
-            <span>暂无歌词信息哦，可尝试点击查看完整歌词~</span>
+            <span>
+              本歌曲歌词暂不支持自动播放哦，如需查看请点击查看全部歌词~
+            </span>
           </Typography>
         );
       }
@@ -301,7 +303,7 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
   const formatLyricsH5 = () => {
     if (!isAudioPlayable) {
       return (
-        <Typography style={{ fontSize: "1.5vmax" }} color="#DCDCDC">
+        <Typography style={{ fontSize: "1.5vmin" }} color="#DCDCDC">
           <span>本歌曲暂不支持播放哦，请尝试切换通道~</span>
         </Typography>
       );
@@ -314,7 +316,7 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
                 ? lyrics[currentLyricIndex].time
                 : undefined
             }
-            style={{ whiteSpace: "pre-line", fontSize: "1.5vmax" }}
+            style={{ whiteSpace: "pre-line", fontSize: "1.5vmin" }}
             color="#DCDCDC"
           >
             {currentLyricIndex >= 0 &&
@@ -328,8 +330,10 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
         );
       } else {
         return (
-          <Typography style={{ fontSize: "1.5vmax" }} color="#DCDCDC">
-            <span>暂无歌词信息哦，可尝试点击查看完整歌词~</span>
+          <Typography style={{ fontSize: "1.5vmin" }} color="#DCDCDC">
+            <span>
+              本歌曲歌词暂不支持自动播放哦，如需查看请点击查看全部歌词~
+            </span>
           </Typography>
         );
       }
@@ -748,14 +752,14 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
                       {Panelopen ? (
                         <>
                           <Typography
-                            style={{ fontSize: "2vmax" }}
+                            style={{ fontSize: "2vmin" }}
                             color="inherit"
                           >
                             <span>{currentSong.title}</span>
                           </Typography>
                           <Typography
                             color="#DCDCDC"
-                            style={{ fontSize: "1.5vmax" }}
+                            style={{ fontSize: "1.5vmin" }}
                             gutterBottom
                           >
                             <span>{currentSong.artist}</span>
@@ -765,7 +769,7 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
                         <>
                           <Typography
                             color="inherit"
-                            style={{ fontSize: "2vmax" }}
+                            style={{ fontSize: "2vmin" }}
                           >
                             <span>{`${currentSong.title} — ${currentSong.artist}`}</span>
                           </Typography>

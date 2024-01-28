@@ -56,6 +56,7 @@ const ConvertJsonSong = function (serverJson) {
     serverJson.data.lrc
   ) {
     return {
+      name: serverJson.data.title,
       id: serverJson.data.songid,
       title: serverJson.data.title,
       artist: serverJson.data.author,

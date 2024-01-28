@@ -226,7 +226,9 @@ const MusicCard = ({ currentSong }) => {
         document.title = "单曲播放 · 星阳音乐系统";
         return (
           <Typography variant="body1">
-            <span>暂无歌词信息哦，可尝试点击查看完整歌词~</span>
+            <span>
+              本歌曲歌词暂不支持自动播放哦，如需查看请点击查看全部歌词~
+            </span>
           </Typography>
         );
       }
