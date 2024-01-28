@@ -261,8 +261,11 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
     if (!isAudioPlayable) {
       document.title = "首页 · 星阳音乐系统";
       return (
-        <Typography variant="body1">
-          <span>本歌曲暂不支持播放哦，请尝试切换通道~</span>
+        <Typography
+          variant="body1"
+          style={{ fontSize: "1.8vh", padding: "6px" }}
+        >
+          <span>{`${currentSong.title} — ${currentSong.artist}`}</span>
         </Typography>
       );
     } else {
@@ -276,8 +279,13 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
                 : undefined
             }
             variant="body1"
-            style={{ whiteSpace: "pre-line" }}
+            style={{
+              fontSize: "1.8vh",
+              whiteSpace: "pre-line",
+              padding: "6px",
+            }}
           >
+            {"⭐"}
             {currentLyricIndex >= 0 &&
             lyrics[currentLyricIndex] !== undefined &&
             lyrics[currentLyricIndex].text ? (
@@ -285,15 +293,17 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
             ) : (
               <span>~</span>
             )}
+            {"⭐"}
           </Typography>
         );
       } else {
         document.title = "首页 · 星阳音乐系统";
         return (
-          <Typography variant="body1">
-            <span>
-              本歌曲歌词暂不支持自动播放哦，如需查看请点击查看全部歌词~
-            </span>
+          <Typography
+            variant="body1"
+            style={{ fontSize: "1.8vh", padding: "6px" }}
+          >
+            <span>{`${currentSong.title} — ${currentSong.artist}`}</span>
           </Typography>
         );
       }
@@ -303,7 +313,7 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
   const formatLyricsH5 = () => {
     if (!isAudioPlayable) {
       return (
-        <Typography style={{ fontSize: "1.5vmin" }} color="#DCDCDC">
+        <Typography style={{ fontSize: "1.5vh" }} color="#DCDCDC">
           <span>本歌曲暂不支持播放哦，请尝试切换通道~</span>
         </Typography>
       );
@@ -316,7 +326,7 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
                 ? lyrics[currentLyricIndex].time
                 : undefined
             }
-            style={{ whiteSpace: "pre-line", fontSize: "1.5vmin" }}
+            style={{ whiteSpace: "pre-line", fontSize: "1.5vh" }}
             color="#DCDCDC"
           >
             {currentLyricIndex >= 0 &&
@@ -330,7 +340,7 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
         );
       } else {
         return (
-          <Typography style={{ fontSize: "1.5vmin" }} color="#DCDCDC">
+          <Typography style={{ fontSize: "1.5vh" }} color="#DCDCDC">
             <span>
               本歌曲歌词暂不支持自动播放哦，如需查看请点击查看全部歌词~
             </span>
@@ -353,8 +363,39 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
                 ? lyricsFY[currentLyricIndexFY].time
                 : undefined
             }
-            variant="body1"
-            style={{ whiteSpace: "pre-line" }}
+            color="#DCDCDC"
+            style={{ whiteSpace: "pre-line", fontSize: "1.5vh" }}
+          >
+            {currentLyricIndexFY >= 0 &&
+            lyricsFY[currentLyricIndexFY] !== undefined &&
+            lyricsFY[currentLyricIndexFY].text ? (
+              <span>{lyricsFY[currentLyricIndexFY].text}</span>
+            ) : (
+              <></>
+            )}
+          </Typography>
+        );
+      } else {
+        return <></>;
+      }
+    }
+  };
+
+  const formatLyricsFYH5 = () => {
+    if (!isAudioPlayable) {
+      return <></>;
+    } else {
+      if (lyricsFY && lyricsFY.length > 0) {
+        return (
+          <Typography
+            key={
+              currentLyricIndexFY >= 0 &&
+              lyricsFY[currentLyricIndexFY] !== undefined
+                ? lyricsFY[currentLyricIndexFY].time
+                : undefined
+            }
+            color="#DCDCDC"
+            style={{ whiteSpace: "pre-line", fontSize: "1.5vh" }}
           >
             {currentLyricIndexFY >= 0 &&
             lyricsFY[currentLyricIndexFY] !== undefined &&
@@ -513,6 +554,12 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
     setPanelOpen(!Panelopen);
   };
 
+  const [Showing, setShowing] = React.useState(false);
+
+  const handleShowing = () => {
+    setShowing(!Showing);
+  };
+
   const addSongToLocalPlaylist = (song) => {
     const playList = JSON.parse(localStorage.getItem("playList")) || [];
     const existingSongIndex = playList.findIndex(
@@ -532,69 +579,37 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
       {contextHolder}
       {currentSong ? (
         <>
-          <AppBar
-            position="fixed"
-            color="primary"
-            sx={{ top: "auto", bottom: 0 }}
-          >
-            <Toolbar>
-              {currentSong && (
-                <>
-                  <Dialog open={open} onClose={handleClose}>
-                    <DialogTitle>
-                      <span>歌曲歌词</span>
-                    </DialogTitle>
-                    <DialogContent>
-                      <Tabs value={value} onChange={handleChange}>
-                        <Tab label="原歌词" {...a11yProps(0)} />
-                        <Tab label="翻译歌词" {...a11yProps(1)} />
-                      </Tabs>
-                      <CustomTabPanel value={value} index={0}>
-                        {!currentSong && (
-                          <Typography variant="body1">
-                            <span
-                              style={{
-                                WebkitUserSelect: "none",
-                                MozUserSelect: "none",
-                                msUserSelect: "none",
-                                userSelect: "none",
-                              }}
-                            >
-                              暂无歌词信息哦！
-                            </span>
-                          </Typography>
-                        )}
-                        {currentSong &&
-                          currentSong.lyric
-                            .split("\n")
-                            .filter((line) => {
-                              return (
-                                !line.startsWith("﻿[id:") &&
-                                !line.startsWith("[id:") &&
-                                line !== "" &&
-                                !line.startsWith("[ar:") &&
-                                !line.startsWith("[ti:") &&
-                                !line.startsWith("[by:") &&
-                                !line.startsWith("[hash:") &&
-                                !line.startsWith("[al:") &&
-                                !line.startsWith("[sign:") &&
-                                !line.startsWith("[qq:") &&
-                                !line.startsWith("[total:") &&
-                                !line.startsWith("[offset:")
-                              );
-                            })
-                            .map((line, index) => {
-                              const isPlaying =
-                                currentLyricIndex >= 0 &&
-                                index === currentLyricIndex;
-                              const fontSize = isPlaying ? "larger" : "smaller";
-                              const color = isPlaying ? "#1976D2" : "#808080";
-                              const cleanedLine = line.replace(
-                                /\[(\d{2}):(\d{2}\.\d{2,3})\]/g,
-                                ""
-                              );
-                              return (
-                                <div
+          <audio ref={audioRef} onEnded={handleReplay} />
+          {Showing ? (
+            <>
+              <AppBar
+                position="fixed"
+                color="primary"
+                sx={{ top: "auto", bottom: 0 }}
+              >
+                <IconButton
+                  color="inherit"
+                  onClick={handleShowing}
+                  disabled={isAudioPlayable === false}
+                >
+                  {Showing ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+                </IconButton>
+                <Toolbar style={{ display: "flex", justifyContent: "center" }}>
+                  {currentSong && (
+                    <>
+                      <Dialog open={open} onClose={handleClose}>
+                        <DialogTitle>
+                          <span>歌曲歌词</span>
+                        </DialogTitle>
+                        <DialogContent>
+                          <Tabs value={value} onChange={handleChange}>
+                            <Tab label="原歌词" {...a11yProps(0)} />
+                            <Tab label="翻译歌词" {...a11yProps(1)} />
+                          </Tabs>
+                          <CustomTabPanel value={value} index={0}>
+                            {!currentSong && (
+                              <Typography variant="body1">
+                                <span
                                   style={{
                                     WebkitUserSelect: "none",
                                     MozUserSelect: "none",
@@ -602,52 +617,12 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
                                     userSelect: "none",
                                   }}
                                 >
-                                  <span key={index} style={{ fontSize, color }}>
-                                    {cleanedLine}
-                                  </span>
-                                  <br />
-                                </div>
-                              );
-                            })}
-                      </CustomTabPanel>
-                      <CustomTabPanel value={value} index={1}>
-                        {!currentSong && (
-                          <Typography variant="body1">
-                            <span
-                              style={{
-                                WebkitUserSelect: "none",
-                                MozUserSelect: "none",
-                                msUserSelect: "none",
-                                userSelect: "none",
-                              }}
-                            >
-                              暂无歌词信息哦！
-                            </span>
-                          </Typography>
-                        )}
-                        {currentSong && !currentSong.sub_lyric ? (
-                          <Typography
-                            variant="body1"
-                            style={{ color: "#808080" }}
-                          >
-                            <span
-                              style={{
-                                WebkitUserSelect: "none",
-                                MozUserSelect: "none",
-                                msUserSelect: "none",
-                                userSelect: "none",
-                              }}
-                            >
-                              本歌曲暂无翻译歌词哦~
-                            </span>
-                          </Typography>
-                        ) : (
-                          <></>
-                        )}
-                        {currentSong && currentSong.sub_lyric ? (
-                          <div>
+                                  暂无歌词信息哦！
+                                </span>
+                              </Typography>
+                            )}
                             {currentSong &&
-                              currentSong.sub_lyric
+                              currentSong.lyric
                                 .split("\n")
                                 .filter((line) => {
                                   return (
@@ -667,8 +642,8 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
                                 })
                                 .map((line, index) => {
                                   const isPlaying =
-                                    currentLyricIndexFY >= 0 &&
-                                    index === currentLyricIndexFY;
+                                    currentLyricIndex >= 0 &&
+                                    index === currentLyricIndex;
                                   const fontSize = isPlaying
                                     ? "larger"
                                     : "smaller";
@@ -698,35 +673,126 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
                                     </div>
                                   );
                                 })}
-                          </div>
-                        ) : (
-                          <></>
-                        )}
-                      </CustomTabPanel>
-                    </DialogContent>
-                    <DialogActions>
-                      <Button onClick={handleClose}>
-                        <span>好的</span>
-                      </Button>
-                    </DialogActions>
-                  </Dialog>
-                  <Flex style={{ padding: "15px", flexGrow: 1 }}>
-                    {currentSong.cover ? (
-                      <img
-                        style={{
-                          borderRadius: "50%",
-                          border: "5px solid black",
-                          animation: isPlaying
-                            ? "spin 10s linear infinite"
-                            : "none",
-                        }}
-                        src={currentSong.cover}
-                        alt="Thumbnail"
-                        height="64"
-                        onError={() => {}}
-                        onLoad={() => {
-                          var style = document.createElement("style");
-                          style.innerHTML = `
+                          </CustomTabPanel>
+                          <CustomTabPanel value={value} index={1}>
+                            {!currentSong && (
+                              <Typography variant="body1">
+                                <span
+                                  style={{
+                                    WebkitUserSelect: "none",
+                                    MozUserSelect: "none",
+                                    msUserSelect: "none",
+                                    userSelect: "none",
+                                  }}
+                                >
+                                  暂无歌词信息哦！
+                                </span>
+                              </Typography>
+                            )}
+                            {currentSong && !currentSong.sub_lyric ? (
+                              <Typography
+                                variant="body1"
+                                style={{ color: "#808080" }}
+                              >
+                                <span
+                                  style={{
+                                    WebkitUserSelect: "none",
+                                    MozUserSelect: "none",
+                                    msUserSelect: "none",
+                                    userSelect: "none",
+                                  }}
+                                >
+                                  本歌曲暂无翻译歌词哦~
+                                </span>
+                              </Typography>
+                            ) : (
+                              <></>
+                            )}
+                            {currentSong && currentSong.sub_lyric ? (
+                              <div>
+                                {currentSong &&
+                                  currentSong.sub_lyric
+                                    .split("\n")
+                                    .filter((line) => {
+                                      return (
+                                        !line.startsWith("﻿[id:") &&
+                                        !line.startsWith("[id:") &&
+                                        line !== "" &&
+                                        !line.startsWith("[ar:") &&
+                                        !line.startsWith("[ti:") &&
+                                        !line.startsWith("[by:") &&
+                                        !line.startsWith("[hash:") &&
+                                        !line.startsWith("[al:") &&
+                                        !line.startsWith("[sign:") &&
+                                        !line.startsWith("[qq:") &&
+                                        !line.startsWith("[total:") &&
+                                        !line.startsWith("[offset:")
+                                      );
+                                    })
+                                    .map((line, index) => {
+                                      const isPlaying =
+                                        currentLyricIndexFY >= 0 &&
+                                        index === currentLyricIndexFY;
+                                      const fontSize = isPlaying
+                                        ? "larger"
+                                        : "smaller";
+                                      const color = isPlaying
+                                        ? "#1976D2"
+                                        : "#808080";
+                                      const cleanedLine = line.replace(
+                                        /\[(\d{2}):(\d{2}\.\d{2,3})\]/g,
+                                        ""
+                                      );
+                                      return (
+                                        <div
+                                          style={{
+                                            WebkitUserSelect: "none",
+                                            MozUserSelect: "none",
+                                            msUserSelect: "none",
+                                            userSelect: "none",
+                                          }}
+                                        >
+                                          <span
+                                            key={index}
+                                            style={{ fontSize, color }}
+                                          >
+                                            {cleanedLine}
+                                          </span>
+                                          <br />
+                                        </div>
+                                      );
+                                    })}
+                              </div>
+                            ) : (
+                              <></>
+                            )}
+                          </CustomTabPanel>
+                        </DialogContent>
+                        <DialogActions>
+                          <Button onClick={handleClose}>
+                            <span>好的</span>
+                          </Button>
+                        </DialogActions>
+                      </Dialog>
+                      <Flex vertical gap={"small"}>
+                        <React.Fragment>
+                          <Flex style={{ padding: "15px", flexGrow: 1 }}>
+                            {currentSong.cover ? (
+                              <img
+                                style={{
+                                  borderRadius: "50%",
+                                  border: "5px solid black",
+                                  animation: isPlaying
+                                    ? "spin 10s linear infinite"
+                                    : "none",
+                                }}
+                                src={currentSong.cover}
+                                alt="Thumbnail"
+                                height="64"
+                                onError={() => {}}
+                                onLoad={() => {
+                                  var style = document.createElement("style");
+                                  style.innerHTML = `
                           @keyframes spin {
                             from {
                               transform: rotate(360deg);
@@ -735,221 +801,264 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
                               transform: rotate(0deg);
                             }
                           }`;
-                          document.head.appendChild(style);
-                        }}
-                      />
-                    ) : (
-                      "暂无图片哦~"
-                    )}
-                    <Flex
-                      vertical="vertical"
-                      style={{
-                        marginLeft: "15px",
-                        display: "flex",
-                        justifyContent: "center",
-                      }}
-                    >
-                      {Panelopen ? (
-                        <>
-                          <Typography
-                            style={{ fontSize: "2vmin" }}
-                            color="inherit"
-                          >
-                            <span>{currentSong.title}</span>
-                          </Typography>
-                          <Typography
-                            color="#DCDCDC"
-                            style={{ fontSize: "1.5vmin" }}
-                            gutterBottom
-                          >
-                            <span>{currentSong.artist}</span>
-                          </Typography>
-                        </>
-                      ) : (
-                        <>
-                          <Typography
-                            color="inherit"
-                            style={{ fontSize: "2vmin" }}
-                          >
-                            <span>{`${currentSong.title} — ${currentSong.artist}`}</span>
-                          </Typography>
-                          <div>{formatLyricsH5()}</div>
-                        </>
-                      )}
-                    </Flex>
-                  </Flex>
-                  <audio ref={audioRef} onEnded={handleReplay} />
-                  <IconButton
-                    color="inherit"
-                    onClick={handleTogglePlay}
-                    disabled={isAudioPlayable === false}
-                  >
-                    {isPlaying ? <PauseIcon /> : <PlayArrowIcon />}
-                  </IconButton>
-                  <Tooltip title="列表下一曲" placement="top">
-                    <IconButton
-                      color="inherit"
-                      onClick={() =>
-                        (audioRef.current.currentTime =
-                          audioRef.current.duration)
-                      }
-                      disabled={
-                        listplaying === false ||
-                        isAudioPlayable === false ||
-                        canlistplay === false
-                      }
-                    >
-                      <SkipNextIcon />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip title="单曲循环" placement="top">
-                    <IconButton
-                      color="inherit"
-                      onClick={handleSetReplay}
-                      disabled={isAudioPlayable === false}
-                    >
-                      {isReplay ? (
-                        <RepeatOneIcon color="success" />
-                      ) : (
-                        <RepeatOneIcon />
-                      )}
-                    </IconButton>
-                  </Tooltip>
-                  <IconButton
-                    color="inherit"
-                    onClick={handleExpandPanel}
-                    disabled={isAudioPlayable === false}
-                  >
-                    {Panelopen ? <ExpandMoreIcon /> : <ExpandLessIcon />}
-                  </IconButton>
-                  {Panelopen ? (
-                    <>
-                      <Card>
-                        <CardContent>
-                          <Flex vertical="vertical" style={{ flexGrow: 1 }}>
-                            <div>{formatLyrics()}</div>
-                            <div>{formatLyricsFY()}</div>
+                                  document.head.appendChild(style);
+                                }}
+                              />
+                            ) : (
+                              "暂无图片哦~"
+                            )}
+                            <Flex
+                              vertical="vertical"
+                              style={{
+                                marginLeft: "15px",
+                                display: "flex",
+                                justifyContent: "center",
+                              }}
+                            >
+                              <>
+                                <Typography
+                                  color="inherit"
+                                  style={{ fontSize: "2vh" }}
+                                >
+                                  <span>{`${currentSong.title} — ${currentSong.artist}`}</span>
+                                </Typography>
+                                <div>{formatLyricsH5()}</div>
+                                <div>{formatLyricsFYH5()}</div>
+                              </>
+                            </Flex>
                           </Flex>
-                          <Slider
-                            value={progress}
-                            onChange={handleSliderChange}
-                            onDragEnd={handleSliderDragEnd}
-                            disabled={isAudioPlayable === false}
-                          />
-                          <Typography
-                            variant="caption"
-                            style={{ margin: "8px 0" }}
-                          >
-                            <span>
-                              {audioRef.current &&
-                              typeof audioRef.current.currentTime ===
-                                "number" &&
-                              !isNaN(audioRef.current.currentTime) &&
-                              typeof audioRef.current.duration === "number" &&
-                              !isNaN(audioRef.current.duration)
-                                ? `${formatTime(
-                                    audioRef.current.currentTime
-                                  )} / ${formatTime(audioRef.current.duration)}`
-                                : "无时间信息"}
-                            </span>
-                          </Typography>
-                          <Tooltip title="列表播放" placement="top">
-                            <IconButton
-                              color="inherit"
-                              onClick={() => {
-                                setlistplaying(!listplaying);
+                          <Card>
+                            <CardContent
+                              style={{
+                                display: "flex",
+                                justifyContent: "center",
                               }}
-                              disabled={
-                                islistplayable === false ||
-                                isAudioPlayable === false ||
-                                canlistplay === false
-                              }
                             >
-                              {canlistplay ? (
-                                listplaying ? (
-                                  <QueueMusicIcon color="success" />
-                                ) : (
-                                  <QueueMusicIcon />
-                                )
-                              ) : (
-                                <QueueMusicIcon />
-                              )}
-                            </IconButton>
-                          </Tooltip>
-                          <Tooltip title="查看歌词" placement="top">
-                            <IconButton
-                              color="inherit"
-                              aria-label="file button"
-                              onClick={handleClickOpen}
-                              disabled={isAudioPlayable === false}
-                            >
-                              <FileIcon />
-                            </IconButton>
-                          </Tooltip>
-                          <Tooltip title="全屏" placement="top">
-                            <IconButton
-                              color="inherit"
-                              onClick={handleFullScreen}
-                              disabled={isAudioPlayable === false}
-                            >
-                              {Fullscreen ? (
-                                <FullscreenExitIcon />
-                              ) : (
-                                <FullscreenIcon />
-                              )}
-                            </IconButton>
-                          </Tooltip>
-                          <Tooltip title="MV(将跳转外部网站)" placement="top">
-                            <IconButton
-                              color="inherit"
-                              onClick={() => {
-                                const name = currentSong.title + " ";
-                                handleVedioClick(name);
-                              }}
-                              disabled={isAudioPlayable === false}
-                            >
-                              <OndemandVideoIcon />
-                            </IconButton>
-                          </Tooltip>
-                          <Tooltip title="收藏" placement="top">
-                            <IconButton
-                              color="inherit"
-                              onClick={() => {
-                                addSongToLocalPlaylist({
-                                  title: currentSong.title,
-                                  artist: currentSong.artist,
-                                  songId: currentSong.id,
-                                });
-                              }}
-                              disabled={
-                                isAudioPlayable === false ||
-                                canlistplay === false
-                              }
-                            >
-                              <FavoriteIcon />
-                            </IconButton>
-                          </Tooltip>
-                          <Slider
-                            value={volume}
-                            onChange={handleVolumeChange}
-                            disabled={isAudioPlayable === false}
-                          />
-                          <Typography
-                            variant="caption"
-                            style={{ margin: "8px 0" }}
-                          >
-                            <span>音量: {volume}%</span>
-                          </Typography>
-                        </CardContent>
-                      </Card>
+                              <Flex vertical>
+                                <Flex>
+                                  <Typography
+                                    variant="caption"
+                                    style={{ margin: "8px 0" }}
+                                  >
+                                    <span>
+                                      {audioRef.current &&
+                                      typeof audioRef.current.currentTime ===
+                                        "number" &&
+                                      !isNaN(audioRef.current.currentTime) &&
+                                      typeof audioRef.current.duration ===
+                                        "number" &&
+                                      !isNaN(audioRef.current.duration)
+                                        ? `${formatTime(
+                                            audioRef.current.currentTime
+                                          )} / ${formatTime(
+                                            audioRef.current.duration
+                                          )}`
+                                        : "无时间信息"}
+                                    </span>
+                                  </Typography>
+                                  <IconButton
+                                    color="inherit"
+                                    onClick={handleTogglePlay}
+                                    disabled={isAudioPlayable === false}
+                                  >
+                                    {isPlaying ? (
+                                      <PauseIcon />
+                                    ) : (
+                                      <PlayArrowIcon />
+                                    )}
+                                  </IconButton>
+                                  <Tooltip title="列表下一曲" placement="top">
+                                    <IconButton
+                                      color="inherit"
+                                      onClick={() =>
+                                        (audioRef.current.currentTime =
+                                          audioRef.current.duration)
+                                      }
+                                      disabled={
+                                        listplaying === false ||
+                                        isAudioPlayable === false ||
+                                        canlistplay === false
+                                      }
+                                    >
+                                      <SkipNextIcon />
+                                    </IconButton>
+                                  </Tooltip>
+                                  <Tooltip title="单曲循环" placement="top">
+                                    <IconButton
+                                      color="inherit"
+                                      onClick={handleSetReplay}
+                                      disabled={isAudioPlayable === false}
+                                    >
+                                      {isReplay ? (
+                                        <RepeatOneIcon color="success" />
+                                      ) : (
+                                        <RepeatOneIcon />
+                                      )}
+                                    </IconButton>
+                                  </Tooltip>
+                                  <Tooltip title="收藏" placement="top">
+                                    <IconButton
+                                      color="inherit"
+                                      onClick={() => {
+                                        addSongToLocalPlaylist({
+                                          title: currentSong.title,
+                                          artist: currentSong.artist,
+                                          songId: currentSong.id,
+                                        });
+                                      }}
+                                      disabled={
+                                        isAudioPlayable === false ||
+                                        canlistplay === false
+                                      }
+                                    >
+                                      <FavoriteIcon />
+                                    </IconButton>
+                                  </Tooltip>
+                                  <Tooltip title="列表播放" placement="top">
+                                    <IconButton
+                                      color="inherit"
+                                      onClick={() => {
+                                        setlistplaying(!listplaying);
+                                      }}
+                                      disabled={
+                                        islistplayable === false ||
+                                        isAudioPlayable === false ||
+                                        canlistplay === false
+                                      }
+                                    >
+                                      {canlistplay ? (
+                                        listplaying ? (
+                                          <QueueMusicIcon color="success" />
+                                        ) : (
+                                          <QueueMusicIcon />
+                                        )
+                                      ) : (
+                                        <QueueMusicIcon />
+                                      )}
+                                    </IconButton>
+                                  </Tooltip>
+
+                                  <IconButton
+                                    color="inherit"
+                                    onClick={handleExpandPanel}
+                                    disabled={isAudioPlayable === false}
+                                  >
+                                    {Panelopen ? (
+                                      <ExpandMoreIcon />
+                                    ) : (
+                                      <ExpandLessIcon />
+                                    )}
+                                  </IconButton>
+                                </Flex>
+
+                                <Flex>
+                                  <Slider
+                                    value={progress}
+                                    onChange={handleSliderChange}
+                                    onDragEnd={handleSliderDragEnd}
+                                    disabled={isAudioPlayable === false}
+                                  />
+                                </Flex>
+                              </Flex>
+                            </CardContent>
+                          </Card>
+                        </React.Fragment>
+                        <div>
+                          {Panelopen ? (
+                            <>
+                              <Card>
+                                <CardContent
+                                // style={{
+                                //   display: "flex",
+                                //   justifyContent: "center",
+                                // }}
+                                >
+                                  <Tooltip title="查看歌词" placement="top">
+                                    <IconButton
+                                      color="inherit"
+                                      aria-label="file button"
+                                      onClick={handleClickOpen}
+                                      disabled={isAudioPlayable === false}
+                                    >
+                                      <FileIcon />
+                                    </IconButton>
+                                  </Tooltip>
+                                  <Tooltip title="全屏" placement="top">
+                                    <IconButton
+                                      color="inherit"
+                                      onClick={handleFullScreen}
+                                      disabled={isAudioPlayable === false}
+                                    >
+                                      {Fullscreen ? (
+                                        <FullscreenExitIcon />
+                                      ) : (
+                                        <FullscreenIcon />
+                                      )}
+                                    </IconButton>
+                                  </Tooltip>
+                                  <Tooltip
+                                    title="MV(将跳转外部网站)"
+                                    placement="top"
+                                  >
+                                    <IconButton
+                                      color="inherit"
+                                      onClick={() => {
+                                        const name = currentSong.title + " ";
+                                        handleVedioClick(name);
+                                      }}
+                                      disabled={isAudioPlayable === false}
+                                    >
+                                      <OndemandVideoIcon />
+                                    </IconButton>
+                                  </Tooltip>
+                                  <Slider
+                                    value={volume}
+                                    onChange={handleVolumeChange}
+                                    disabled={isAudioPlayable === false}
+                                  />
+                                  <Typography
+                                    variant="caption"
+                                    style={{ margin: "8px 0" }}
+                                  >
+                                    <span>音量: {volume}%</span>
+                                  </Typography>
+                                </CardContent>
+                              </Card>
+                            </>
+                          ) : (
+                            <></>
+                          )}
+                        </div>
+                      </Flex>
                     </>
-                  ) : (
-                    <></>
                   )}
-                </>
-              )}
-            </Toolbar>
-          </AppBar>
+                </Toolbar>
+              </AppBar>
+            </>
+          ) : (
+            // 不在展示状态
+            <>
+              <AppBar
+                position="fixed"
+                color="primary"
+                sx={{ top: "auto", bottom: 0 }}
+              >
+                <Flex
+                  gap={"middle"}
+                  style={{ display: "flex", justifyContent: "center" }}
+                >
+                  <IconButton
+                    color="inherit"
+                    onClick={handleShowing}
+                    disabled={isAudioPlayable === false}
+                  >
+                    {Showing ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+                  </IconButton>
+                  <div>{formatLyrics()}</div>
+                </Flex>
+              </AppBar>
+            </>
+          )}
         </>
       ) : (
         <></>
