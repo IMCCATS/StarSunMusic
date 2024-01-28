@@ -16,7 +16,7 @@ import {
   ListItemAvatar,
   Avatar,
 } from "@mui/material";
-import { Tour, message } from "antd";
+import {  message } from "antd";
 import {
   HandleListenSong,
   HandlePlayList,
@@ -40,33 +40,8 @@ export default function TopBar() {
   const ref1 = React.useRef(null);
   const ref2 = React.useRef(null);
   const ref3 = React.useRef(null);
-  const [open, setOpen] = React.useState(false);
-  const steps = [
-    {
-      title: "歌曲列表升级啦！",
-      description: "这是新的歌曲列表。",
-      target: () => ref1.current,
-    },
-    {
-      title: "单击文字区播放歌曲",
-      description: "通过单机文字区域来播放歌曲。",
-      target: () => ref2.current,
-    },
-    {
-      title: "点击封面区将歌曲添加到下一首播放",
-      description: "通过点击封面区来将歌曲添加到下一首播放。",
-      target: () => ref3.current,
-    },
-  ];
   React.useEffect(() => {
     fetchMusicList();
-    const a = localStorage.getItem("tOurXs");
-    if (!a) {
-      setTimeout(() => {
-        setOpen(true);
-        localStorage.setItem("tOurXs", "fin");
-      }, 5000);
-    }
   }, []);
 
   const fetchMusicList = () => {
@@ -120,7 +95,6 @@ export default function TopBar() {
   return (
     <main>
       {contextHolder}
-      <Tour open={open} onClose={() => setOpen(false)} steps={steps} />
       <Card sx={{ minWidth: 275 }} style={{ marginTop: "15px" }}>
         <CardContent>
           <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>

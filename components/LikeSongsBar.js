@@ -114,7 +114,7 @@ const PlaylistComponent = ({ playlist, index }) => {
       <Accordion key={playlist.id}>
         <AccordionSummary>
           <Typography>
-            <span>歌单{index + 1}</span>
+            <span>{playlist.title}</span>
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
@@ -235,6 +235,7 @@ export default function LikeSongBar() {
   }, []);
 
   const [inputvalue, setinputvalue] = React.useState("");
+  const [inputname, setinputname] = React.useState("");
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -254,9 +255,10 @@ export default function LikeSongBar() {
     setDeleteOpen(false);
   };
   const handleAdd = () => {
-    if (inputvalue && inputvalue !== "") {
-      AddBar({ id: inputvalue });
+    if (inputvalue && inputvalue !== "" && inputname !== "") {
+      AddBar({ id: inputvalue, title: inputname });
       setinputvalue("");
+      setinputname("");
       handleClose();
     }
   };
@@ -274,7 +276,7 @@ export default function LikeSongBar() {
       <React.Fragment>
         <Dialog open={open} onClose={handleClose}>
           <DialogTitle>
-            <span>请输入您的云音乐歌单ID</span>
+            <span>请输入您的云音乐歌单ID与歌单名</span>
           </DialogTitle>
           <DialogContent>
             <DialogContentText>
@@ -313,6 +315,19 @@ export default function LikeSongBar() {
               fullWidth
               variant="standard"
             />
+            <TextField
+              autoFocus
+              margin="dense"
+              id="songname"
+              label="歌单名"
+              type="text"
+              value={inputname}
+              onChange={(e) => {
+                setinputname(e.target.value);
+              }}
+              fullWidth
+              variant="standard"
+            />
           </DialogContent>
           <DialogActions>
             <Button onClick={handleAdd}>确定添加</Button>
@@ -344,7 +359,7 @@ export default function LikeSongBar() {
                     }}
                     style={{ margin: "8px auto" }}
                   >
-                    歌单{index + 1}
+                    {playlist.title}
                     <br />
                     ID:{playlist.id}
                   </Button>
