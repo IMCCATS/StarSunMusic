@@ -29,7 +29,6 @@ import SongList from "../../../components/Songlist";
 import zhCN from "antd/locale/zh_CN";
 import FingerprintJS from "@fingerprintjs/fingerprintjs";
 import yuxStorage from "@/app/api/yux-storage";
-import copy from "copy-to-clipboard";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -337,12 +336,35 @@ function StarSunMusic() {
     </main>
   );
 }
+
 export default function ToggleColorMode() {
   const [mode, setMode] = React.useState("light");
+  const [modec, setModec] = React.useState(0);
+
+  // 在这里添加一个新的 useEffect 来监听 mode 的变化并存储到 yuxStorage
+  React.useEffect(() => {
+    if (modec === 1) {
+      yuxStorage.setItem("LastColorMode", mode);
+    }
+  }, [mode]);
+
+  // 保留原始 useEffect 以在页面加载时获取 LastColorMode
+  React.useEffect(() => {
+    yuxStorage.getItem("LastColorMode").then((e) => {
+      if (e === "dark") {
+        setMode("dark");
+      }
+    });
+  }, []);
+
   const colorMode = React.useMemo(
     () => ({
       toggleColorMode: () => {
+        setModec(1);
         setMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
+        setTimeout(() => {
+          setModec(0);
+        }, 100);
       },
     }),
     []
