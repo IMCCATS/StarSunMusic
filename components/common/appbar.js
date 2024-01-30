@@ -5,6 +5,7 @@ import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Dialog from "@mui/material/Dialog";
 import Button from "@mui/material/Button";
+import yuxStorage from "@/app/api/yux-storage";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
@@ -24,11 +25,18 @@ export default function PrimarySearchAppBar() {
   };
 
   const CheckStatus = () => {
-    const status = localStorage.getItem("DarkModeChecked");
-    if (status !== "yes") {
-      localStorage.setItem("DarkModeChecked", "yes");
-      handleClickOpen();
-    }
+    yuxStorage
+      .getItem("DarkModeChecked")
+      .then((status) => {
+        if (status !== "yes") {
+          yuxStorage.setItem("DarkModeChecked", "yes");
+          handleClickOpen();
+        }
+      })
+      .catch((e) => {
+        yuxStorage.setItem("DarkModeChecked", "yes");
+        handleClickOpen();
+      });
   };
 
   const handleClose = () => {

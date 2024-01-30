@@ -28,6 +28,8 @@ import { Backdrop, Card, CardContent, CircularProgress } from "@mui/material";
 import SongList from "../../../components/Songlist";
 import zhCN from "antd/locale/zh_CN";
 import FingerprintJS from "@fingerprintjs/fingerprintjs";
+import yuxStorage from "@/app/api/yux-storage";
+import copy from "copy-to-clipboard";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -50,23 +52,32 @@ function StarSunMusic() {
     setOpen(true);
   };
   const CheckPolicy = () => {
-    const state = localStorage.getItem("isAgreedPolicy");
-    if (state !== "1") {
-      handleClick();
-      setTimeout(() => {
-        router.push("/");
-      }, 5000);
-    }
+    yuxStorage
+      .getItem("isAgreedPolicy")
+      .then((state) => {
+        if (state !== "1") {
+          handleClick();
+          setTimeout(() => {
+            router.push("/");
+          }, 5000);
+        }
+      })
+      .catch((e) => {
+        handleClick();
+        setTimeout(() => {
+          router.push("/");
+        }, 5000);
+      });
   };
-  const AddLocalStorageDebug = () => {
-    window.addEventListener("storage", (e) => {
-      if (e.key) {
-        localStorage.setItem(e.key, e.oldValue);
-      }
-    });
-  };
+  // const AddyuxStorageDebug = () => {
+  //   window.addEventListener("storage", (e) => {
+  //     if (e.key) {
+  //       yuxStorage.setItem(e.key, e.oldValue);
+  //     }
+  //   });
+  // };
   React.useEffect(() => {
-    AddLocalStorageDebug();
+    // AddyuxStorageDebug();
     CheckPolicy();
   }, []);
 
@@ -128,7 +139,7 @@ function StarSunMusic() {
       fp.get().then((result) => {
         const visitorId = result.visitorId;
         setfingerprintidc(visitorId);
-        localStorage.setItem("fingerprintidc", visitorId);
+        yuxStorage.setItem("fingerprintidc", visitorId);
       });
     });
   }, []);

@@ -13,12 +13,12 @@ export default function BasicCard() {
   const [playingpage, setplayingpage] = React.useState("");
   const [canlistplay, setcanlistplay] = React.useState(false);
   const params = { songID: searchParams.get("songID") };
-  const AddLocalStorageDebug = () => {
-    window.addEventListener("storage", (e) => {
-      if (e.key) {
-        localStorage.setItem(e.key, e.oldValue);
-      }
-    });
+  const AddyuxStorageDebug = () => {
+    // window.addEventListener("storage", (e) => {
+    //   if (e.key) {
+    //     yuxStorage.setItem(e.key, e.oldValue);
+    //   }
+    // });
     handleListenClick(params.songID);
   };
   const handleListenClick = (songId) => {
@@ -36,7 +36,7 @@ export default function BasicCard() {
     }
   };
   React.useEffect(() => {
-    AddLocalStorageDebug();
+    AddyuxStorageDebug();
   }, []);
   return (
     <main>

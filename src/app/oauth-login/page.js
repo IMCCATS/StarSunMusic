@@ -17,20 +17,22 @@ import * as React from "react";
 import { CodeLogin, GetRegCode } from "../../../components/common/fetchapi";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 const crypto = require("crypto");
+import yuxStorage from "@/app/api/yux-storage";
 
 const LoginPage = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const [logined, setlogined] = React.useState(false);
   const CheckScript = () => {
-    const state = localStorage.getItem("userprofile");
-    if (state) {
-      setIsLoading(true);
-      setlogined(true);
-      setTimeout(() => {
-        router.push("/dashboard");
-        return null;
-      }, 1500);
-    }
+    yuxStorage.getItem("userprofile").then((state) => {
+      if (state) {
+        setIsLoading(true);
+        setlogined(true);
+        setTimeout(() => {
+          router.push("/dashboard");
+          return null;
+        }, 1500);
+      }
+    });
   };
   React.useEffect(() => {
     CheckScript();
@@ -81,20 +83,23 @@ const LoginPage = () => {
       return result;
     }
     setlogined(true);
-    localStorage.setItem("userprofile", mobileidc);
-    localStorage.setItem("mobiletoken", token);
-    const skey = generateRandomString();
-    localStorage.setItem("skey", skey);
-    async function sha256(input) {
-      return crypto.createHash("sha256").update(input).digest("hex");
-    }
-    const text = skey + mobileidc + token + skey;
-    sha256(text).then((ykey) => {
-      localStorage.setItem("ykey", ykey);
+    yuxStorage.setItem("userprofile", mobileidc).then((e) => {
+      yuxStorage.setItem("mobiletoken", token).then((e) => {
+        const skey = generateRandomString();
+        yuxStorage.setItem("skey", skey);
+        async function sha256(input) {
+          return crypto.createHash("sha256").update(input).digest("hex");
+        }
+        const text = skey + mobileidc + token + skey;
+        sha256(text).then((ykey) => {
+          yuxStorage.setItem("ykey", ykey).then((e) => {
+            setTimeout(function () {
+              handleGo();
+            }, 1000);
+          });
+        });
+      });
     });
-    setTimeout(function () {
-      handleGo();
-    }, 1000);
   };
 
   const handleClickOpen = async () => {

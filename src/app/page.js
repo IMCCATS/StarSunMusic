@@ -1,5 +1,6 @@
 "use client";
 import * as React from "react";
+import yuxStorage from "@/app/api/yux-storage";
 import {
   Button,
   Typography,
@@ -33,12 +34,18 @@ const HomePage = () => {
   }, []);
 
   const handleClickOpen = () => {
-    const state = localStorage.getItem("isAgreedPolicy");
-    if (state !== "1") {
-      setOpen(true);
-    } else if (state === "1") {
-      handleClickPolicyed();
-    }
+    yuxStorage
+      .getItem("isAgreedPolicy")
+      .then((state) => {
+        if (state !== "1") {
+          setOpen(true);
+        } else if (state === "1") {
+          handleClickPolicyed();
+        }
+      })
+      .catch((err) => {
+        setOpen(true);
+      });
   };
 
   const handleClose = () => {
@@ -47,10 +54,11 @@ const HomePage = () => {
   };
 
   const handleClick = () => {
-    localStorage.setItem("isAgreedPolicy", "1");
-    setIsLoading(true);
-    setOpen(false);
-    router.push("/dashboard");
+    yuxStorage.setItem("isAgreedPolicy", "1").then((e) => {
+      setIsLoading(true);
+      setOpen(false);
+      router.push("/dashboard");
+    });
   };
 
   const handleClickPolicyed = () => {

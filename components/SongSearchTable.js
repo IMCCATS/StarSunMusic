@@ -36,6 +36,7 @@ import {
   SearchSong,
 } from "./common/fetchapi";
 import Script from "next/script";
+import yuxStorage from "@/app/api/yux-storage";
 import { scroller, Element } from "react-scroll";
 
 export default function SongSearchTable({ setcanlistplay }) {
@@ -119,18 +120,21 @@ export default function SongSearchTable({ setcanlistplay }) {
     }
 
     const newSearchHistory = [...SearchHistory, searchTerm];
-    localStorage.setItem("SearchHistory", JSON.stringify(newSearchHistory));
-    SetSearchHistory(newSearchHistory);
+    yuxStorage
+      .setItem("SearchHistory", JSON.stringify(newSearchHistory))
+      .then((e) => {
+        SetSearchHistory(newSearchHistory);
+      });
   };
 
   const AddSearchHistory = () => {
     setallwz("搜索功能加载完成啦~\n请搜索歌曲哦~");
-    const savedSearchHistory = JSON.parse(
-      localStorage.getItem("SearchHistory")
-    );
-    if (savedSearchHistory) {
-      SetSearchHistory(savedSearchHistory);
-    }
+    yuxStorage.getItem("SearchHistory").then((e) => {
+      const savedSearchHistory = JSON.parse(e);
+      if (savedSearchHistory) {
+        SetSearchHistory(savedSearchHistory);
+      }
+    });
   };
 
   const fxhandleClose = () => {
@@ -307,8 +311,9 @@ export default function SongSearchTable({ setcanlistplay }) {
   };
 
   const ClearHistory = () => {
-    localStorage.removeItem("SearchHistory");
-    SetSearchHistory([]);
+    yuxStorage.removeItem("SearchHistory").then((e) => {
+      SetSearchHistory([]);
+    });
   };
 
   const loadmoresong = (PlatF) => {

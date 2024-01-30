@@ -3,18 +3,27 @@ import { Button, CardActions } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
+import yuxStorage from "@/app/api/yux-storage";
+
 import * as React from "react";
 export default function Advertisement() {
   const [open, setOpen] = React.useState("none");
   const SetAD = () => {
-    const OpenState = window.localStorage.getItem("showad");
-    if (OpenState !== "off") {
-      setOpen("block");
-    }
+    yuxStorage
+      .getItem("showad")
+      .then((OpenState) => {
+        if (OpenState !== "off") {
+          setOpen("block");
+        }
+      })
+      .catch((e) => {
+        setOpen("block");
+      });
   };
   const OffAD = () => {
-    setOpen("none");
-    window.localStorage.setItem("showad", "off");
+    yuxStorage.setItem("showad", "off").then((e) => {
+      setOpen("none");
+    });
   };
   React.useEffect(() => {
     SetAD();

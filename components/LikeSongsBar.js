@@ -1,5 +1,6 @@
 "use client";
 import * as React from "react";
+import yuxStorage from "@/app/api/yux-storage";
 import { CurrentSongContext } from "../src/app/dashboard/page";
 import {
   Button,
@@ -257,15 +258,20 @@ export default function LikeSongBar() {
       return;
     }
     const newBars = [...playlists, Term];
-    localStorage.setItem("Bars", JSON.stringify(newBars));
-    setplaylists(newBars);
+    yuxStorage.setItem("Bars", JSON.stringify(newBars)).then((e) => {
+      setplaylists(newBars);
+    });
   };
 
   const AddBars = () => {
-    const saved = JSON.parse(localStorage.getItem("Bars"));
-    if (saved) {
-      setplaylists(saved);
-    }
+    yuxStorage.getItem("Bars").then((e) => {
+      if (e) {
+        const saved = JSON.parse(e);
+        if (saved) {
+          setplaylists(saved);
+        }
+      }
+    });
   };
 
   React.useEffect(() => {
@@ -305,8 +311,9 @@ export default function LikeSongBar() {
       return;
     }
     const newBars = playlists.filter((_, i) => i !== index);
-    localStorage.setItem("Bars", JSON.stringify(newBars));
-    setplaylists(newBars);
+    yuxStorage.setItem("Bars", JSON.stringify(newBars)).then((e) => {
+      setplaylists(newBars);
+    });
   };
 
   return (

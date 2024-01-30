@@ -22,6 +22,7 @@ import {
   ListItem,
   ListItemText,
 } from "@mui/material";
+import yuxStorage from "@/app/api/yux-storage";
 import CloseIcon from "@mui/icons-material/Close";
 import { useRouter } from "next/navigation";
 import { Empty, message } from "antd";
@@ -50,8 +51,8 @@ const PersonalPlaylist = () => {
   const [sharedisabled, setsharedisabled] = React.useState(false);
   const [checkisabled, setcheckisabled] = React.useState(false);
   const [gedanidc, setgedanidc] = React.useState("");
+  const [user, setuser] = React.useState("");
   const {
-    isPlayComplete,
     SetPlayingSongs,
     setCurrentSong,
     setLastPlayedSongIndex,
@@ -66,10 +67,11 @@ const PersonalPlaylist = () => {
     HandleListenSong(songId)
       .then((e) => {
         setCurrentSong(e);
-        SetPlayingSongs(playList);
-        setLastPlayedSongIndex(
-          playList.findIndex((song) => song.id === songId)
-        );
+        const b = playList.map((song) => {
+          return { ...song, name: song.title };
+        });
+        SetPlayingSongs(b);
+        setLastPlayedSongIndex(b.findIndex((song) => song.songId === songId));
         setcanlistplay(true);
         setdisabled(false);
       })
@@ -78,67 +80,68 @@ const PersonalPlaylist = () => {
       });
   };
 
-  let user = "";
-  if (localStorage.getItem("userprofile")) {
-    user = "当前登录用户：" + localStorage.getItem("userprofile");
-  }
 
   React.useEffect(() => {
-    const b = localStorage.getItem("mobiletoken");
-    const c = localStorage.getItem("userprofile");
-    if (c) {
-      const d = localStorage.getItem("ykey");
-      const e = localStorage.getItem("skey");
-      if (d && e) {
-        async function sha256(input) {
-          return crypto.createHash("sha256").update(input).digest("hex");
-        }
-        const text = e + c + b + e;
-        sha256(text).then((ecode) => {
-          if (ecode === d) {
-            setprofile(true);
-          } else {
-            localStorage.removeItem("userprofile");
-            localStorage.removeItem("mobiletoken");
-            localStorage.removeItem("ykey");
-            localStorage.removeItem("skey");
-            setprofile(false);
-            messageApi.error("自动登录失败或登录失效啦，请重新登录~");
-          }
-        });
-      } else {
-        localStorage.removeItem("userprofile");
-        localStorage.removeItem("mobiletoken");
-        localStorage.removeItem("ykey");
-        localStorage.removeItem("skey");
-        setprofile(false);
-        messageApi.error("自动登录失败或登录失效啦，请重新登录~");
-      }
-    } else {
-      setprofile(false);
+    yuxStorage.getItem("userprofile").then((a) => {
+      setuser("当前登录用户：" + a);
+    });
+    const b = yuxStorage.getItem("mobiletoken");
+    const c = yuxStorage.getItem("userprofile");
+    const d = yuxStorage.getItem("ykey");
+    const e = yuxStorage.getItem("skey");
+
+    async function sha256(input) {
+      return crypto.createHash("sha256").update(input).digest("hex");
     }
+
+    Promise.all([b, c, d, e])
+      .then(async ([bb, cc, dd, ee]) => {
+        if (c) {
+          const text = ee + cc + bb + ee;
+          if (text) {
+            const ecode = await sha256(text);
+            if (ecode === dd) {
+              setprofile(true);
+            } else {
+              // console.error([bb, cc, dd, ee, text, ecode]);
+              // setprofile(false);
+              // messageApi.error("自动登录失败或登录失效啦，请重新登录~");
+              yuxStorage.removeItem("userprofile").then(() => {
+                yuxStorage.removeItem("mobiletoken").then(() => {
+                  yuxStorage.removeItem("ykey").then(() => {
+                    yuxStorage.removeItem("skey").then(() => {
+                      setprofile(false);
+                      messageApi.error("自动登录失败或登录失效啦，请重新登录~");
+                    });
+                  });
+                });
+              });
+            }
+          } else {
+            setprofile(false);
+          }
+        } else {
+          messageApi.error("技术问题出现啦，快联系开发者修复~");
+          setprofile(false);
+        }
+      })
+      .catch((error) => {
+        setprofile(false);
+        messageApi.error("技术问题出现啦，快联系开发者修复~");
+        if (process.env.NODE_ENV === "development") {
+          messageApi.error("Error fetching app data:", error);
+          console.error("Error fetching app data:", error);
+        }
+      });
   }, []);
 
   // 获取播放列表的函数
   const getPlayList = () => {
-    const savedPlayList = localStorage.getItem("playList");
-    if (savedPlayList) {
-      setPlayList(JSON.parse(savedPlayList));
-    }
-  };
-
-  const addSongToLocalPlaylist = (song) => {
-    const playList = JSON.parse(localStorage.getItem("playList")) || [];
-    const existingSongIndex = playList.findIndex(
-      (s) => s.songId === song.songId
-    );
-    if (existingSongIndex === -1) {
-      playList.push(song);
-      localStorage.setItem("playList", JSON.stringify(playList));
-      messageApi.success("添加成功啦~");
-    } else {
-      message.info("歌单已存在本歌曲了哦~");
-    }
+    yuxStorage.getItem("playList").then((savedPlayList) => {
+      if (savedPlayList) {
+        setPlayList(JSON.parse(savedPlayList));
+      }
+    });
   };
 
   // 显示抽屉的函数
@@ -154,6 +157,51 @@ const PersonalPlaylist = () => {
 
   const handlechange = (event) => {
     setuuid(event.target.value);
+  };
+
+  const addSongsToLocalPlaylist = (songs) => {
+    yuxStorage
+      .getItem("playList")
+      .then((playlist) => {
+        if (playlist) {
+          const playList = JSON.parse(playlist);
+
+          // 过滤出不存在于播放列表中的歌曲
+          const uniqueSongsToAdd = songs.filter(
+            (song) => !playList.find((s) => s.songId === song.songId)
+          );
+
+          if (uniqueSongsToAdd.length > 0) {
+            // 将新歌曲添加到播放列表
+            playList.push(...uniqueSongsToAdd);
+            yuxStorage
+              .setItem("playList", JSON.stringify(playList))
+              .then(() => {
+                messageApi.success(
+                  `${uniqueSongsToAdd.length}首歌曲添加成功啦~`
+                );
+              })
+              .catch((err) => {
+                message.info("添加失败~");
+              });
+          } else {
+            message.info("歌单已包含所有这些歌曲了哦~");
+          }
+        } else {
+          // 如果播放列表为空，则直接将所有歌曲添加进去
+          yuxStorage
+            .setItem("playList", JSON.stringify(songs))
+            .then(() => {
+              messageApi.success(`${songs.length}首歌曲添加成功啦~`);
+            })
+            .catch((err) => {
+              message.info("添加失败~");
+            });
+        }
+      })
+      .catch((err) => {
+        message.info("添加失败~");
+      });
   };
 
   const handleCheckUUID = async () => {
@@ -172,21 +220,11 @@ const PersonalPlaylist = () => {
       if (GedanS.length > 0) {
         const gedan = GedanS[0].songs;
         if (Array.isArray(gedan) && gedan.length >= 10) {
-          // 遍历数组中的每一首歌
-          for (let i = 0; i < gedan.length; i++) {
-            addSongToLocalPlaylist({
-              title: gedan[i].title,
-              artist: gedan[i].artist,
-              songId: gedan[i].songId,
-            });
-          }
+          addSongsToLocalPlaylist(gedan);
           setuuid("");
           setOpenDialog(false);
           onClose();
           setcheckisabled(true);
-          setTimeout(() => {
-            messageApi.success("分享的歌单歌曲已经全部添加完成啦~");
-          }, 1000);
           setTimeout(() => {
             setcheckisabled(false);
           }, 300000);
@@ -199,76 +237,68 @@ const PersonalPlaylist = () => {
 
   const handleGetMySongs = async () => {
     setdisabled(true);
-    const mobile = localStorage.getItem("userprofile");
-    const emobile = btoa(mobile);
-    let { data: GedanS, error } = await supabase
-      .from("GedanS")
-      .select("*")
-      .eq("mobile", emobile);
-    if (error) {
-      setOpenDialog(false);
-      messageApi.error("获取歌单失败了哦~请检查是否有问题~");
-      setdisabled(false);
-      return;
-    }
-    if (GedanS && Array.isArray(GedanS)) {
-      if (GedanS.length > 0) {
-        const gedan = GedanS[0].songs;
-        if (Array.isArray(gedan) && gedan.length >= 10) {
-          // 遍历数组中的每一首歌
-          for (let i = 0; i < gedan.length; i++) {
-            addSongToLocalPlaylist({
-              title: gedan[i].title,
-              artist: gedan[i].artist,
-              songId: gedan[i].songId,
-            });
-          }
-          setuuid("");
-          setOpenDialog(false);
-          onClose();
-          setcheckisabled(true);
-          setdisabled(false);
-          setTimeout(() => {
-            messageApi.success("您分享的歌曲已经全部添加完成啦~");
-          }, 1000);
-          setTimeout(() => {
-            setcheckisabled(false);
-          }, 300000);
-        }
-      } else {
+    yuxStorage.getItem("userprofile").then(async (mobile) => {
+      const emobile = btoa(mobile);
+      let { data: GedanS, error } = await supabase
+        .from("GedanS")
+        .select("*")
+        .eq("mobile", emobile);
+      if (error) {
+        setOpenDialog(false);
+        messageApi.error("获取歌单失败了哦~请检查是否有问题~");
         setdisabled(false);
-        messageApi.error("系统发生错误了哦，快试试重新获取一下吧~");
+        return;
       }
-    }
+      if (GedanS && Array.isArray(GedanS)) {
+        if (GedanS.length > 0) {
+          const gedan = GedanS[0].songs;
+          if (Array.isArray(gedan) && gedan.length >= 10) {
+            addSongsToLocalPlaylist(gedan);
+            setuuid("");
+            setOpenDialog(false);
+            onClose();
+            setcheckisabled(true);
+            setdisabled(false);
+            setTimeout(() => {
+              setcheckisabled(false);
+            }, 300000);
+          }
+        } else {
+          setdisabled(false);
+          messageApi.error("系统发生错误了哦，快试试重新获取一下吧~");
+        }
+      }
+    });
   };
 
   const handleShare = async () => {
     if (playList && Array.isArray(playList) && playList.length >= 10) {
       setdisabled(true);
-      const mobile = localStorage.getItem("userprofile");
-      const emobile = btoa(mobile);
-      const { data, error } = await supabase
-        .from("GedanS")
-        .upsert({ songs: playList, mobile: emobile })
-        .select();
-      if (error) {
-        setOpenDialog(false);
-        messageApi.error(
-          "分享歌单失败了哦~可能是您的歌单和别人的重复啦，再去添加一些别的歌曲吧~"
-        );
-        setdisabled(false);
-        return;
-      }
-      if (data && Array.isArray(data)) {
-        const UUID = data[0].gedanid;
-        setgedanidc(UUID);
-        setgedanidshow(true);
-        setdisabled(false);
-        setsharedisabled(true);
-        setTimeout(() => {
-          setsharedisabled(false);
-        }, 300000);
-      }
+      yuxStorage.getItem("userprofile").then(async (mobile) => {
+        const emobile = btoa(mobile);
+        const { data, error } = await supabase
+          .from("GedanS")
+          .upsert({ songs: playList, mobile: emobile })
+          .select();
+        if (error) {
+          setOpenDialog(false);
+          messageApi.error(
+            "分享歌单失败了哦~可能是您的歌单和别人的重复啦，再去添加一些别的歌曲吧~"
+          );
+          setdisabled(false);
+          return;
+        }
+        if (data && Array.isArray(data)) {
+          const UUID = data[0].gedanid;
+          setgedanidc(UUID);
+          setgedanidshow(true);
+          setdisabled(false);
+          setsharedisabled(true);
+          setTimeout(() => {
+            setsharedisabled(false);
+          }, 300000);
+        }
+      });
     }
   };
 
@@ -277,30 +307,40 @@ const PersonalPlaylist = () => {
     const newPlayList = [...playList];
     newPlayList.splice(index, 1);
     setPlayList(newPlayList);
-    localStorage.setItem("playList", JSON.stringify(newPlayList));
+    yuxStorage.setItem("playList", JSON.stringify(newPlayList));
   };
 
   const handleLogin = () => {
     setdisabled(true);
-    const profile = localStorage.getItem("userprofile");
-    if (!profile) {
-      router.push("/oauth-login");
-    } else {
-      messageApi.info("您已经登录了哦~");
-    }
+    yuxStorage
+      .getItem("userprofile")
+      .then((profile) => {
+        if (!profile) {
+          router.push("/oauth-login");
+        } else {
+          messageApi.info("您已经登录了哦~");
+        }
+      })
+      .catch((err) => {
+        router.push("/oauth-login");
+      });
   };
 
   const handleQuitLogin = () => {
     setdisabled(true);
-    localStorage.removeItem("userprofile");
-    localStorage.removeItem("mobiletoken");
-    localStorage.removeItem("ykey");
-    localStorage.removeItem("skey");
-    setprofile(false);
-    setTimeout(() => {
-      messageApi.success("退出登录成功~");
-      setdisabled(false);
-    }, 1000);
+    yuxStorage.removeItem("userprofile").then(() => {
+      yuxStorage.removeItem("mobiletoken").then(() => {
+        yuxStorage.removeItem("ykey").then(() => {
+          yuxStorage.removeItem("skey").then(() => {
+            setprofile(false);
+            setTimeout(() => {
+              messageApi.success("退出登录成功~");
+              setdisabled(false);
+            }, 1000);
+          });
+        });
+      });
+    });
   };
 
   return (
@@ -393,7 +433,7 @@ const PersonalPlaylist = () => {
             <Button
               onClick={() => {
                 setPlayList([]);
-                localStorage.removeItem("playList");
+                yuxStorage.removeItem("playList");
               }}
               autoFocus
               color="inherit"
