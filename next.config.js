@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 
 const nextConfig = {
-  output: "export",
   env: {
     ShuanQ_Host: process.env.ShuanQ_Host,
     ShuanQ_AppKey: process.env.ShuanQ_AppKey,
