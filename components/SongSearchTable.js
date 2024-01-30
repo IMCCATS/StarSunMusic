@@ -37,6 +37,7 @@ import {
 } from "./common/fetchapi";
 import Script from "next/script";
 import { scroller, Element } from "react-scroll";
+import { addAppData, getAppData } from "./common/db";
 
 export default function SongSearchTable({ setcanlistplay }) {
   const {
@@ -119,18 +120,23 @@ export default function SongSearchTable({ setcanlistplay }) {
     }
 
     const newSearchHistory = [...SearchHistory, searchTerm];
-    localStorage.setItem("SearchHistory", JSON.stringify(newSearchHistory));
-    SetSearchHistory(newSearchHistory);
+    addAppData("SearchHistory", JSON.stringify(newSearchHistory))
+      .then((e) => {
+        SetSearchHistory(newSearchHistory);
+      })
+      .catch((e) => {
+        SetSearchHistory(newSearchHistory);
+      });
   };
 
   const AddSearchHistory = () => {
     setallwz("搜索功能加载完成啦~\n请搜索歌曲哦~");
-    const savedSearchHistory = JSON.parse(
-      localStorage.getItem("SearchHistory")
-    );
-    if (savedSearchHistory) {
-      SetSearchHistory(savedSearchHistory);
-    }
+    getAppData("SearchHistory").then((e) => {
+      if (e) {
+        const savedSearchHistory = JSON.parse(e);
+        SetSearchHistory(savedSearchHistory);
+      }
+    });
   };
 
   const fxhandleClose = () => {
@@ -307,8 +313,14 @@ export default function SongSearchTable({ setcanlistplay }) {
   };
 
   const ClearHistory = () => {
-    localStorage.removeItem("SearchHistory");
-    SetSearchHistory([]);
+    delAppData("SearchHistory")
+      .then((e) => {
+        SetSearchHistory([]);
+        messageApi.success("清空成功啦~");
+      })
+      .catch((e) => {
+        messageApi.error("删除数据失败，请重试");
+      });
   };
 
   const loadmoresong = (PlatF) => {

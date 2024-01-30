@@ -16,21 +16,23 @@ import Script from "next/script";
 import * as React from "react";
 import { CodeLogin, GetRegCode } from "../../../components/common/fetchapi";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
+import { addAppData, getAppData } from "../../../components/common/db";
 const crypto = require("crypto");
 
 const LoginPage = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const [logined, setlogined] = React.useState(false);
   const CheckScript = () => {
-    const state = localStorage.getItem("userprofile");
-    if (state) {
-      setIsLoading(true);
-      setlogined(true);
-      setTimeout(() => {
-        router.push("/dashboard");
-        return null;
-      }, 1500);
-    }
+    getAppData("userprofile").then((state) => {
+      if (state) {
+        setIsLoading(true);
+        setlogined(true);
+        setTimeout(() => {
+          router.push("/dashboard");
+          return null;
+        }, 1500);
+      }
+    });
   };
   React.useEffect(() => {
     CheckScript();
@@ -81,20 +83,29 @@ const LoginPage = () => {
       return result;
     }
     setlogined(true);
-    localStorage.setItem("userprofile", mobileidc);
-    localStorage.setItem("mobiletoken", token);
-    const skey = generateRandomString();
-    localStorage.setItem("skey", skey);
-    async function sha256(input) {
-      return crypto.createHash("sha256").update(input).digest("hex");
+    try {
+      addAppData("userprofile", mobileidc).then(() => {
+        addAppData("mobiletoken", token).then(() => {
+          const skey = generateRandomString();
+          addAppData("skey", skey).then(() => {
+            async function sha256(input) {
+              return crypto.createHash("sha256").update(input).digest("hex");
+            }
+            const text = skey + mobileidc + token + skey;
+            sha256(text).then((ykey) => {
+              addAppData("ykey", ykey).then(() => {
+                setTimeout(function () {
+                  handleGo();
+                }, 1000);
+              });
+            });
+          });
+        });
+      });
+    } catch (error) {
+      messageApi.error("登录失败，快联系开发者修复吧~");
+      setIsLoading(false);
     }
-    const text = skey + mobileidc + token + skey;
-    sha256(text).then((ykey) => {
-      localStorage.setItem("ykey", ykey);
-    });
-    setTimeout(function () {
-      handleGo();
-    }, 1000);
   };
 
   const handleClickOpen = async () => {

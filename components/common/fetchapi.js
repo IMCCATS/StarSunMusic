@@ -121,17 +121,17 @@ export const SearchSong = cache(async (SearchPlatform, SearchTerm) => {
   });
 }); //歌曲搜索函数
 
-export const HandleListenSong = cache(async (SongId) => {
+export const HandleListenSong = cache(async (songId) => {
   return new Promise((resolve, reject) => {
     HandleAjax("https://api.paugram.com/netease/", "get", {
-      id: `${SongId}`,
+      id: `${songId}`,
     })
       .then((res) => {
         resolve(res);
       })
       .catch((error) => {
         HandleAjax("https://api.gumengya.com/Api/Netease", "get", {
-          id: `${SongId}`,
+          id: `${songId}`,
           format: "json",
         })
           .then((res) => {
@@ -145,12 +145,12 @@ export const HandleListenSong = cache(async (SongId) => {
   });
 }); //歌曲解析函数
 
-export const HandleListenSongDatabase = cache(async (SongId) => {
+export const HandleListenSongDatabase = cache(async (songId) => {
   return new Promise(async (resolve, reject) => {
     const { data, error } = await supabase
       .from("MusicSearch")
       .select("*")
-      .eq("id", SongId);
+      .eq("id", songId);
     if (error) {
       reject(error);
     }
