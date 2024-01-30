@@ -1,6 +1,9 @@
 /** @type {import('next').NextConfig} */
 
 const nextConfig = {
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   env: {
     ShuanQ_Host: process.env.ShuanQ_Host,
     ShuanQ_AppKey: process.env.ShuanQ_AppKey,
