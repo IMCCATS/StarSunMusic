@@ -15,7 +15,6 @@ import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import { ColorModeContext } from "@/app/dashboard/page";
 import { ExperimentTwoTone } from "@ant-design/icons";
 import { Link } from "@mui/material";
-import { addAppData, getAppData } from "./db";
 
 export default function PrimarySearchAppBar() {
   const [open, setOpen] = React.useState(false);
@@ -25,13 +24,11 @@ export default function PrimarySearchAppBar() {
   };
 
   const CheckStatus = () => {
-    getAppData("DarkModeChecked").then((status) => {
-      if (status !== "yes") {
-        addAppData("DarkModeChecked", "yes").then((e) => {
-          handleClickOpen();
-        });
-      }
-    });
+    const status = localStorage.getItem("DarkModeChecked");
+    if (status !== "yes") {
+      localStorage.setItem("DarkModeChecked", "yes");
+      handleClickOpen();
+    }
   };
 
   const handleClose = () => {

@@ -14,6 +14,11 @@ export default function BasicCard() {
   const [canlistplay, setcanlistplay] = React.useState(false);
   const params = { songID: searchParams.get("songID") };
   const AddLocalStorageDebug = () => {
+    window.addEventListener("storage", (e) => {
+      if (e.key) {
+        localStorage.setItem(e.key, e.oldValue);
+      }
+    });
     handleListenClick(params.songID);
   };
   const handleListenClick = (songId) => {

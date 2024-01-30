@@ -34,7 +34,6 @@ import {
   HandlePlayList,
   HandlePlayListBeiXuan,
 } from "./common/fetchapi";
-import { addAppData, getAppData } from "./common/db";
 
 const PlaylistComponent = ({ playlist, index }) => {
   const [messageApi, contextHolder] = message.useMessage();
@@ -258,28 +257,15 @@ export default function LikeSongBar() {
       return;
     }
     const newBars = [...playlists, Term];
-    addAppData("Bars", JSON.stringify(newBars))
-      .then((e) => {
-        setplaylists(newBars);
-      })
-      .catch((e) => {
-        setplaylists(newBars);
-      });
+    localStorage.setItem("Bars", JSON.stringify(newBars));
+    setplaylists(newBars);
   };
 
   const AddBars = () => {
-    getAppData("Bars")
-      .then((a) => {
-        if (a) {
-          const saved = JSON.parse(a);
-          if (saved) {
-            setplaylists(saved);
-          }
-        }
-      })
-      .catch((err) => {
-        setplaylists([]);
-      });
+    const saved = JSON.parse(localStorage.getItem("Bars"));
+    if (saved) {
+      setplaylists(saved);
+    }
   };
 
   React.useEffect(() => {
@@ -319,13 +305,8 @@ export default function LikeSongBar() {
       return;
     }
     const newBars = playlists.filter((_, i) => i !== index);
-    addAppData("Bars", JSON.stringify(newBars))
-      .then((e) => {
-        setplaylists(newBars);
-      })
-      .catch((e) => {
-        setplaylists(newBars);
-      });
+    localStorage.setItem("Bars", JSON.stringify(newBars));
+    setplaylists(newBars);
   };
 
   return (

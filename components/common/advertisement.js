@@ -4,24 +4,17 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
-import { addAppData, getAppData } from "./db";
 export default function Advertisement() {
   const [open, setOpen] = React.useState("none");
   const SetAD = () => {
-    getAppData("showad").then((OpenState) => {
-      if (OpenState !== "off") {
-        setOpen("block");
-      }
-    });
+    const OpenState = window.localStorage.getItem("showad");
+    if (OpenState !== "off") {
+      setOpen("block");
+    }
   };
   const OffAD = () => {
-    addAppData("showad", "off")
-      .then((e) => {
-        setOpen("none");
-      })
-      .catch((e) => {
-        setOpen("none");
-      });
+    setOpen("none");
+    window.localStorage.setItem("showad", "off");
   };
   React.useEffect(() => {
     SetAD();

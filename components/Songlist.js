@@ -97,17 +97,12 @@ export default function SongList() {
 
   return (
     <>
-      {currentSongs &&
-      lastPlayedSongIndex &&
-      PlayingSongs &&
-      PlayingSongs[lastPlayedSongIndex] ? (
+      {currentSongs && lastPlayedSongIndex && PlayingSongs ? (
         <>
           <p>
             当前正在播放 播放列表第{lastPlayedSongIndex + 1}首歌曲：
-            {PlayingSongs[lastPlayedSongIndex].name
-              ? PlayingSongs[lastPlayedSongIndex].name
-              : PlayingSongs[lastPlayedSongIndex].title}
-            —{PlayingSongs[lastPlayedSongIndex].artist}
+            {PlayingSongs[lastPlayedSongIndex].name}—
+            {PlayingSongs[lastPlayedSongIndex].artist}
           </p>
         </>
       ) : (

@@ -28,7 +28,6 @@ import { Backdrop, Card, CardContent, CircularProgress } from "@mui/material";
 import SongList from "../../../components/Songlist";
 import zhCN from "antd/locale/zh_CN";
 import FingerprintJS from "@fingerprintjs/fingerprintjs";
-import { addAppData, getAppData } from "../../../components/common/db";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -51,23 +50,23 @@ function StarSunMusic() {
     setOpen(true);
   };
   const CheckPolicy = () => {
-    getAppData("isAgreedPolicy")
-      .then((state) => {
-        if (state !== "1") {
-          handleClick();
-          setTimeout(() => {
-            router.push("/");
-          }, 5000);
-        }
-      })
-      .catch((err) => {
-        handleClick();
-        setTimeout(() => {
-          router.push("/");
-        }, 5000);
-      });
+    const state = localStorage.getItem("isAgreedPolicy");
+    if (state !== "1") {
+      handleClick();
+      setTimeout(() => {
+        router.push("/");
+      }, 5000);
+    }
+  };
+  const AddLocalStorageDebug = () => {
+    window.addEventListener("storage", (e) => {
+      if (e.key) {
+        localStorage.setItem(e.key, e.oldValue);
+      }
+    });
   };
   React.useEffect(() => {
+    AddLocalStorageDebug();
     CheckPolicy();
   }, []);
 
@@ -129,7 +128,7 @@ function StarSunMusic() {
       fp.get().then((result) => {
         const visitorId = result.visitorId;
         setfingerprintidc(visitorId);
-        addAppData("fingerprintidc", visitorId);
+        localStorage.setItem("fingerprintidc", visitorId);
       });
     });
   }, []);
