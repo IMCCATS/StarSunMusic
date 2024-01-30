@@ -34,6 +34,7 @@ import FileIcon from "@mui/icons-material/Article";
 import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
 import { Flex } from "antd";
 import { Download } from "@mui/icons-material";
+import { addAppData, addSongData, getAppData } from "./common/db";
 
 const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
   const [isAudioPlayable, setIsAudioPlayable] = React.useState(true);
@@ -104,25 +105,29 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
   };
 
   const parseLrcString = (lrcString) => {
-    const lines = lrcString.split("\n");
-    const lyrics = [];
+    if (lrcString) {
+      const lines = lrcString.split("\n");
+      const lyrics = [];
 
-    lines.forEach((line) => {
-      const timeMatches = line.match(/\[(\d{2}):(\d{2}\.\d{2,3})\]/g);
-      const textMatch = line.match(/](.*)/);
+      lines.forEach((line) => {
+        const timeMatches = line.match(/\[(\d{2}):(\d{2}\.\d{2,3})\]/g);
+        const textMatch = line.match(/](.*)/);
 
-      if (timeMatches && textMatch) {
-        const time = timeMatches[0].slice(1, -1);
-        const minutes = parseInt(time.split(":")[0]);
-        const seconds = parseFloat(time.split(":")[1]);
-        const text = textMatch[1].trim();
-        const timeInSeconds = minutes * 60 + seconds;
+        if (timeMatches && textMatch) {
+          const time = timeMatches[0].slice(1, -1);
+          const minutes = parseInt(time.split(":")[0]);
+          const seconds = parseFloat(time.split(":")[1]);
+          const text = textMatch[1].trim();
+          const timeInSeconds = minutes * 60 + seconds;
 
-        lyrics.push({ time: timeInSeconds, text });
-      }
-    });
+          lyrics.push({ time: timeInSeconds, text });
+        }
+      });
 
-    return lyrics;
+      return lyrics;
+    } else {
+      return [];
+    }
   };
 
   const SetMetaData = () => {
@@ -563,17 +568,14 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
   };
 
   const addSongToLocalPlaylist = (song) => {
-    const playList = JSON.parse(localStorage.getItem("playList")) || [];
-    const existingSongIndex = playList.findIndex(
-      (s) => s.songId === song.songId
-    );
-    if (existingSongIndex === -1) {
-      playList.push(song);
-      localStorage.setItem("playList", JSON.stringify(playList));
-      messageApi.success("添加成功啦~");
-    } else {
-      message.info("歌单已存在本歌曲了哦~");
-    }
+    addSongData(song)
+      .then((e) => {
+        messageApi.success("添加成功啦~");
+      })
+      .catch((e) => {
+        // console.error(e);
+        message.info("添加失败了哦~");
+      });
   };
 
   return (
@@ -624,6 +626,7 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
                               </Typography>
                             )}
                             {currentSong &&
+                              currentSong.lyric &&
                               currentSong.lyric
                                 .split("\n")
                                 .filter((line) => {

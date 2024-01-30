@@ -17,6 +17,8 @@ import CircularProgress from "@mui/material/CircularProgress";
 import CloseIcon from "@mui/icons-material/Close";
 import UserAgreementAndPrivacyPolicy from "../../components/common/UserAgreementAndPrivacyPolicy";
 import { useRouter } from "next/navigation";
+import { addAppData, getAppData } from "../../components/common/db";
+import { message } from "antd";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -33,12 +35,17 @@ const HomePage = () => {
   }, []);
 
   const handleClickOpen = () => {
-    const state = localStorage.getItem("isAgreedPolicy");
-    if (state !== "1") {
-      setOpen(true);
-    } else if (state === "1") {
-      handleClickPolicyed();
-    }
+    getAppData("isAgreedPolicy")
+      .then((state) => {
+        if (state !== "1") {
+          setOpen(true);
+        } else if (state === "1") {
+          handleClickPolicyed();
+        }
+      })
+      .catch((err) => {
+        setOpen(true);
+      });
   };
 
   const handleClose = () => {
@@ -47,10 +54,15 @@ const HomePage = () => {
   };
 
   const handleClick = () => {
-    localStorage.setItem("isAgreedPolicy", "1");
-    setIsLoading(true);
-    setOpen(false);
-    router.push("/dashboard");
+    addAppData("isAgreedPolicy", "1")
+      .then((e) => {
+        setIsLoading(true);
+        setOpen(false);
+        router.push("/dashboard");
+      })
+      .catch((e) => {
+        message.error("保存状态失败，请重试");
+      });
   };
 
   const handleClickPolicyed = () => {
