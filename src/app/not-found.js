@@ -14,10 +14,6 @@ const App = () => {
         height: "100vh",
       }}
     >
-      <link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Noto+Sans+SC:100,300,400,500,700,900"
-      />
       <link rel="icon" href="./favicon.ico" />
       <Result
         status="404"

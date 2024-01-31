@@ -40,10 +40,6 @@ export default function BasicCard() {
   }, []);
   return (
     <main>
-      <link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Noto+Sans+SC:100,300,400,500,700,900"
-      />
       <meta
         httpEquiv="Content-Security-Policy"
         content="upgrade-insecure-requests"

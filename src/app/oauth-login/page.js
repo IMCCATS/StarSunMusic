@@ -1,13 +1,15 @@
 "use client";
-import DashboardIcon from "@mui/icons-material/Dashboard";
 import {
   Box,
+  Container,
+  Stepper,
+  Step,
+  StepLabel,
   Button,
   Card,
-  CardContent,
-  Container,
   TextField,
   Typography,
+  CardContent,
 } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 import { Flex, message } from "antd";
@@ -15,11 +17,14 @@ import { useRouter } from "next/navigation";
 import Script from "next/script";
 import * as React from "react";
 import { CodeLogin, GetRegCode } from "../../../components/common/fetchapi";
-import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 const crypto = require("crypto");
 import yuxStorage from "@/app/api/yux-storage";
+import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
+import { KeyboardDoubleArrowLeft } from "@mui/icons-material";
 
-const LoginPage = () => {
+export default function LoginPage() {
+  const [activeStep, setActiveStep] = React.useState(0);
+  const steps = ["输入您的手机号", "输入您获取的验证码", "立即登录吧~"];
   const [messageApi, contextHolder] = message.useMessage();
   const [logined, setlogined] = React.useState(false);
   const CheckScript = () => {
@@ -132,8 +137,6 @@ const LoginPage = () => {
     );
   };
 
-  const [disabledc, setdisabledc] = React.useState(false);
-
   const handleClickGetCode = async () => {
     if (checkPhone(username)) {
       initGeetest4(
@@ -151,10 +154,7 @@ const LoginPage = () => {
             .onSuccess(function () {
               GetRegCode(username)
                 .then((e) => {
-                  setdisabledc(true);
-                  setTimeout(() => {
-                    setdisabledc(false);
-                  }, 60000);
+                  setActiveStep((prevActiveStep) => prevActiveStep + 1);
                   messageApi.success("验证码发送成功，请注意查收");
                 })
                 .catch((e) => {
@@ -169,10 +169,6 @@ const LoginPage = () => {
   return (
     <Container>
       <Script src="https://static.geetest.com/v4/gt4.js" />
-      <link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Noto+Sans+SC:100,300,400,500,700,900"
-      />
       {contextHolder}
       <meta name="viewport" content="initial-scale=1, width=device-width" />
       <div
@@ -187,111 +183,117 @@ const LoginPage = () => {
         <img
           src="/logo.png"
           alt="Logo"
-          style={{ marginBottom: "2px", width: "220px", height: "220px" }}
+          style={{ marginBottom: "24px", width: "220px", height: "220px" }}
         />
         <Typography variant="h4" component="h4" gutterBottom>
-          <span>登录·星阳音乐系统</span>
+          登录·星阳音乐系统
         </Typography>
-        <div id="captcha" />
+
+        <Stepper activeStep={activeStep} alternativeLabel sx={{ mt: 3, mb: 5 }}>
+          {steps.map((label) => (
+            <Step key={label}>
+              <StepLabel>{label}</StepLabel>
+            </Step>
+          ))}
+        </Stepper>
+
+        {activeStep === 0 && (
+          <Box sx={{ mt: 2 }}>
+            <Flex gap="middle">
+              <TextField
+                id="outlined-basic"
+                label="手机号"
+                variant="outlined"
+                required
+                value={username}
+                onChange={handleUserNameChange}
+                style={{ marginRight: "5px" }}
+              />
+            </Flex>
+          </Box>
+        )}
+        {activeStep === 1 && (
+          <Box sx={{ mt: 2 }}>
+            <Flex gap="middle">
+              <TextField
+                id="outlined-basic"
+                label="验证码"
+                variant="outlined"
+                required
+                value={pass}
+                onChange={handlePassChange}
+                style={{ marginRight: "5px" }}
+              />
+            </Flex>
+          </Box>
+        )}
+
         {isLoading ? (
-          <div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "100%",
+            }}
+          >
             {logined ? (
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  height: "100%",
-                }}
-              >
-                <CircularProgress />
-                <p style={{ marginLeft: "10px", whiteSpace: "pre" }}>
-                  正在登录
-                </p>
-              </div>
+              <>
+                <CircularProgress sx={{ mr: 1 }} />
+                <p style={{ whiteSpace: "pre" }}>正在登录</p>
+              </>
             ) : (
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  height: "100%",
-                }}
-              >
-                <Card>
-                  <CardContent>正在登录中...</CardContent>
-                </Card>
-              </div>
+              <Card elevation={3}>
+                <CardContent>正在登录中...</CardContent>
+              </Card>
             )}
           </div>
-        ) : (
-          <div>
-            <div>
-              <Box style={{ marginTop: "10px" }}>
-                <Flex vertical="vertical" gap="middle">
-                  <Flex gap="middle">
-                    <TextField
-                      id="outlined-basic"
-                      label="手机号"
-                      variant="outlined"
-                      required
-                      value={username}
-                      onChange={handleUserNameChange}
-                      style={{ marginRight: "5px" }}
-                    />
-                    <Button
-                      variant="contained"
-                      startIcon={<DashboardIcon />}
-                      onClick={handleClickGetCode}
-                      disabled={disabledc}
-                    >
-                      <span>获取验证码</span>
-                    </Button>
-                  </Flex>
-                  <Flex gap="middle">
-                    <TextField
-                      id="outlined-basic"
-                      label="验证码"
-                      variant="outlined"
-                      required
-                      value={pass}
-                      onChange={handlePassChange}
-                      style={{ marginRight: "5px" }}
-                    />
-                    <Button
-                      variant="contained"
-                      startIcon={<KeyboardDoubleArrowRightIcon />}
-                      onClick={handleClickOpen}
-                    >
-                      <span>去登录账号</span>
-                    </Button>
-                  </Flex>
-                </Flex>
-              </Box>
-            </div>
-          </div>
+        ) : null}
+
+        {!isLoading && activeStep > 0 && (
+          <Button
+            color="primary"
+            sx={{ mt: "10px", mb: "10px" }}
+            variant="outlined"
+            startIcon={<KeyboardDoubleArrowLeft />}
+            onClick={() =>
+              setActiveStep((prevActiveStep) => prevActiveStep - 1)
+            }
+          >
+            上一步
+          </Button>
         )}
-        <div
-          style={{
-            marginTop: "40px",
-            marginBottom: "80px",
-            fontSize: "14px",
-            color: "#888",
-            textAlign: "center",
-          }}
-        >
-          <span>开发者：小研同学</span>
-          <br />
-          <span>
-            &copy; 2020 - {new Date().getFullYear()} 内蒙古畅哥计算机科技工作室
-            版权所有.
-          </span>
-          <br />
-          <span>应用程序可能响应较慢或无响应，烦请耐心等待，多次尝试~</span>
-        </div>
+
+        {!isLoading && activeStep < steps.length - 1 && (
+          <Button
+            color="primary"
+            sx={{ mt: "10px" }}
+            variant="contained"
+            startIcon={<KeyboardDoubleArrowRightIcon />}
+            onClick={() => {
+              if (activeStep === 0) {
+                handleClickGetCode();
+              } else {
+                setActiveStep((prevActiveStep) => prevActiveStep + 1);
+              }
+            }}
+          >
+            下一步
+          </Button>
+        )}
+
+        {/* 在最后一步显示登录按钮 */}
+        {!isLoading && activeStep === steps.length - 1 && (
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<KeyboardDoubleArrowRightIcon />}
+            onClick={handleClickOpen}
+          >
+            去登录账号
+          </Button>
+        )}
       </div>
     </Container>
   );
-};
-
-export default LoginPage;
+}
