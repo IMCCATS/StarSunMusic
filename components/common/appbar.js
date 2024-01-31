@@ -16,6 +16,7 @@ import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import { ColorModeContext } from "@/app/dashboard/page";
 import { ExperimentTwoTone } from "@ant-design/icons";
 import { Link } from "@mui/material";
+import UserAva from "./userava";
 
 export default function PrimarySearchAppBar() {
   const [open, setOpen] = React.useState(false);
@@ -44,6 +45,7 @@ export default function PrimarySearchAppBar() {
   };
 
   const { colorMode } = React.useContext(ColorModeContext);
+
   return (
     <>
       <React.Fragment>
@@ -92,9 +94,15 @@ export default function PrimarySearchAppBar() {
             >
               <MusicNoteIcon />
             </IconButton>
-            <Typography variant="h6" noWrap component="div">
+            <Typography
+              variant="h6"
+              noWrap
+              component="div"
+              sx={{ flexGrow: 1 }}
+            >
               <span>星阳音乐系统</span>
             </Typography>
+            <UserAva />
           </Toolbar>
         </AppBar>
       </Box>

@@ -11,6 +11,7 @@ import SongBar from "../../../components/SongBar";
 import { useRouter } from "next/navigation";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
+import BookmarksIcon from "@mui/icons-material/Bookmarks";
 import JuanZeng from "../../../components/common/juanzeng";
 import ScrollToTopFab from "../../../components/common/ScrollToTopFab";
 import PersonalPlaylist from "../../../components/PersonalPlaylist";
@@ -22,13 +23,28 @@ import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import LikeSongBar from "../../../components/LikeSongsBar";
-import { ConfigProvider, message } from "antd";
+import { ConfigProvider, Flex, message } from "antd";
 import { HandleListenSong } from "../../../components/common/fetchapi";
-import { Backdrop, Card, CardContent, CircularProgress } from "@mui/material";
+import {
+  Backdrop,
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Modal,
+} from "@mui/material";
 import SongList from "../../../components/Songlist";
 import zhCN from "antd/locale/zh_CN";
 import FingerprintJS from "@fingerprintjs/fingerprintjs";
 import yuxStorage from "@/app/api/yux-storage";
+import ListIcon from "@mui/icons-material/List";
+import SearchIcon from "@mui/icons-material/Search";
+import { DeveloperBoard } from "@mui/icons-material";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -46,6 +62,7 @@ function StarSunMusic() {
   const [canlistplay, setcanlistplay] = React.useState(false);
   const [PlayingSongs, SetPlayingSongs] = React.useState([]);
   const [open, setOpen] = React.useState(false);
+  const [profile, setprofile] = React.useState(false);
 
   const handleClick = () => {
     setOpen(true);
@@ -143,6 +160,16 @@ function StarSunMusic() {
     });
   }, []);
 
+  const [CurrentComponent, SetCurrentComponent] = React.useState(null);
+  const [CurrentCptName, SetCurrentCptName] = React.useState("");
+  const [Clickopen, SetClickopen] = React.useState(false);
+  const handleopen = (name, component) => {
+    SetClickopen(false);
+    SetCurrentComponent(component);
+    SetCurrentCptName(name);
+    SetClickopen(true);
+  };
+
   return (
     <main
       style={{
@@ -158,12 +185,8 @@ function StarSunMusic() {
         open={disabled}
       >
         <CircularProgress color="inherit" />
-        <span style={{ marginLeft: "15px" }}>正在加载歌曲</span>
+        <span style={{ marginLeft: "15px" }}>正在加载</span>
       </Backdrop>
-      <link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Noto+Sans+SC:100,300,400,500,700,900"
-      />
       <meta
         httpEquiv="Content-Security-Policy"
         content="upgrade-insecure-requests"
@@ -175,9 +198,6 @@ function StarSunMusic() {
           <span>您还没有同意用户协议与隐私政策，5秒后将自动跳转首页！</span>
         </Alert>
       </Snackbar>
-      <AppBar />
-      <Advertisement />
-      <UpdateDialog />
       <CurrentSongContext.Provider
         value={{
           isPlayComplete,
@@ -193,137 +213,162 @@ function StarSunMusic() {
           handleInsectSongClick,
           disabled,
           setdisabled,
+          profile,
+          setprofile,
         }}
       >
+        <AppBar />
+        <Advertisement />
+        <UpdateDialog />
         <div>
           <MusicCard
             currentSong={currentSong}
             setisPlayComplete={setisPlayComplete}
             canlistplay={canlistplay}
           />
-          {process.env.NODE_ENV === "development" && (
-            <Accordion
-              expanded={expanded === "操作区开发专用"}
-              onChange={handleChange("操作区开发专用")}
-              TransitionProps={{ unmountOnExit: true }}
-            >
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel1a-content"
-                id="panel1a-header"
+          <Dialog
+            open={Clickopen}
+            onClose={() => {
+              SetClickopen(false);
+            }}
+            scroll={"paper"}
+          >
+            <DialogTitle>{CurrentCptName}</DialogTitle>
+            <DialogContent dividers="true">{CurrentComponent}</DialogContent>
+            <DialogActions>
+              <Button
+                onClick={() => {
+                  SetClickopen(false);
+                }}
               >
-                <Typography>
-                  <span>操作区—开发专用</span>
-                </Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <Card>
-                  <CardContent>
-                    {currentSong && (
-                      <>
-                        <Typography
-                          sx={{ fontSize: 14 }}
-                          color="text.secondary"
-                          gutterBottom
-                        >
-                          <span>当前歌曲信息：</span>
-                        </Typography>
-                        <Typography
-                          sx={{ fontSize: 14 }}
-                          color="text.secondary"
-                          gutterBottom
-                        >
-                          <p>歌曲名：{currentSong.title}</p>
-                          <p>歌作者：{currentSong.artist}</p>
-                          <p>歌ID：{currentSong.id}</p>
-                          <p>歌封面：{currentSong.cover}</p>
-                        </Typography>
-                      </>
-                    )}
-                    {!currentSong && (
-                      <>
-                        <Typography
-                          sx={{ fontSize: 14 }}
-                          color="text.secondary"
-                          gutterBottom
-                        >
-                          <p>暂无歌曲播放中</p>
-                        </Typography>
-                      </>
-                    )}
-                    <Typography
-                      sx={{ fontSize: 14 }}
-                      color="text.secondary"
-                      gutterBottom
-                    >
-                      <p>UA：{navigator.userAgent.toLowerCase()}</p>
-                    </Typography>
-                    <Typography
-                      sx={{ fontSize: 14 }}
-                      color="text.secondary"
-                      gutterBottom
-                    >
-                      <p>FingerPrint：{fingerprintidc}</p>
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </AccordionDetails>
-            </Accordion>
-          )}
-          <Accordion
-            expanded={expanded === "操作区"}
-            onChange={handleChange("操作区")}
-            TransitionProps={{ unmountOnExit: true }}
-          >
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel1a-content"
-              id="panel1a-header"
-            >
-              <Typography>
-                <span>操作区</span>
-              </Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <PersonalPlaylist />
-            </AccordionDetails>
-          </Accordion>
-          <Accordion
-            expanded={expanded === "搜索区"}
-            onChange={handleChange("搜索区")}
-            TransitionProps={{ unmountOnExit: true }}
-          >
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel1a-content"
-              id="panel1a-header"
-            >
-              <Typography>
-                <span>搜索区</span>
-              </Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <SongSearchTable setcanlistplay={setcanlistplay} />
-            </AccordionDetails>
-          </Accordion>
-          <Accordion
-            expanded={expanded === "播放列表"}
-            onChange={handleChange("播放列表")}
-            TransitionProps={{ unmountOnExit: true }}
-          >
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel1a-content"
-              id="panel1a-header"
-            >
-              <Typography>
-                <span>当前播放列表</span>
-              </Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <SongList />
-            </AccordionDetails>
-          </Accordion>
+                关闭
+              </Button>
+            </DialogActions>
+          </Dialog>
+          <Card>
+            <CardContent>
+              <Flex
+                gap={"middle"}
+                justify={"center"}
+                align={"center"}
+                wrap="wrap"
+              >
+                {process.env.NODE_ENV === "development" && (
+                  <Button
+                    variant="contained"
+                    sx={{
+                      height: "56px",
+                      marginTop: "10px",
+                      marginRight: "10px",
+                    }}
+                    onClick={() => {
+                      handleopen(
+                        "开发菜单",
+                        <Card>
+                          <CardContent>
+                            {currentSong && (
+                              <>
+                                <Typography
+                                  sx={{ fontSize: 14 }}
+                                  color="text.secondary"
+                                  gutterBottom
+                                >
+                                  <span>当前歌曲信息：</span>
+                                </Typography>
+                                <Typography
+                                  sx={{ fontSize: 14 }}
+                                  color="text.secondary"
+                                  gutterBottom
+                                >
+                                  <p>歌曲名：{currentSong.title}</p>
+                                  <p>歌作者：{currentSong.artist}</p>
+                                  <p>歌ID：{currentSong.id}</p>
+                                  <p>歌封面：{currentSong.cover}</p>
+                                </Typography>
+                              </>
+                            )}
+                            {!currentSong && (
+                              <>
+                                <Typography
+                                  sx={{ fontSize: 14 }}
+                                  color="text.secondary"
+                                  gutterBottom
+                                >
+                                  <p>暂无歌曲播放中</p>
+                                </Typography>
+                              </>
+                            )}
+                            <Typography
+                              sx={{ fontSize: 14 }}
+                              color="text.secondary"
+                              gutterBottom
+                            >
+                              <p>UA：{navigator.userAgent.toLowerCase()}</p>
+                            </Typography>
+                            <Typography
+                              sx={{ fontSize: 14 }}
+                              color="text.secondary"
+                              gutterBottom
+                            >
+                              <p>FingerPrint：{fingerprintidc}</p>
+                            </Typography>
+                          </CardContent>
+                        </Card>
+                      );
+                    }}
+                  >
+                    <DeveloperBoard />
+                    开发菜单
+                  </Button>
+                )}
+                <Button
+                  variant="contained"
+                  sx={{
+                    height: "56px",
+                    marginTop: "10px",
+                    marginRight: "10px",
+                  }}
+                  onClick={() => {
+                    handleopen("个人歌单", <PersonalPlaylist />);
+                  }}
+                >
+                  <BookmarksIcon />
+                  <span>个人歌单</span>
+                </Button>
+                <Button
+                  variant="contained"
+                  sx={{
+                    height: "56px",
+                    marginTop: "10px",
+                    marginRight: "10px",
+                  }}
+                  onClick={() => {
+                    handleopen(
+                      "搜索歌曲",
+                      <SongSearchTable setcanlistplay={setcanlistplay} />
+                    );
+                  }}
+                >
+                  <SearchIcon />
+                  搜索歌曲
+                </Button>
+                <Button
+                  variant="contained"
+                  sx={{
+                    height: "56px",
+                    marginTop: "10px",
+                    marginRight: "10px",
+                  }}
+                  onClick={() => {
+                    handleopen("播放列表", <SongList />);
+                  }}
+                >
+                  <ListIcon />
+                  播放列表
+                </Button>
+              </Flex>
+            </CardContent>
+          </Card>
           <TopBar />
           <TopBarBS />
           <LikeSongBar />

@@ -2,7 +2,7 @@
 import { Button } from "@mui/material";
 import { Result } from "antd";
 import { useRouter } from "next/navigation";
-import "./main.css";
+
 const App = () => {
   const router = useRouter();
   return (

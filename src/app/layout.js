@@ -1,4 +1,4 @@
-import "./main.css";
+
 
 export const metadata = {
   title: "星阳音乐系统",

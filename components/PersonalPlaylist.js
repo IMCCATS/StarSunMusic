@@ -6,34 +6,24 @@ import {
   Button,
   Typography,
   ButtonGroup,
-  CircularProgress,
-  Backdrop,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogContentText,
   TextField,
   DialogActions,
-  AppBar,
-  Toolbar,
-  IconButton,
   Paper,
   List,
   ListItem,
   ListItemText,
 } from "@mui/material";
 import yuxStorage from "@/app/api/yux-storage";
-import CloseIcon from "@mui/icons-material/Close";
-import { useRouter } from "next/navigation";
 import { Empty, message } from "antd";
 import { ExperimentTwoTone } from "@ant-design/icons";
 import supabase from "@/app/api/supabase";
 import { HandleListenSong } from "./common/fetchapi";
-const crypto = require("crypto");
 
 const PersonalPlaylist = () => {
-  const router = useRouter();
-  const [profile, setprofile] = React.useState(false);
   const [messageApi, contextHolder] = message.useMessage();
   const [openDialog, setOpenDialog] = React.useState(false);
 
@@ -44,14 +34,13 @@ const PersonalPlaylist = () => {
   const handleClose = () => {
     setOpenDialog(false);
   };
-  const [open, setOpen] = React.useState(false);
+
   const [uuidtext, setuuid] = React.useState("");
   const [playList, setPlayList] = React.useState([]);
   const [gedanidshow, setgedanidshow] = React.useState(false);
   const [sharedisabled, setsharedisabled] = React.useState(false);
   const [checkisabled, setcheckisabled] = React.useState(false);
   const [gedanidc, setgedanidc] = React.useState("");
-  const [user, setuser] = React.useState("");
   const {
     SetPlayingSongs,
     setCurrentSong,
@@ -60,6 +49,7 @@ const PersonalPlaylist = () => {
     setdisabled,
     disabled,
     handleInsectSongClick,
+    profile,
   } = React.useContext(CurrentSongContext);
 
   const handleListenClick = (songId) => {
@@ -80,61 +70,6 @@ const PersonalPlaylist = () => {
       });
   };
 
-
-  React.useEffect(() => {
-    yuxStorage.getItem("userprofile").then((a) => {
-      setuser("当前登录用户：" + a);
-    });
-    const b = yuxStorage.getItem("mobiletoken");
-    const c = yuxStorage.getItem("userprofile");
-    const d = yuxStorage.getItem("ykey");
-    const e = yuxStorage.getItem("skey");
-
-    async function sha256(input) {
-      return crypto.createHash("sha256").update(input).digest("hex");
-    }
-
-    Promise.all([b, c, d, e])
-      .then(async ([bb, cc, dd, ee]) => {
-        if (c) {
-          const text = ee + cc + bb + ee;
-          if (text) {
-            const ecode = await sha256(text);
-            if (ecode === dd) {
-              setprofile(true);
-            } else {
-              // console.error([bb, cc, dd, ee, text, ecode]);
-              // setprofile(false);
-              // messageApi.error("自动登录失败或登录失效啦，请重新登录~");
-              yuxStorage.removeItem("userprofile").then(() => {
-                yuxStorage.removeItem("mobiletoken").then(() => {
-                  yuxStorage.removeItem("ykey").then(() => {
-                    yuxStorage.removeItem("skey").then(() => {
-                      setprofile(false);
-                      messageApi.error("自动登录失败或登录失效啦，请重新登录~");
-                    });
-                  });
-                });
-              });
-            }
-          } else {
-            setprofile(false);
-          }
-        } else {
-          messageApi.error("技术问题出现啦，快联系开发者修复~");
-          setprofile(false);
-        }
-      })
-      .catch((error) => {
-        setprofile(false);
-        messageApi.error("技术问题出现啦，快联系开发者修复~");
-        if (process.env.NODE_ENV === "development") {
-          messageApi.error("Error fetching app data:", error);
-          console.error("Error fetching app data:", error);
-        }
-      });
-  }, []);
-
   // 获取播放列表的函数
   const getPlayList = () => {
     yuxStorage.getItem("playList").then((savedPlayList) => {
@@ -144,16 +79,9 @@ const PersonalPlaylist = () => {
     });
   };
 
-  // 显示抽屉的函数
-  const showDrawer = () => {
-    setOpen(true);
+  React.useEffect(() => {
     getPlayList();
-  };
-
-  // 关闭抽屉的函数
-  const onClose = () => {
-    setOpen(false);
-  };
+  }, []);
 
   const handlechange = (event) => {
     setuuid(event.target.value);
@@ -310,39 +238,6 @@ const PersonalPlaylist = () => {
     yuxStorage.setItem("playList", JSON.stringify(newPlayList));
   };
 
-  const handleLogin = () => {
-    setdisabled(true);
-    yuxStorage
-      .getItem("userprofile")
-      .then((profile) => {
-        if (!profile) {
-          router.push("/oauth-login");
-        } else {
-          messageApi.info("您已经登录了哦~");
-        }
-      })
-      .catch((err) => {
-        router.push("/oauth-login");
-      });
-  };
-
-  const handleQuitLogin = () => {
-    setdisabled(true);
-    yuxStorage.removeItem("userprofile").then(() => {
-      yuxStorage.removeItem("mobiletoken").then(() => {
-        yuxStorage.removeItem("ykey").then(() => {
-          yuxStorage.removeItem("skey").then(() => {
-            setprofile(false);
-            setTimeout(() => {
-              messageApi.success("退出登录成功~");
-              setdisabled(false);
-            }, 1000);
-          });
-        });
-      });
-    });
-  };
-
   return (
     <>
       {contextHolder}
@@ -371,213 +266,152 @@ const PersonalPlaylist = () => {
             <span>取消</span>
           </Button>
           <Button onClick={handleCheckUUID}>
-            <span>收藏它</span>
+            <span>获取歌单内歌曲</span>
           </Button>
         </DialogActions>
       </Dialog>
-      {profile ? (
-        <>
-          <p>{user}</p>
-          <Button
-            onClick={handleQuitLogin}
-            variant="contained"
-            disabled={disabled}
-            sx={{
-              height: "56px",
+      <Paper elevation={3}>
+        <div style={{ margin: "20px" }}>
+          {Array.isArray(playList) && playList.length > 0 ? (
+            <List>
+              {playList.map((song, index) => (
+                <ListItem key={index}>
+                  <ListItemText primary={song.title} secondary={song.artist} />
+                  <ButtonGroup>
+                    <Button
+                      onClick={() => handleListenClick(song.songId)}
+                      variant="contained"
+                      disabled={disabled}
+                    >
+                      <span>播放</span>
+                    </Button>
+                    <Button
+                      onClick={() => handleDeleteClick(index)}
+                      variant="contained"
+                      disabled={disabled}
+                    >
+                      <span>删除</span>
+                    </Button>
+                    <Button
+                      onClick={() =>
+                        handleInsectSongClick({
+                          id: song.songId,
+                          name: song.title,
+                          artist: song.artist,
+                        })
+                      }
+                      variant="contained"
+                      disabled={disabled}
+                    >
+                      <span>下首播</span>
+                    </Button>
+                  </ButtonGroup>
+                </ListItem>
+              ))}
+            </List>
+          ) : (
+            <Empty description="还没有歌曲哦~" />
+          )}
+          <Card
+            style={{
               marginTop: "10px",
-              marginRight: "10px",
             }}
           >
-            <span>退出登录</span>
-          </Button>
-        </>
-      ) : (
-        <Button
-          onClick={handleLogin}
-          variant="contained"
-          disabled={disabled}
-          sx={{
-            height: "56px",
-            marginTop: "10px",
-            marginRight: "10px",
-          }}
-        >
-          <span>用户账户登录</span>
-        </Button>
-      )}
-      <Button
-        onClick={showDrawer}
-        variant="contained"
-        sx={{
-          height: "56px",
-          marginTop: "10px",
-          marginRight: "10px",
-        }}
-      >
-        <span>打开个人歌单</span>
-      </Button>
-      <Dialog fullScreen onClose={onClose} open={open}>
-        <AppBar sx={{ position: "relative" }}>
-          <Toolbar>
-            <IconButton
-              edge="start"
-              color="inherit"
-              onClick={onClose}
-              aria-label="close"
-            >
-              <CloseIcon />
-            </IconButton>
-            <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-              <span>个人歌单</span>
-            </Typography>
-            <Button
-              onClick={() => {
-                setPlayList([]);
-                yuxStorage.removeItem("playList");
-              }}
-              autoFocus
-              color="inherit"
-            >
-              <span>清空歌单</span>
-            </Button>
-          </Toolbar>
-        </AppBar>
-        <Paper elevation={3}>
-          <div style={{ margin: "20px" }}>
-            {Array.isArray(playList) && playList.length > 0 ? (
-              <List>
-                {playList.map((song, index) => (
-                  <ListItem key={index}>
-                    <ListItemText
-                      primary={song.title}
-                      secondary={song.artist}
-                    />
-                    <ButtonGroup>
-                      <Button
-                        onClick={() => handleListenClick(song.songId)}
-                        variant="contained"
-                        disabled={disabled}
-                      >
-                        <span>播放</span>
-                      </Button>
-                      <Button
-                        onClick={() => handleDeleteClick(index)}
-                        variant="contained"
-                        disabled={disabled}
-                      >
-                        <span>删除</span>
-                      </Button>
-                      <Button
-                        onClick={() =>
-                          handleInsectSongClick({
-                            id: song.songId,
-                            name: song.title,
-                            artist: song.artist,
-                          })
-                        }
-                        variant="contained"
-                        disabled={disabled}
-                      >
-                        <span>下首播</span>
-                      </Button>
-                    </ButtonGroup>
-                  </ListItem>
-                ))}
-              </List>
-            ) : (
-              <Empty description="还没有歌曲哦~" />
-            )}
-            <Card
+            <CardContent
               style={{
-                marginTop: "10px",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
               }}
             >
-              <CardContent
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
+              <Typography
+                variant="body2"
+                gutterBottom
+                style={{ marginTop: "10px" }}
               >
+                <span>注：个人歌单功能为</span>
+                <ExperimentTwoTone />
+                <span>
+                  实验性功能，且需要登录后才能分享歌单。
+                  <br />
+                  <br />
+                  请注意，我们系统会自动保存您在歌单方面的更改。
+                  <br />
+                  这些数据是保存在您本地设备上的，也就是说，除非您分享了歌单，否则只有您才能看到和听到您的歌单。
+                  <br />
+                  我们强烈建议您不要尝试自行修改歌单数据。如果您进行任何修改，可能会造成不可预测的系统问题，这可能会影响您歌单的完整性和可用性。
+                  <br />
+                  <br />
+                  当前仅支持部分歌曲加歌单播放，开发者正在全力开发啦~
+                  <br />
+                  如果您想分享歌单的话，攒够十首您和您好友喜欢听的歌，就可以分享啦~但是请合理使用哦，有时间限制哒~
+                </span>
+              </Typography>
+              {gedanidshow ? (
                 <Typography
                   variant="body2"
                   gutterBottom
                   style={{ marginTop: "10px" }}
                 >
-                  <span>注：个人歌单功能为</span>
-                  <ExperimentTwoTone />
                   <span>
-                    实验性功能，且需要登录后才能分享歌单。
+                    分享成功啦~ 您的歌单ID为：
                     <br />
                     <br />
-                    请注意，我们系统会自动保存您在歌单方面的更改。
-                    <br />
-                    这些数据是保存在您本地设备上的，也就是说，除非您分享了歌单，否则只有您才能看到和听到您的歌单。
-                    <br />
-                    我们强烈建议您不要尝试自行修改歌单数据。如果您进行任何修改，可能会造成不可预测的系统问题，这可能会影响您歌单的完整性和可用性。
+                    {gedanidc}
                     <br />
                     <br />
-                    当前仅支持部分歌曲加歌单播放，开发者正在全力开发啦~
-                    <br />
-                    如果您想分享歌单的话，攒够十首您和您好友喜欢听的歌，就可以分享啦~但是请合理使用哦，有时间限制哒~
+                    收好它哦！下次打开可能就没有啦~赶快把它分享给好友吧~
                   </span>
                 </Typography>
-                {gedanidshow ? (
-                  <Typography
-                    variant="body2"
-                    gutterBottom
-                    style={{ marginTop: "10px" }}
-                  >
-                    <span>
-                      分享成功啦~ 您的歌单ID为：
-                      <br />
-                      <br />
-                      {gedanidc}
-                      <br />
-                      <br />
-                      收好它哦！下次打开可能就没有啦~赶快把它分享给好友吧~
-                    </span>
-                  </Typography>
-                ) : (
-                  <></>
-                )}
-                <ButtonGroup style={{ marginTop: "10px" }}>
-                  <Button
-                    onClick={() => {
-                      handleShare();
-                    }}
-                    variant="contained"
-                    disabled={
-                      disabled ||
-                      playList.length === 0 ||
-                      playList.length < 10 ||
-                      sharedisabled ||
-                      !profile
-                    }
-                  >
-                    分享我的歌单
-                  </Button>
-                  <Button
-                    onClick={() => handleGetMySongs()}
-                    variant="contained"
-                    disabled={disabled || !profile || checkisabled}
-                  >
-                    获取我的歌单
-                  </Button>
-                  <Button
-                    onClick={() => handleClickOpen()}
-                    variant="contained"
-                    disabled={disabled || checkisabled}
-                  >
-                    获取好友的歌单
-                  </Button>
-                </ButtonGroup>
-              </CardContent>
-            </Card>
-          </div>
-        </Paper>
-      </Dialog>
+              ) : (
+                <></>
+              )}
+              <ButtonGroup style={{ marginTop: "10px" }}>
+                <Button
+                  onClick={() => {
+                    setPlayList([]);
+                    yuxStorage.removeItem("playList");
+                  }}
+                  variant="contained"
+                  disabled={disabled || playList.length === 0}
+                >
+                  <span>清空歌单</span>
+                </Button>
+                <Button
+                  onClick={() => {
+                    handleShare();
+                  }}
+                  variant="contained"
+                  disabled={
+                    disabled ||
+                    playList.length === 0 ||
+                    playList.length < 10 ||
+                    sharedisabled ||
+                    !profile
+                  }
+                >
+                  分享我的歌单
+                </Button>
+                <Button
+                  onClick={() => handleGetMySongs()}
+                  variant="contained"
+                  disabled={disabled || !profile || checkisabled}
+                >
+                  获取我的歌单
+                </Button>
+                <Button
+                  onClick={() => handleClickOpen()}
+                  variant="contained"
+                  disabled={disabled || checkisabled}
+                >
+                  获取好友的歌单
+                </Button>
+              </ButtonGroup>
+            </CardContent>
+          </Card>
+        </div>
+      </Paper>
     </>
   );
 };

@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@mui/material";
 import { Result } from "antd";
-import "./main.css";
+
 export default function Error({ error, reset }) {
   return (
     <div

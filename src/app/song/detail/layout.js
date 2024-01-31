@@ -1,4 +1,4 @@
-import "../../dashboard/main.css";
+
 export const metadata = {
   title: "单曲播放 · 星阳音乐系统",
   description: "单曲播放 · 星阳音乐系统",
