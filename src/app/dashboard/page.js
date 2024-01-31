@@ -227,6 +227,7 @@ function StarSunMusic() {
             canlistplay={canlistplay}
           />
           <Dialog
+            fullWidth
             open={Clickopen}
             onClose={() => {
               SetClickopen(false);

@@ -110,7 +110,7 @@ const PlaylistComponent = ({ playlist, index }) => {
   };
 
   return (
-    <main>
+    <>
       {contextHolder}
       <Accordion key={playlist.id}>
         <AccordionSummary>
@@ -247,7 +247,7 @@ const PlaylistComponent = ({ playlist, index }) => {
           </div>
         </AccordionDetails>
       </Accordion>
-    </main>
+    </>
   );
 };
 
@@ -317,9 +317,9 @@ export default function LikeSongBar() {
   };
 
   return (
-    <main>
+    <>
       <React.Fragment>
-        <Dialog open={open} onClose={handleClose}>
+        <Dialog open={open} onClose={handleClose} fullWidth>
           <DialogTitle>
             <span>请输入您的云音乐歌单ID与歌单名</span>
           </DialogTitle>
@@ -381,7 +381,7 @@ export default function LikeSongBar() {
         </Dialog>
       </React.Fragment>
       <React.Fragment>
-        <Dialog open={openDelete} onClose={handleDeleteClose}>
+        <Dialog open={openDelete} onClose={handleDeleteClose} fullWidth>
           <DialogTitle>
             <span>请选择您要删除的歌单</span>
           </DialogTitle>
@@ -458,6 +458,6 @@ export default function LikeSongBar() {
           </Button>
         </CardActions>
       </Card>
-    </main>
+    </>
   );
 }

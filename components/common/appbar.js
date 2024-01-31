@@ -49,7 +49,7 @@ export default function PrimarySearchAppBar() {
   return (
     <>
       <React.Fragment>
-        <Dialog open={open} onClose={handleClose}>
+        <Dialog open={open} onClose={handleClose} fullWidth>
           <DialogTitle>
             <span>发现了一个</span>
             <ExperimentTwoTone />

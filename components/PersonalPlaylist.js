@@ -241,7 +241,7 @@ const PersonalPlaylist = () => {
   return (
     <>
       {contextHolder}
-      <Dialog open={openDialog} onClose={handleClose}>
+      <Dialog open={openDialog} onClose={handleClose} fullWidth>
         <DialogTitle>
           <span>请输入好友分享给你的歌单码</span>
         </DialogTitle>

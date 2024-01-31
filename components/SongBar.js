@@ -115,7 +115,7 @@ const PlaylistComponent = ({ playlist }) => {
   };
 
   return (
-    <main>
+    <>
       {contextHolder}
       <Accordion key={playlist.id}>
         <AccordionSummary>
@@ -252,13 +252,13 @@ const PlaylistComponent = ({ playlist }) => {
           </div>
         </AccordionDetails>
       </Accordion>
-    </main>
+    </>
   );
 };
 
 export default function TopBar() {
   return (
-    <main>
+    <>
       <Card sx={{ minWidth: 275 }} style={{ marginTop: "15px" }}>
         <CardContent>
           <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
@@ -270,6 +270,6 @@ export default function TopBar() {
           ))}
         </CardContent>
       </Card>
-    </main>
+    </>
   );
 }

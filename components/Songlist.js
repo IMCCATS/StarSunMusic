@@ -169,7 +169,9 @@ export default function SongList() {
             </ListItem>
           ))
         ) : (
-          <span>播放列表暂无歌曲哦~</span>
+          <Flex justify={"center"} align={"center"} wrap="wrap">
+            <span>播放列表暂无歌曲哦~</span>
+          </Flex>
         )}
       </List>
       <div

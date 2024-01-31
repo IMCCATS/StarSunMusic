@@ -400,12 +400,12 @@ const MusicCard = ({ currentSong }) => {
                           ""
                         );
                         return (
-                          <main>
+                          <>
                             <span key={index} style={{ fontSize, color }}>
                               {cleanedLine}
                             </span>
                             <br />
-                          </main>
+                          </>
                         );
                       })}
                 </CustomTabPanel>
@@ -454,12 +454,12 @@ const MusicCard = ({ currentSong }) => {
                               ""
                             );
                             return (
-                              <main>
+                              <>
                                 <span key={index} style={{ fontSize, color }}>
                                   {cleanedLine}
                                 </span>
                                 <br />
-                              </main>
+                              </>
                             );
                           })}
                     </div>

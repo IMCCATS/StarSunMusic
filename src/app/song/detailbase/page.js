@@ -39,7 +39,7 @@ export default function BasicCard() {
     AddyuxStorageDebug();
   }, []);
   return (
-    <main>
+    <>
       <meta
         httpEquiv="Content-Security-Policy"
         content="upgrade-insecure-requests"

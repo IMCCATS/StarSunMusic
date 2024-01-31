@@ -612,16 +612,31 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
                 <Toolbar style={{ display: "flex", justifyContent: "center" }}>
                   {currentSong && (
                     <>
-                      <Dialog open={open} onClose={handleClose}>
+                      <Dialog open={open} onClose={handleClose} fullWidth>
                         <DialogTitle>
                           <span>歌曲歌词</span>
                         </DialogTitle>
                         <DialogContent>
                           <Tabs value={value} onChange={handleChange}>
-                            <Tab label="原歌词" {...a11yProps(0)} />
+                            <Tab label="滚动歌词" {...a11yProps(0)} />
                             <Tab label="翻译歌词" {...a11yProps(1)} />
+                            <Tab label="原歌词" {...a11yProps(2)} />
                           </Tabs>
                           <CustomTabPanel value={value} index={0}>
+                            <Typography variant="body1">
+                              <span
+                                style={{
+                                  WebkitUserSelect: "none",
+                                  MozUserSelect: "none",
+                                  msUserSelect: "none",
+                                  userSelect: "none",
+                                  display: "flex",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                歌词将自动滚动，并非无歌词信息哦~
+                              </span>
+                            </Typography>
                             {!currentSong && (
                               <Typography variant="body1">
                                 <span
@@ -630,6 +645,8 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
                                     MozUserSelect: "none",
                                     msUserSelect: "none",
                                     userSelect: "none",
+                                    display: "flex",
+                                    justifyContent: "center",
                                   }}
                                 >
                                   暂无歌词信息哦！
@@ -657,43 +674,59 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
                                   );
                                 })
                                 .map((line, index) => {
-                                  const isPlaying =
-                                    currentLyricIndex >= 0 &&
-                                    index === currentLyricIndex;
-                                  const fontSize = isPlaying
-                                    ? "larger"
-                                    : "smaller";
-                                  const color = isPlaying
-                                    ? "#1976D2"
-                                    : "#808080";
-                                  const cleanedLine = line.replace(
-                                    /\[(\d{2}):(\d{2}\.\d{2,3})\]/g,
-                                    ""
-                                  );
-                                  return (
-                                    <div
-                                      style={{
-                                        WebkitUserSelect: "none",
-                                        MozUserSelect: "none",
-                                        msUserSelect: "none",
-                                        userSelect: "none",
-                                        display: "flex",
-                                        justifyContent: "center",
-                                      }}
-                                    >
-                                      <span
+                                  const currentIndex =
+                                    currentLyricIndex >= 0
+                                      ? currentLyricIndex
+                                      : -1;
+
+                                  // 修改这里，只展示当前及前后两句歌词
+                                  if (
+                                    index === currentIndex ||
+                                    index === currentIndex - 1 ||
+                                    index === currentIndex + 1 ||
+                                    index === currentIndex + 2 ||
+                                    index === currentIndex - 2
+                                  ) {
+                                    const fontSize =
+                                      index === currentIndex
+                                        ? "larger"
+                                        : "medium";
+                                    const color =
+                                      index === currentIndex
+                                        ? "#1976D2"
+                                        : "#AAAAAA";
+
+                                    const cleanedLine = line.replace(
+                                      /\[(\d{2}):(\d{2}\.\d{2,3})\]/g,
+                                      ""
+                                    );
+
+                                    return (
+                                      <div
                                         key={index}
                                         style={{
-                                          fontSize,
-                                          color,
-                                          padding: "3px",
+                                          WebkitUserSelect: "none",
+                                          MozUserSelect: "none",
+                                          msUserSelect: "none",
+                                          userSelect: "none",
+                                          display: "flex",
+                                          justifyContent: "center",
                                         }}
                                       >
-                                        {cleanedLine}
-                                      </span>
-                                      <br />
-                                    </div>
-                                  );
+                                        <span
+                                          style={{
+                                            fontSize,
+                                            color,
+                                            padding: "3px",
+                                          }}
+                                        >
+                                          {cleanedLine}
+                                        </span>
+                                        <br />
+                                      </div>
+                                    );
+                                  }
+                                  return null;
                                 })}
                           </CustomTabPanel>
                           <CustomTabPanel value={value} index={1}>
@@ -800,6 +833,81 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
                             ) : (
                               <></>
                             )}
+                          </CustomTabPanel>
+                          <CustomTabPanel value={value} index={2}>
+                            {!currentSong && (
+                              <Typography variant="body1">
+                                <span
+                                  style={{
+                                    WebkitUserSelect: "none",
+                                    MozUserSelect: "none",
+                                    msUserSelect: "none",
+                                    userSelect: "none",
+                                  }}
+                                >
+                                  暂无歌词信息哦！
+                                </span>
+                              </Typography>
+                            )}
+                            {currentSong &&
+                              currentSong.lyric &&
+                              currentSong.lyric
+                                .split("\n")
+                                .filter((line) => {
+                                  return (
+                                    !line.startsWith("﻿[id:") &&
+                                    !line.startsWith("[id:") &&
+                                    line !== "" &&
+                                    !line.startsWith("[ar:") &&
+                                    !line.startsWith("[ti:") &&
+                                    !line.startsWith("[by:") &&
+                                    !line.startsWith("[hash:") &&
+                                    !line.startsWith("[al:") &&
+                                    !line.startsWith("[sign:") &&
+                                    !line.startsWith("[qq:") &&
+                                    !line.startsWith("[total:") &&
+                                    !line.startsWith("[offset:")
+                                  );
+                                })
+                                .map((line, index) => {
+                                  const isPlaying =
+                                    currentLyricIndex >= 0 &&
+                                    index === currentLyricIndex;
+                                  const fontSize = isPlaying
+                                    ? "larger"
+                                    : "smaller";
+                                  const color = isPlaying
+                                    ? "#1976D2"
+                                    : "#808080";
+                                  const cleanedLine = line.replace(
+                                    /\[(\d{2}):(\d{2}\.\d{2,3})\]/g,
+                                    ""
+                                  );
+                                  return (
+                                    <div
+                                      style={{
+                                        WebkitUserSelect: "none",
+                                        MozUserSelect: "none",
+                                        msUserSelect: "none",
+                                        userSelect: "none",
+                                        display: "flex",
+                                        justifyContent: "center",
+                                      }}
+                                    >
+                                      <span
+                                        key={index}
+                                        style={{
+                                          fontSize,
+                                          color,
+                                          padding: "3px",
+                                        }}
+                                      >
+                                        {cleanedLine}
+                                      </span>
+                                      <br />
+                                    </div>
+                                  );
+                                })}
                           </CustomTabPanel>
                         </DialogContent>
                         <DialogActions>

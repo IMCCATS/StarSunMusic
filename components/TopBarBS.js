@@ -91,7 +91,7 @@ export default function TopBar() {
   };
 
   return (
-    <main>
+    <>
       {contextHolder}
       <Card sx={{ minWidth: 275 }} style={{ marginTop: "15px" }}>
         <CardContent>
@@ -212,6 +212,6 @@ export default function TopBar() {
           </div>
         </CardContent>
       </Card>
-    </main>
+    </>
   );
 }

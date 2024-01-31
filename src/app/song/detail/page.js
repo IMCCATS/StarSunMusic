@@ -39,7 +39,7 @@ export default function BasicCard() {
     AddyuxStorageDebug();
   }, []);
   return (
-    <main>
+    <>
       <meta
         httpEquiv="Content-Security-Policy"
         content="upgrade-insecure-requests"
@@ -65,6 +65,6 @@ export default function BasicCard() {
           />
         </div>
       </CurrentSongContext.Provider>
-    </main>
+    </>
   );
 }

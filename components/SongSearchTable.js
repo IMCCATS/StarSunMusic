@@ -356,10 +356,11 @@ export default function SongSearchTable({ setcanlistplay }) {
   };
 
   return (
-    <main>
+    <>
       {contextHolder}
       <Script src="https://static.geetest.com/v4/gt4.js" />
       <Dialog
+        fullWidth
         open={fxopen}
         onClose={fxhandleClose}
         aria-labelledby="alert-dialog-title"
@@ -975,6 +976,6 @@ export default function SongSearchTable({ setcanlistplay }) {
           </TableContainer>
         </Paper>
       </Element>
-    </main>
+    </>
   );
 }

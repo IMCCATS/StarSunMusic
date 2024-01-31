@@ -236,6 +236,7 @@ export default function UserAva() {
     <>
       {contextHolder}
       <Dialog
+        fullWidth
         open={Clickopen}
         onClose={() => {
           SetClickopen(false);
