@@ -268,10 +268,7 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
     if (!isAudioPlayable) {
       document.title = "首页 · 星阳音乐系统";
       return (
-        <Typography
-          variant="body1"
-          style={{ fontSize: "1.8vh", padding: "6px" }}
-        >
+        <Typography variant="body1" style={{ fontSize: "1.8vh" }}>
           <span>{`${currentSong.title} — ${currentSong.artist}`}</span>
         </Typography>
       );
@@ -289,7 +286,6 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
             style={{
               fontSize: "1.8vh",
               whiteSpace: "pre-line",
-              padding: "6px",
             }}
           >
             {"⭐"}
@@ -306,10 +302,7 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
       } else {
         document.title = "首页 · 星阳音乐系统";
         return (
-          <Typography
-            variant="body1"
-            style={{ fontSize: "1.8vh", padding: "6px" }}
-          >
+          <Typography variant="body1" style={{ fontSize: "1.8vh" }}>
             <span>{`${currentSong.title} — ${currentSong.artist}`}</span>
           </Typography>
         );
@@ -684,11 +677,17 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
                                         MozUserSelect: "none",
                                         msUserSelect: "none",
                                         userSelect: "none",
+                                        display: "flex",
+                                        justifyContent: "center",
                                       }}
                                     >
                                       <span
                                         key={index}
-                                        style={{ fontSize, color }}
+                                        style={{
+                                          fontSize,
+                                          color,
+                                          padding: "3px",
+                                        }}
                                       >
                                         {cleanedLine}
                                       </span>
@@ -706,6 +705,8 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
                                     MozUserSelect: "none",
                                     msUserSelect: "none",
                                     userSelect: "none",
+                                    display: "flex",
+                                    justifyContent: "center",
                                   }}
                                 >
                                   暂无歌词信息哦！
@@ -723,6 +724,9 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
                                     MozUserSelect: "none",
                                     msUserSelect: "none",
                                     userSelect: "none",
+                                    padding: "3px",
+                                    display: "flex",
+                                    justifyContent: "center",
                                   }}
                                 >
                                   本歌曲暂无翻译歌词哦~
@@ -773,11 +777,18 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
                                             MozUserSelect: "none",
                                             msUserSelect: "none",
                                             userSelect: "none",
+                                            display: "flex",
+                                            justifyContent: "center",
                                           }}
                                         >
                                           <span
                                             key={index}
-                                            style={{ fontSize, color }}
+                                            style={{
+                                              fontSize,
+                                              color,
+                                              padding: "3px",
+                                              padding: "3px",
+                                            }}
                                           >
                                             {cleanedLine}
                                           </span>
@@ -1111,6 +1122,7 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
                 <Flex
                   gap={"middle"}
                   style={{ display: "flex", justifyContent: "center" }}
+                  align="center"
                 >
                   <IconButton
                     color="inherit"

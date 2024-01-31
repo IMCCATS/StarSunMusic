@@ -1,24 +1,35 @@
 import * as React from "react";
 import { AccountCircle } from "@mui/icons-material";
-import { IconButton, Menu, MenuItem } from "@mui/material";
+import {
+  Avatar,
+  Button,
+  Card,
+  CardContent,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  Menu,
+  MenuItem,
+  Typography,
+} from "@mui/material";
 import { CurrentSongContext } from "@/app/dashboard/page";
 import yuxStorage from "@/app/api/yux-storage";
-import { message } from "antd";
+import { Descriptions, Divider, Flex, message } from "antd";
 import { useRouter } from "next/navigation";
 import LogoutIcon from "@mui/icons-material/Logout";
 const crypto = require("crypto");
 
 export default function UserAva() {
   const router = useRouter();
-  const {
-    setdisabled,
-    profile,
-    setprofile,
-  } = React.useContext(CurrentSongContext);
+  const { setdisabled, profile, setprofile } =
+    React.useContext(CurrentSongContext);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [messageApi, contextHolder] = message.useMessage();
   const [user, setuser] = React.useState("");
+  const [mobile, setmobile] = React.useState("");
 
   const handleQuitLogin = () => {
     handleCloseC();
@@ -113,9 +124,13 @@ export default function UserAva() {
   React.useEffect(() => {
     if (profile) {
       yuxStorage.getItem("userprofile").then((e) => {
-        const fullPhone = e; // 假设 e.phone 包含完整的手机号
+        const fullPhone = e; // 假设 e 中有一个 phone 属性包含完整的手机号
         const lastFourDigits = fullPhone.slice(-4); // 获取手机号后四位
         setuser(`用户${lastFourDigits}`); // 组合成 "用户" + 手机号后四位
+
+        // 格式化手机号，中间四位用*代替
+        const maskedPhone = `${fullPhone.slice(0, 3)}****${lastFourDigits}`;
+        setmobile(maskedPhone);
       });
     }
   }, [profile]);
@@ -126,9 +141,119 @@ export default function UserAva() {
   const handleCloseC = () => {
     setAnchorEl(null);
   };
+  const [CurrentComponent, SetCurrentComponent] = React.useState(null);
+  const [CurrentCptName, SetCurrentCptName] = React.useState("");
+  const [Clickopen, SetClickopen] = React.useState(false);
+  const handleopen = (name, component) => {
+    SetClickopen(false);
+    SetCurrentComponent(component);
+    SetCurrentCptName(name);
+    SetClickopen(true);
+  };
+
+  const UserInformations = ({ userInfo }) => {
+    const { nickname, phoneNumber } = userInfo;
+    const items = [
+      {
+        key: "1",
+        label: "预览体验权限",
+        children: "否",
+      },
+      {
+        key: "2",
+        label: "社群成员",
+        children: "否",
+      },
+      {
+        key: "3",
+        label: "特约用户",
+        children: "否",
+      },
+      {
+        key: "4",
+        label: "特别贡献成员",
+        children: "否",
+      },
+      {
+        key: "5",
+        label: "捐赠成员",
+        children: "否",
+      },
+      {
+        key: "6",
+        label: "开发成员",
+        children: "否",
+      },
+      {
+        key: "7",
+        label: "用户积分",
+        children: "0",
+      },
+    ];
+    return (
+      <>
+        <Card sx={{ minWidth: 275 }}>
+          <CardContent>
+            <Flex gap={"large"} vertical>
+              {/* 用户信息部分 */}
+              <Flex>
+                <Avatar sx={{ mx: 2, mb: 2 }}>
+                  <AccountCircle />
+                </Avatar>
+                <Flex vertical>
+                  <Typography variant="h5" component="div">
+                    {nickname}
+                  </Typography>
+                  <Typography sx={{ color: "text.secondary" }}>
+                    手机号: +86 {phoneNumber}
+                  </Typography>
+                </Flex>
+              </Flex>
+              <Divider />
+              {/* 用户资产与数据部分 */}
+              <Descriptions
+                column={{
+                  xs: 1,
+                  sm: 2,
+                  md: 3,
+                  lg: 3,
+                  xl: 4,
+                  xxl: 4,
+                }}
+                size="small"
+                bordered
+                title="权限信息"
+                items={items}
+              />
+            </Flex>
+          </CardContent>
+        </Card>
+      </>
+    );
+  };
+
   return (
     <>
       {contextHolder}
+      <Dialog
+        open={Clickopen}
+        onClose={() => {
+          SetClickopen(false);
+        }}
+        scroll={"paper"}
+      >
+        <DialogTitle>{CurrentCptName}</DialogTitle>
+        <DialogContent dividers={true}>{CurrentComponent}</DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              SetClickopen(false);
+            }}
+          >
+            关闭
+          </Button>
+        </DialogActions>
+      </Dialog>
       <IconButton
         size="large"
         aria-label="account of current user"
@@ -156,7 +281,16 @@ export default function UserAva() {
       >
         {profile ? (
           <>
-            <MenuItem>
+            <MenuItem
+              onClick={() => {
+                handleopen(
+                  "用户信息",
+                  <UserInformations
+                    userInfo={{ nickname: user, phoneNumber: mobile }}
+                  />
+                );
+              }}
+            >
               <AccountCircle />
               {user}
             </MenuItem>

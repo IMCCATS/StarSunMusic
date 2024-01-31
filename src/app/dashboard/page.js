@@ -234,7 +234,7 @@ function StarSunMusic() {
             scroll={"paper"}
           >
             <DialogTitle>{CurrentCptName}</DialogTitle>
-            <DialogContent dividers="true">{CurrentComponent}</DialogContent>
+            <DialogContent dividers={true}>{CurrentComponent}</DialogContent>
             <DialogActions>
               <Button
                 onClick={() => {
