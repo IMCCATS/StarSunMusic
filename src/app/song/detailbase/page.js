@@ -65,6 +65,6 @@ export default function BasicCard() {
           />
         </div>
       </CurrentSongContext.Provider>
-    </main>
+    </>
   );
 }
