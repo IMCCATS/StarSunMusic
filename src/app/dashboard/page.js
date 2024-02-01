@@ -136,12 +136,6 @@ function StarSunMusic() {
     }
   }, [isPlayComplete]);
 
-  const [expanded, setExpanded] = React.useState(false);
-
-  const handleChange = (panel) => (event, isExpanded) => {
-    setExpanded(isExpanded ? panel : false);
-  };
-
   const [disabled, setdisabled] = React.useState(false);
   const [fingerprintidc, setfingerprintidc] = React.useState("");
 

@@ -151,7 +151,6 @@ const PersonalPlaylist = () => {
           addSongsToLocalPlaylist(gedan);
           setuuid("");
           setOpenDialog(false);
-          onClose();
           setcheckisabled(true);
           setTimeout(() => {
             setcheckisabled(false);
@@ -182,11 +181,10 @@ const PersonalPlaylist = () => {
           const gedan = GedanS[0].songs;
           if (Array.isArray(gedan) && gedan.length >= 10) {
             addSongsToLocalPlaylist(gedan);
+            setdisabled(false);
             setuuid("");
             setOpenDialog(false);
-            onClose();
             setcheckisabled(true);
-            setdisabled(false);
             setTimeout(() => {
               setcheckisabled(false);
             }, 300000);
