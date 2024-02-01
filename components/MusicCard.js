@@ -196,7 +196,7 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
     };
 
     const handleError = () => {
-      audioRef.current.src = "/fail.mp3";
+      audioRef.current.src = "/failNew.mp3";
       audioRef.current.play();
       setIsAudioPlayable(false);
     };

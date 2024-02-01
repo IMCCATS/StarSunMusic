@@ -16,11 +16,7 @@ import JuanZeng from "../../../components/common/juanzeng";
 import ScrollToTopFab from "../../../components/common/ScrollToTopFab";
 import PersonalPlaylist from "../../../components/PersonalPlaylist";
 import UpdateDialog from "../../../components/common/updatedialog";
-import Accordion from "@mui/material/Accordion";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import LikeSongBar from "../../../components/LikeSongsBar";
 import { ConfigProvider, Flex, message } from "antd";
@@ -36,7 +32,6 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Modal,
 } from "@mui/material";
 import SongList from "../../../components/Songlist";
 import zhCN from "antd/locale/zh_CN";
@@ -129,8 +124,8 @@ function StarSunMusic() {
       messageApi.success("列表播放已完成");
       return;
     }
-    if (PlayingSongs[index] && PlayingSongs[index].id) {
-      handleListenClick(PlayingSongs[index].id, index);
+    if (PlayingSongs[index] && PlayingSongs[index].songId) {
+      handleListenClick(PlayingSongs[index].songId, index);
       setisPlayComplete(false);
     }
   };

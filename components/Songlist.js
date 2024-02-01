@@ -85,7 +85,7 @@ export default function SongList() {
       .then((e) => {
         setCurrentSong(e);
         setLastPlayedSongIndex(
-          PlayingSongs.findIndex((song) => song.id === songId)
+          PlayingSongs.findIndex((song) => song.songId === songId)
         );
         setcanlistplay(true);
         setdisabled(false);
@@ -153,7 +153,7 @@ export default function SongList() {
                   🔽
                 </Button>
                 <Button
-                  onClick={() => handleListenClick(song.id)}
+                  onClick={() => handleListenClick(song.songId)}
                   variant="contained"
                 >
                   播放
@@ -165,6 +165,16 @@ export default function SongList() {
                 >
                   删除
                 </Button>
+                {process.env.NODE_ENV === "development" && (
+                  <Button
+                    onClick={() => {
+                      console.log(song);
+                    }}
+                    variant="contained"
+                  >
+                    打印
+                  </Button>
+                )}
               </Flex>
             </ListItem>
           ))
