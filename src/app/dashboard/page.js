@@ -124,8 +124,15 @@ function StarSunMusic() {
       messageApi.success("列表播放已完成");
       return;
     }
-    if (PlayingSongs[index] && PlayingSongs[index].songId) {
-      handleListenClick(PlayingSongs[index].songId, index);
+    if (
+      PlayingSongs[index] &&
+      (PlayingSongs[index].songId || PlayingSongs[index].id)
+    ) {
+      if (PlayingSongs[index].songId) {
+        handleListenClick(PlayingSongs[index].songId, index);
+      } else if (PlayingSongs[index].id) {
+        handleListenClick(PlayingSongs[index].id, index);
+      }
       setisPlayComplete(false);
     }
   };
