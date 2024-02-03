@@ -52,16 +52,16 @@ const PersonalPlaylist = () => {
     profile,
   } = React.useContext(CurrentSongContext);
 
-  const handleListenClick = (songId) => {
+  const handleListenClick = (id) => {
     setdisabled(true);
-    HandleListenSong(songId)
+    HandleListenSong(id)
       .then((e) => {
         setCurrentSong(e);
         const b = playList.map((song) => {
           return { ...song, name: song.title };
         });
         SetPlayingSongs(b);
-        setLastPlayedSongIndex(b.findIndex((song) => song.songId === songId));
+        setLastPlayedSongIndex(b.findIndex((song) => song.id === id));
         setcanlistplay(true);
         setdisabled(false);
       })
@@ -96,7 +96,7 @@ const PersonalPlaylist = () => {
 
           // 过滤出不存在于播放列表中的歌曲
           const uniqueSongsToAdd = songs.filter(
-            (song) => !playList.find((s) => s.songId === song.songId)
+            (song) => !playList.find((s) => s.id === song.id)
           );
 
           if (uniqueSongsToAdd.length > 0) {
@@ -277,7 +277,7 @@ const PersonalPlaylist = () => {
                   <ListItemText primary={song.title} secondary={song.artist} />
                   <ButtonGroup>
                     <Button
-                      onClick={() => handleListenClick(song.songId)}
+                      onClick={() => handleListenClick(song.id)}
                       variant="contained"
                       disabled={disabled}
                     >
@@ -293,7 +293,7 @@ const PersonalPlaylist = () => {
                     <Button
                       onClick={() =>
                         handleInsectSongClick({
-                          id: song.songId,
+                          id: song.id,
                           name: song.title,
                           artist: song.artist,
                         })

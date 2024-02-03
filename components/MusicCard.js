@@ -566,9 +566,7 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
       .then((playlist) => {
         if (playlist) {
           const playList = JSON.parse(playlist);
-          const existingSongIndex = playList.findIndex(
-            (s) => s.songId === song.songId
-          );
+          const existingSongIndex = playList.findIndex((s) => s.id === song.id);
           if (existingSongIndex === -1) {
             playList.push(song);
             yuxStorage
@@ -1045,7 +1043,7 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
                                         addSongToLocalPlaylist({
                                           title: currentSong.title,
                                           artist: currentSong.artist,
-                                          songId: currentSong.id,
+                                          id: currentSong.id,
                                         });
                                       }}
                                       disabled={

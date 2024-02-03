@@ -66,13 +66,13 @@ export default function TopBar() {
         setIsLoading(false);
       });
   };
-  const handleListenClick = (songId) => {
+  const handleListenClick = (id) => {
     setdisabled(true);
-    HandleListenSong(songId)
+    HandleListenSong(id)
       .then((e) => {
         setCurrentSong(e);
         SetPlayingSongs(songs);
-        setLastPlayedSongIndex(songs.findIndex((song) => song.id === songId));
+        setLastPlayedSongIndex(songs.findIndex((song) => song.id === id));
         setcanlistplay(true);
         setdisabled(false);
       })

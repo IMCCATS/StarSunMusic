@@ -21,9 +21,9 @@ export default function BasicCard() {
     // });
     handleListenClick(params.songID);
   };
-  const handleListenClick = (songId) => {
+  const handleListenClick = (id) => {
     if (params.songID || params.songID !== "") {
-      HandleListenSong(songId)
+      HandleListenSong(id)
         .then((e) => {
           setCurrentSong(e);
           setcanlistplay(false);

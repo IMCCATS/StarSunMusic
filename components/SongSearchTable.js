@@ -183,9 +183,9 @@ export default function SongSearchTable({ setcanlistplay }) {
     setSearchTerm(value);
   };
 
-  const handleListenClick = (songId) => {
+  const handleListenClick = (id) => {
     setdisabled(true);
-    HandleListenSong(songId)
+    HandleListenSong(id)
       .then((e) => {
         setCurrentSong(e);
         SetPlayingSongs(netease_songs);

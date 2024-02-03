@@ -79,13 +79,13 @@ export default function SongList() {
     }
   };
 
-  const handleListenClick = (songId) => {
+  const handleListenClick = (id) => {
     setdisabled(true);
-    HandleListenSong(songId)
+    HandleListenSong(id)
       .then((e) => {
         setCurrentSong(e);
         setLastPlayedSongIndex(
-          PlayingSongs.findIndex((song) => song.songId === songId)
+          PlayingSongs.findIndex((song) => song.id === id)
         );
         setcanlistplay(true);
         setdisabled(false);
@@ -153,7 +153,7 @@ export default function SongList() {
                   🔽
                 </Button>
                 <Button
-                  onClick={() => handleListenClick(song.songId)}
+                  onClick={() => handleListenClick(song.id)}
                   variant="contained"
                 >
                   播放

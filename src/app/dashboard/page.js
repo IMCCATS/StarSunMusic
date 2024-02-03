@@ -94,9 +94,9 @@ function StarSunMusic() {
 
   const [messageApi, contextHolder] = message.useMessage();
 
-  const handleListenClick = (songId, index) => {
+  const handleListenClick = (id, index) => {
     setdisabled(true);
-    HandleListenSong(songId)
+    HandleListenSong(id)
       .then((e) => {
         setCurrentSong(e);
         setLastPlayedSongIndex(index);
@@ -126,10 +126,10 @@ function StarSunMusic() {
     }
     if (
       PlayingSongs[index] &&
-      (PlayingSongs[index].songId || PlayingSongs[index].id)
+      (PlayingSongs[index].id || PlayingSongs[index].id)
     ) {
-      if (PlayingSongs[index].songId) {
-        handleListenClick(PlayingSongs[index].songId, index);
+      if (PlayingSongs[index].id) {
+        handleListenClick(PlayingSongs[index].id, index);
       } else if (PlayingSongs[index].id) {
         handleListenClick(PlayingSongs[index].id, index);
       }
