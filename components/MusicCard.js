@@ -598,7 +598,7 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
               <AppBar
                 position="fixed"
                 color="primary"
-                sx={{ top: "auto", bottom: 0 }}
+                sx={{ top: "auto", bottom: 0, pb: "20px" }}
               >
                 <IconButton
                   color="inherit"
@@ -691,7 +691,7 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
                                         : "medium";
                                     const color =
                                       index === currentIndex
-                                        ? "#1976D2"
+                                        ? "#00BF63"
                                         : "#AAAAAA";
 
                                     const cleanedLine = line.replace(
@@ -795,7 +795,7 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
                                         ? "larger"
                                         : "smaller";
                                       const color = isPlaying
-                                        ? "#1976D2"
+                                        ? "#00BF63"
                                         : "#808080";
                                       const cleanedLine = line.replace(
                                         /\[(\d{2}):(\d{2}\.\d{2,3})\]/g,
@@ -875,7 +875,7 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
                                     ? "larger"
                                     : "smaller";
                                   const color = isPlaying
-                                    ? "#1976D2"
+                                    ? "#00BF63"
                                     : "#808080";
                                   const cleanedLine = line.replace(
                                     /\[(\d{2}):(\d{2}\.\d{2,3})\]/g,
@@ -1223,7 +1223,7 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
               <AppBar
                 position="fixed"
                 color="primary"
-                sx={{ top: "auto", bottom: 0 }}
+                sx={{ top: "auto", bottom: 0, pb: "20px" }}
               >
                 <Flex
                   gap={"middle"}
