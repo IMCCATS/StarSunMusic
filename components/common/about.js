@@ -11,7 +11,7 @@ import {
 import Typography from "@mui/material/Typography";
 import { appupdatecontent, appversion } from "@/app/api/appconfig";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { Col, Row, QRCode, Statistic } from "antd";
+import { Col, Row, QRCode, Statistic, Flex } from "antd";
 import CountUp from "react-countup";
 import dayjs from "dayjs";
 
@@ -214,11 +214,37 @@ export default function Advertisement() {
           <AccordionDetails>
             <Typography variant="p" style={{ fontSize: "14px" }}>
               <span>使用手机扫描下面的二维码进入星阳音乐系统~</span>
-              <QRCode
-                errorLevel="H"
-                value="https://music.lcahy.cn/"
-                icon="/logo.png"
-              />
+              <Flex
+                style={{ background: "#000000", margin: "15px" }}
+                align="center"
+                justify="center"
+                gap={"middle"}
+              >
+                <>
+                  <QRCode
+                    color="white"
+                    errorLevel="H"
+                    value="https://music.lcahy.cn/"
+                    icon="/logo.png"
+                  />
+                </>
+                <>
+                  <Flex vertical gap={"middle"} style={{ color: "white" }}>
+                    <Typography
+                      variant="h5"
+                      gutterBottom
+                      sx={{ ml: 1, display: { xs: "none", sm: "block" } }}
+                    >
+                      星阳音乐系统
+                    </Typography>
+                    <Typography
+                      sx={{ ml: 1, display: { xs: "none", sm: "block" } }}
+                    >
+                      <span>— “音韵流传，乐章永恒”</span>
+                    </Typography>
+                  </Flex>
+                </>
+              </Flex>
             </Typography>
             <Typography variant="p" style={{ fontSize: "14px" }}>
               <span>
