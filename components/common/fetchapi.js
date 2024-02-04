@@ -82,10 +82,10 @@ const ConvertJsonSong = function (serverJson) {
 export const HandleAjax = cache(async (url, type, data) => {
   return new Promise((resolve, reject) => {
     $.ajax({
-      url: url,
+      url: `/ajax`,
       type: type,
       dataType: "json",
-      data: data,
+      data: { string: btoa(JSON.stringify({ url, data })) },
       beforeSend: function () {
         //请求中执行的代码
       },
@@ -106,7 +106,7 @@ export const HandleAjax = cache(async (url, type, data) => {
 
 export const SearchSong = cache(async (SearchPlatform, SearchTerm) => {
   return new Promise((resolve, reject) => {
-    HandleAjax("https://api.gumengya.com/Api/Music", "get", {
+    HandleAjax("https://api.gumengya.com/Api/Music", "POST", {
       format: "json",
       text: `${SearchTerm}`,
       site: `${SearchPlatform}`,
@@ -123,14 +123,14 @@ export const SearchSong = cache(async (SearchPlatform, SearchTerm) => {
 
 export const HandleListenSong = cache(async (id) => {
   return new Promise((resolve, reject) => {
-    HandleAjax("https://api.paugram.com/netease/", "get", {
+    HandleAjax("https://api.paugram.com/netease/", "POST", {
       id: `${id}`,
     })
       .then((res) => {
         resolve(res);
       })
       .catch((error) => {
-        HandleAjax("https://api.gumengya.com/Api/Netease", "get", {
+        HandleAjax("https://api.gumengya.com/Api/Netease", "POST", {
           id: `${id}`,
           format: "json",
         })
@@ -165,7 +165,7 @@ export const HandleListenSongDatabase = cache(async (id) => {
 
 export const HandlePlayList = cache(async (ListId) => {
   return new Promise((resolve, reject) => {
-    HandleAjax("https://api.yimian.xyz/msc/", "get", {
+    HandleAjax("https://api.yimian.xyz/msc/", "POST", {
       type: "playlist",
       id: `${ListId}`,
     })
@@ -199,7 +199,7 @@ export const HandlePlayListBeiXuan = cache(async (ListId) => {
   return new Promise((resolve, reject) => {
     HandleAjax(
       `https://api.gumengya.com/Api/MusicList?format=json&url=https://music.163.com/playlist?id=${ListId}`,
-      "get"
+      "POST"
     )
       .then((res) => {
         const C = ConvertJsonBeiXuanPlaylist(res.data);
@@ -213,7 +213,7 @@ export const HandlePlayListBeiXuan = cache(async (ListId) => {
 
 export const LoadMoreSearchSong = cache(async (Term, Platform, Page) => {
   return new Promise((resolve, reject) => {
-    HandleAjax("https://api.gumengya.com/Api/Music", "get", {
+    HandleAjax("https://api.gumengya.com/Api/Music", "POST", {
       format: "json",
       text: `${Term}`,
       site: `${Platform}`,
@@ -231,7 +231,7 @@ export const LoadMoreSearchSong = cache(async (Term, Platform, Page) => {
 
 export const GetYiYan = cache(async () => {
   return new Promise((resolve, reject) => {
-    HandleAjax("https://v1.hitokoto.cn", "get", {
+    HandleAjax("https://v1.hitokoto.cn", "POST", {
       c: "i",
     })
       .then((res) => {
