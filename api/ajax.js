@@ -3,7 +3,7 @@ export default function handler(req, res) {
   //   res.status(200).json({ message: "Hello from Next.js!" });
   if (req.method === "POST") {
     const dataJson = req.body;
-    const buff = Buffer.from(base64, dataJson);
+    const buff = Buffer.from(dataJson, "base64");
     const deJson = buff.toString("utf-8");
     const Json = JSON.parse(deJson);
     const url = Json.url;
