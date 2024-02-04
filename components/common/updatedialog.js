@@ -13,45 +13,41 @@ const UpdateDialog = () => {
   const [updateTime, setUpdateTime] = useState("");
   const [updateContent, setUpdateContent] = useState("");
 
-  // 获取本地存储的版本信息
-  const getLocalVersion = () => {
-    return new Promise((resolve, reject) => {
-      yuxStorage
-        .getItem("version")
-        .then((storedVersion) => {
-          resolve(storedVersion);
-        })
-        .catch((err) => {
-          reject(null);
-        });
-    });
-  };
-
   // 检查版本信息并显示更新提示
   useEffect(() => {
-    getLocalVersion().then((localVersion) => {
-      const currentVersion = appversion; // 当前版本号
+    yuxStorage
+      .getItem("version")
+      .then((localVersion) => {
+        const currentVersion = appversion; // 当前版本号
 
-      // 将版本号字符串分割为主版本号和次版本号
-      const localVersionParts = localVersion ? localVersion.split("_") : [0, 0];
-      const currentVersionParts = currentVersion.split("_");
+        // 将版本号字符串分割为主版本号和次版本号
+        const localVersionParts = localVersion
+          ? localVersion.split("_")
+          : [0, 0];
+        const currentVersionParts = currentVersion.split("_");
 
-      // 分别比较主版本号和次版本号
-      if (localVersion) {
-        if (
-          localVersionParts[0] < currentVersionParts[0] ||
-          (localVersionParts[0] === currentVersionParts[0] &&
-            localVersionParts[1] < currentVersionParts[1])
-        ) {
+        // 分别比较主版本号和次版本号
+        if (localVersion) {
+          if (
+            localVersionParts[0] < currentVersionParts[0] ||
+            (localVersionParts[0] === currentVersionParts[0] &&
+              localVersionParts[1] < currentVersionParts[1])
+          ) {
+            setOpen(true);
+            setNewVersion(currentVersion);
+            setUpdateTime(appupdatetime); // 更新时间
+            setUpdateContent(appupdatecontent); // 更新内容
+          }
+        } else {
           setOpen(true);
           setNewVersion(currentVersion);
           setUpdateTime(appupdatetime); // 更新时间
           setUpdateContent(appupdatecontent); // 更新内容
         }
-      } else {
-        console.log("本地版本号不存在");
-      }
-    });
+      })
+      .catch((err) => {
+        console.error("本地版本号读取失败");
+      });
   }, []);
 
   // 将新版本保存到本地存储

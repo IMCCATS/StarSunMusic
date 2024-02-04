@@ -62,6 +62,21 @@ export default function Advertisement() {
           <span>音乐版权归其版权方所有。</span>
           <br />
           <span>
+            我们在首页设计图使用了pch.vector在Freepik上提供的
+            <Link
+              href={
+                "https://www.freepik.com/free-vector/musical-instrument-set_8610228.htm#query=musical%20instruments&position=6&from_view=keyword&track=ais&uuid=94798fee-2f86-4fb1-80ac-673dab7ebdaa"
+              }
+              target={"_blank"}
+              underline="none"
+              rel="noopener noreferrer nofollow"
+            >
+              图片
+            </Link>
+            ，感谢。
+          </span>
+          <br />
+          <span>
             特别致谢（无先后顺序）：本系统所有的音乐的版权方及其提供平台；故梦API；Ushio
             API；保罗 API以及其他为本工具提供技术支持的平台。
           </span>
