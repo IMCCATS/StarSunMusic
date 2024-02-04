@@ -8,14 +8,8 @@ import {
   Dialog,
   Paper,
   Slide,
-  AppBar,
-  Toolbar,
-  IconButton,
-  Tooltip,
 } from "@mui/material";
-import DashboardIcon from "@mui/icons-material/Dashboard";
 import CircularProgress from "@mui/material/CircularProgress";
-import CloseIcon from "@mui/icons-material/Close";
 import UserAgreementAndPrivacyPolicy from "../../components/common/UserAgreementAndPrivacyPolicy";
 import { useRouter } from "next/navigation";
 
@@ -25,12 +19,9 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const HomePage = () => {
   const router = useRouter();
-  const [isLoading, setIsLoading] = React.useState(false);
   const [open, setOpen] = React.useState(false);
-  const [state, setstate] = React.useState(false);
 
   React.useEffect(() => {
-    setstate(true);
     setTimeout(() => {
       handleClickOpen();
     }, 5000);
@@ -52,20 +43,17 @@ const HomePage = () => {
   };
 
   const handleClose = () => {
-    setIsLoading(false);
     setOpen(false);
   };
 
   const handleClick = () => {
     yuxStorage.setItem("isAgreedPolicy", "1").then((e) => {
-      setIsLoading(true);
       setOpen(false);
       router.push("/dashboard");
     });
   };
 
   const handleClickPolicyed = () => {
-    setIsLoading(true);
     router.push("/dashboard");
   };
 
@@ -78,17 +66,27 @@ const HomePage = () => {
         onClose={handleClose}
         TransitionComponent={Transition}
       >
-        <Typography sx={{ ml: 2, flex: 1 }} variant="h2" component="div">
+        <Typography
+          autoFocus
+          sx={{ ml: 2, flex: 1 }}
+          variant="h4"
+          component="div"
+        >
           <span>用户协议与隐私政策</span>
         </Typography>
         <Paper elevation={3}>
           <div style={{ margin: "20px" }}>
             <UserAgreementAndPrivacyPolicy />
           </div>
-          <Button autoFocus color="inherit" onClick={handleClick}>
+          <Button
+            color="inherit"
+            onClick={() => {
+              window.location.href = "about:blank";
+            }}
+          >
             <span>关闭</span>
           </Button>
-          <Button autoFocus color="inherit" onClick={handleClick}>
+          <Button color="inherit" onClick={handleClick}>
             <span>同意协议并进入</span>
           </Button>
         </Paper>

@@ -134,6 +134,7 @@ export default function UserAva() {
       });
     }
   }, [profile]);
+
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -232,6 +233,40 @@ export default function UserAva() {
     );
   };
 
+  const [MenuC, setMenuC] = React.useState(null);
+
+  React.useEffect(() => {
+    if (profile) {
+      setMenuC([
+        <MenuItem
+          key={"userinfo"}
+          onClick={() => {
+            handleopen(
+              "用户信息",
+              <UserInformations
+                userInfo={{ nickname: user, phoneNumber: mobile }}
+              />
+            );
+          }}
+        >
+          <AccountCircle />
+          {user}
+        </MenuItem>,
+        <MenuItem key={"login"} onClick={handleQuitLogin}>
+          <LogoutIcon />
+          退出登录
+        </MenuItem>,
+      ]);
+    } else {
+      setMenuC([
+        <MenuItem key={"login"} onClick={handleLogin}>
+          <AccountCircle />
+          未登录·点击登录
+        </MenuItem>,
+      ]);
+    }
+  }, [profile]);
+
   return (
     <>
       {contextHolder}
@@ -279,36 +314,8 @@ export default function UserAva() {
         }}
         open={Boolean(anchorEl)}
         onClose={handleCloseC}
-      >
-        {profile ? (
-          <>
-            <MenuItem
-              onClick={() => {
-                handleopen(
-                  "用户信息",
-                  <UserInformations
-                    userInfo={{ nickname: user, phoneNumber: mobile }}
-                  />
-                );
-              }}
-            >
-              <AccountCircle />
-              {user}
-            </MenuItem>
-            <MenuItem onClick={handleQuitLogin}>
-              <LogoutIcon />
-              退出登录
-            </MenuItem>
-          </>
-        ) : (
-          <>
-            <MenuItem onClick={handleLogin}>
-              <AccountCircle />
-              未登录·点击登录
-            </MenuItem>
-          </>
-        )}
-      </Menu>
+        children={MenuC}
+      />
     </>
   );
 }

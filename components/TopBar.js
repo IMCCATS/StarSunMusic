@@ -24,23 +24,18 @@ import {
   HandlePlayListBeiXuan,
 } from "./common/fetchapi";
 export default function TopBar() {
-  const [messageApi, contextHolder] = message.useMessage();
   const {
     SetPlayingSongs,
     setCurrentSong,
     setLastPlayedSongIndex,
     setcanlistplay,
     setdisabled,
-    disabled,
     handleInsectSongClick,
   } = React.useContext(CurrentSongContext);
   const [isLoading, setIsLoading] = React.useState(true);
   const [songs, setSongs] = React.useState([]);
   const [currentPage, setCurrentPage] = React.useState(1);
   const itemsPerPage = 10;
-  const ref1 = React.useRef(null);
-  const ref2 = React.useRef(null);
-  const ref3 = React.useRef(null);
   React.useEffect(() => {
     fetchMusicList();
   }, []);
@@ -95,7 +90,6 @@ export default function TopBar() {
 
   return (
     <>
-      {contextHolder}
       <Card sx={{ minWidth: 275 }} style={{ marginTop: "15px" }}>
         <CardContent>
           <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
@@ -154,12 +148,11 @@ export default function TopBar() {
                   <span>暂无数据</span>
                 </div>
               ) : (
-                <div ref={ref1}>
+                <div>
                   <List>
                     {currentSongs.map((song, index) => (
-                      <ListItem>
+                      <ListItem key={index}>
                         <ListItemAvatar
-                          ref={ref3}
                           onClick={() => {
                             handleInsectSongClick({
                               id: song.id,
@@ -171,7 +164,6 @@ export default function TopBar() {
                           <Avatar src={song.cover} />
                         </ListItemAvatar>
                         <ListItemButton
-                          ref={ref2}
                           onClick={() => {
                             handleListenClick(song.id);
                           }}
