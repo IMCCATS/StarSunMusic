@@ -82,7 +82,7 @@ const ConvertJsonSong = function (serverJson) {
 export const HandleAjax = cache(async (url, type, data) => {
   return new Promise((resolve, reject) => {
     $.ajax({
-      url: `/ajax`,
+      url: `/api/ajax`,
       type: type,
       dataType: "json",
       data: { string: btoa(JSON.stringify({ url, data })) },
