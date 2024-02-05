@@ -7,14 +7,20 @@ export async function GET(request) {
     const dataJson = JSON.parse(c);
     const url = dataJson.url;
 
-    // 若API不接受JSON格式查询参数，需要将其转换为键值对的形式：
-    const queryParams = Object.entries(dataJson.data)
-      .map(
-        ([key, value]) =>
-          `${encodeURIComponent(key)}=${encodeURIComponent(value)}`
-      )
-      .join("&");
-    const urlWithParams = new URL(`${url}?${queryParams}`);
+    let queryParams;
+    let urlWithParams;
+    if (dataJson.data) {
+      // 若API不接受JSON格式查询参数，需要将其转换为键值对的形式：
+      queryParams = Object.entries(dataJson.data)
+        .map(
+          ([key, value]) =>
+            `${encodeURIComponent(key)}=${encodeURIComponent(value)}`
+        )
+        .join("&");
+      urlWithParams = new URL(`${url}?${queryParams}`);
+    } else {
+      urlWithParams = new URL(url);
+    }
 
     try {
       const res = await fetch(urlWithParams);
