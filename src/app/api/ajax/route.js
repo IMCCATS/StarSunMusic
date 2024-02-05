@@ -1,10 +1,13 @@
 export const dynamic = "force-dynamic";
+import { Base64 } from "js-base64";
+
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
   const dataac = searchParams.get("string");
   if (dataac) {
-    const c = atob(dataac);
-    const dataJson = JSON.parse(c);
+    const c = Base64.decode(dataac);
+    const b = decodeURIComponent(c);
+    const dataJson = JSON.parse(b);
     const url = dataJson.url;
 
     let queryParams;
@@ -27,10 +30,18 @@ export async function GET(request) {
 
       const data = await res.json();
 
-      return Response.json({ status: "success", data });
+      const strdata = JSON.stringify(data);
+
+      const edata = Base64.encode(strdata);
+
+      return Response.json({ status: "success", data: edata });
     } catch (error) {
       return Response.json({ status: "failure", messageobj: error });
     }
   } else {
+    return Response.json({
+      status: "failure",
+      messageobj: { cause: { code: "SERVER_HAS_ERROR_500()" } },
+    });
   }
 }

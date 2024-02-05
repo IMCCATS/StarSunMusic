@@ -2,6 +2,7 @@ import $ from "jquery";
 import { cache } from "react";
 import supabase from "@/app/api/supabase";
 import { getShuanQApiClient } from "@/app/api/Api";
+import { Base64 } from "js-base64";
 
 export const revalidate = 3600; //数据缓存时间
 
@@ -81,11 +82,13 @@ const ConvertJsonSong = function (serverJson) {
 
 export const HandleAjax = cache(async (url, type, data) => {
   return new Promise((resolve, reject) => {
+    const ad = encodeURIComponent(JSON.stringify({ url, data }));
+    const adc = Base64.encode(ad);
     $.ajax({
       url: `/api/ajax`,
       type: type,
       dataType: "json",
-      data: { string: btoa(JSON.stringify({ url, data })) },
+      data: { string: adc },
       beforeSend: function () {
         //请求中执行的代码
       },
@@ -98,8 +101,10 @@ export const HandleAjax = cache(async (url, type, data) => {
       },
       success: function (res) {
         if (res.status === "success") {
-          $.Deferred().resolve(res.data);
-          resolve(res.data);
+          const data = Base64.decode(res.data);
+          const object = JSON.parse(data);
+          $.Deferred().resolve(object);
+          resolve(object);
         } else {
           $.Deferred().reject("请求失败，请稍后重试~");
           reject("请求失败，请稍后重试~");
