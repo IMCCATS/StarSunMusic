@@ -2,21 +2,21 @@ import supabase from "@/app/api/supabase";
 import yuxStorage from "@/app/api/yux-storage";
 import { ExperimentTwoTone } from "@ant-design/icons";
 import {
-  Button,
-  ButtonGroup,
-  Card,
-  CardContent,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  List,
-  ListItem,
-  ListItemText,
-  Paper,
-  TextField,
-  Typography,
+	Button,
+	ButtonGroup,
+	Card,
+	CardContent,
+	Dialog,
+	DialogActions,
+	DialogContent,
+	DialogContentText,
+	DialogTitle,
+	List,
+	ListItem,
+	ListItemText,
+	Paper,
+	TextField,
+	Typography,
 } from "@mui/material";
 import { Empty, message } from "antd";
 import * as React from "react";
@@ -24,393 +24,400 @@ import { CurrentSongContext } from "../src/app/dashboard/page";
 import { HandleListenSong } from "./common/fetchapi";
 
 const PersonalPlaylist = () => {
-  const [messageApi, contextHolder] = message.useMessage();
-  const [openDialog, setOpenDialog] = React.useState(false);
+	const [messageApi, contextHolder] = message.useMessage();
+	const [openDialog, setOpenDialog] = React.useState(false);
 
-  const handleClickOpen = () => {
-    setOpenDialog(true);
-  };
+	const handleClickOpen = () => {
+		setOpenDialog(true);
+	};
 
-  const handleClose = () => {
-    setOpenDialog(false);
-  };
+	const handleClose = () => {
+		setOpenDialog(false);
+	};
 
-  const [uuidtext, setuuid] = React.useState("");
-  const [playList, setPlayList] = React.useState([]);
-  const [gedanidshow, setgedanidshow] = React.useState(false);
-  const [sharedisabled, setsharedisabled] = React.useState(false);
-  const [checkisabled, setcheckisabled] = React.useState(false);
-  const [gedanidc, setgedanidc] = React.useState("");
-  const {
-    SetPlayingSongs,
-    setCurrentSong,
-    setLastPlayedSongIndex,
-    setcanlistplay,
-    setdisabled,
-    disabled,
-    handleInsectSongClick,
-    profile,
-  } = React.useContext(CurrentSongContext);
+	const [uuidtext, setuuid] = React.useState("");
+	const [playList, setPlayList] = React.useState([]);
+	const [gedanidshow, setgedanidshow] = React.useState(false);
+	const [sharedisabled, setsharedisabled] = React.useState(false);
+	const [checkisabled, setcheckisabled] = React.useState(false);
+	const [gedanidc, setgedanidc] = React.useState("");
+	const {
+		SetPlayingSongs,
+		setCurrentSong,
+		setLastPlayedSongIndex,
+		setcanlistplay,
+		setdisabled,
+		disabled,
+		handleInsectSongClick,
+		profile,
+	} = React.useContext(CurrentSongContext);
 
-  const handleListenClick = (id) => {
-    setdisabled(true);
-    HandleListenSong(id)
-      .then((e) => {
-        setCurrentSong(e);
-        const b = playList.map((song) => {
-          return { ...song, name: song.title };
-        });
-        SetPlayingSongs(b);
-        setLastPlayedSongIndex(b.findIndex((song) => song.id === id));
-        setcanlistplay(true);
-        setdisabled(false);
-      })
-      .catch((error) => {
-        setdisabled(false);
-      });
-  };
+	const handleListenClick = (id) => {
+		setdisabled(true);
+		HandleListenSong(id)
+			.then((e) => {
+				setCurrentSong(e);
+				const b = playList.map((song) => {
+					return { ...song, name: song.title };
+				});
+				SetPlayingSongs(b);
+				setLastPlayedSongIndex(b.findIndex((song) => song.id === id));
+				setcanlistplay(true);
+				setdisabled(false);
+			})
+			.catch((error) => {
+				setdisabled(false);
+			});
+	};
 
-  // 获取播放列表的函数
-  const getPlayList = () => {
-    yuxStorage.getItem("playList").then((savedPlayList) => {
-      if (savedPlayList) {
-        setPlayList(JSON.parse(savedPlayList));
-      }
-    });
-  };
+	// 获取播放列表的函数
+	const getPlayList = () => {
+		yuxStorage.getItem("playList").then((savedPlayList) => {
+			if (savedPlayList) {
+				setPlayList(JSON.parse(savedPlayList));
+			}
+		});
+	};
 
-  React.useEffect(() => {
-    getPlayList();
-  }, []);
+	React.useEffect(() => {
+		getPlayList();
+	}, []);
 
-  const handlechange = (event) => {
-    setuuid(event.target.value);
-  };
+	const handlechange = (event) => {
+		setuuid(event.target.value);
+	};
 
-  const addSongsToLocalPlaylist = (songs) => {
-    yuxStorage
-      .getItem("playList")
-      .then((playlist) => {
-        if (playlist) {
-          const playList = JSON.parse(playlist);
+	const addSongsToLocalPlaylist = (songs) => {
+		yuxStorage
+			.getItem("playList")
+			.then((playlist) => {
+				if (playlist) {
+					const playList = JSON.parse(playlist);
 
-          // 过滤出不存在于播放列表中的歌曲
-          const uniqueSongsToAdd = songs.filter(
-            (song) => !playList.find((s) => s.id === song.id)
-          );
+					// 过滤出不存在于播放列表中的歌曲
+					const uniqueSongsToAdd = songs.filter(
+						(song) => !playList.find((s) => s.id === song.id)
+					);
 
-          if (uniqueSongsToAdd.length > 0) {
-            // 将新歌曲添加到播放列表
-            playList.push(...uniqueSongsToAdd);
-            yuxStorage
-              .setItem("playList", JSON.stringify(playList))
-              .then(() => {
-                messageApi.success(
-                  `${uniqueSongsToAdd.length}首歌曲添加成功啦~`
-                );
-              })
-              .catch((err) => {
-                message.info("添加失败~");
-              });
-          } else {
-            message.info("歌单已包含所有这些歌曲了哦~");
-          }
-        } else {
-          // 如果播放列表为空，则直接将所有歌曲添加进去
-          yuxStorage
-            .setItem("playList", JSON.stringify(songs))
-            .then(() => {
-              messageApi.success(`${songs.length}首歌曲添加成功啦~`);
-            })
-            .catch((err) => {
-              message.info("添加失败~");
-            });
-        }
-      })
-      .catch((err) => {
-        message.info("添加失败~");
-      });
-  };
+					if (uniqueSongsToAdd.length > 0) {
+						// 将新歌曲添加到播放列表
+						playList.push(...uniqueSongsToAdd);
+						yuxStorage
+							.setItem("playList", JSON.stringify(playList))
+							.then(() => {
+								messageApi.success(
+									`${uniqueSongsToAdd.length}首歌曲添加成功啦~`
+								);
+							})
+							.catch((err) => {
+								message.info("添加失败~");
+							});
+					} else {
+						message.info("歌单已包含所有这些歌曲了哦~");
+					}
+				} else {
+					// 如果播放列表为空，则直接将所有歌曲添加进去
+					yuxStorage
+						.setItem("playList", JSON.stringify(songs))
+						.then(() => {
+							messageApi.success(`${songs.length}首歌曲添加成功啦~`);
+						})
+						.catch((err) => {
+							message.info("添加失败~");
+						});
+				}
+			})
+			.catch((err) => {
+				message.info("添加失败~");
+			});
+	};
 
-  const handleCheckUUID = async () => {
-    handleClose();
-    let { data: GedanS, error } = await supabase
-      .from("GedanS")
-      .select("*")
-      .eq("gedanid", uuidtext);
-    if (error) {
-      setOpenDialog(false);
-      messageApi.error("获取歌单失败了哦~请检查是否有问题~");
-      setdisabled(false);
-      return;
-    }
-    if (GedanS && Array.isArray(GedanS)) {
-      if (GedanS.length > 0) {
-        const gedan = GedanS[0].songs;
-        if (Array.isArray(gedan) && gedan.length >= 10) {
-          addSongsToLocalPlaylist(gedan);
-          setuuid("");
-          setOpenDialog(false);
-          setcheckisabled(true);
-          setTimeout(() => {
-            setcheckisabled(false);
-          }, 300000);
-        }
-      } else {
-        messageApi.error("歌单码错误了哦~");
-      }
-    }
-  };
+	const handleCheckUUID = async () => {
+		handleClose();
+		let { data: GedanS, error } = await supabase
+			.from("GedanS")
+			.select("*")
+			.eq("gedanid", uuidtext);
+		if (error) {
+			setOpenDialog(false);
+			messageApi.error("获取歌单失败了哦~请检查是否有问题~");
+			setdisabled(false);
+			return;
+		}
+		if (GedanS && Array.isArray(GedanS)) {
+			if (GedanS.length > 0) {
+				const gedan = GedanS[0].songs;
+				if (Array.isArray(gedan) && gedan.length >= 10) {
+					addSongsToLocalPlaylist(gedan);
+					setuuid("");
+					setOpenDialog(false);
+					setcheckisabled(true);
+					setTimeout(() => {
+						setcheckisabled(false);
+					}, 300000);
+				}
+			} else {
+				messageApi.error("歌单码错误了哦~");
+			}
+		}
+	};
 
-  const handleGetMySongs = async () => {
-    setdisabled(true);
-    yuxStorage.getItem("userprofile").then(async (mobile) => {
-      const emobile = btoa(mobile);
-      let { data: GedanS, error } = await supabase
-        .from("GedanS")
-        .select("*")
-        .eq("mobile", emobile);
-      if (error) {
-        setOpenDialog(false);
-        messageApi.error("获取歌单失败了哦~请检查是否有问题~");
-        setdisabled(false);
-        return;
-      }
-      if (GedanS && Array.isArray(GedanS)) {
-        if (GedanS.length > 0) {
-          const gedan = GedanS[0].songs;
-          if (Array.isArray(gedan) && gedan.length >= 10) {
-            addSongsToLocalPlaylist(gedan);
-            setdisabled(false);
-            setuuid("");
-            setOpenDialog(false);
-            setcheckisabled(true);
-            setTimeout(() => {
-              setcheckisabled(false);
-            }, 300000);
-          }
-        } else {
-          setdisabled(false);
-          messageApi.error("系统发生错误了哦，快试试重新获取一下吧~");
-        }
-      }
-    });
-  };
+	const handleGetMySongs = async () => {
+		setdisabled(true);
+		yuxStorage.getItem("userprofile").then(async (mobile) => {
+			const emobile = btoa(mobile);
+			let { data: GedanS, error } = await supabase
+				.from("GedanS")
+				.select("*")
+				.eq("mobile", emobile);
+			if (error) {
+				setOpenDialog(false);
+				messageApi.error("获取歌单失败了哦~请检查是否有问题~");
+				setdisabled(false);
+				return;
+			}
+			if (GedanS && Array.isArray(GedanS)) {
+				if (GedanS.length > 0) {
+					const gedan = GedanS[0].songs;
+					if (Array.isArray(gedan) && gedan.length >= 10) {
+						addSongsToLocalPlaylist(gedan);
+						setdisabled(false);
+						setuuid("");
+						setOpenDialog(false);
+						setcheckisabled(true);
+						setTimeout(() => {
+							setcheckisabled(false);
+						}, 300000);
+					}
+				} else {
+					setdisabled(false);
+					messageApi.error("系统发生错误了哦，快试试重新获取一下吧~");
+				}
+			}
+		});
+	};
 
-  const handleShare = async () => {
-    if (playList && Array.isArray(playList) && playList.length >= 10) {
-      setdisabled(true);
-      yuxStorage.getItem("userprofile").then(async (mobile) => {
-        const emobile = btoa(mobile);
-        const { data, error } = await supabase
-          .from("GedanS")
-          .upsert({ songs: playList, mobile: emobile })
-          .select();
-        if (error) {
-          setOpenDialog(false);
-          messageApi.error(
-            "分享歌单失败了哦~可能是您的歌单和别人的重复啦，再去添加一些别的歌曲吧~"
-          );
-          setdisabled(false);
-          return;
-        }
-        if (data && Array.isArray(data)) {
-          const UUID = data[0].gedanid;
-          setgedanidc(UUID);
-          setgedanidshow(true);
-          setdisabled(false);
-          setsharedisabled(true);
-          setTimeout(() => {
-            setsharedisabled(false);
-          }, 300000);
-        }
-      });
-    }
-  };
+	const handleShare = async () => {
+		if (playList && Array.isArray(playList) && playList.length >= 10) {
+			setdisabled(true);
+			yuxStorage.getItem("userprofile").then(async (mobile) => {
+				const emobile = btoa(mobile);
+				const { data, error } = await supabase
+					.from("GedanS")
+					.upsert({ songs: playList, mobile: emobile })
+					.select();
+				if (error) {
+					setOpenDialog(false);
+					messageApi.error(
+						"分享歌单失败了哦~可能是您的歌单和别人的重复啦，再去添加一些别的歌曲吧~"
+					);
+					setdisabled(false);
+					return;
+				}
+				if (data && Array.isArray(data)) {
+					const UUID = data[0].gedanid;
+					setgedanidc(UUID);
+					setgedanidshow(true);
+					setdisabled(false);
+					setsharedisabled(true);
+					setTimeout(() => {
+						setsharedisabled(false);
+					}, 300000);
+				}
+			});
+		}
+	};
 
-  // 删除歌曲的函数
-  const handleDeleteClick = (index) => {
-    const newPlayList = [...playList];
-    newPlayList.splice(index, 1);
-    setPlayList(newPlayList);
-    yuxStorage.setItem("playList", JSON.stringify(newPlayList));
-  };
+	// 删除歌曲的函数
+	const handleDeleteClick = (index) => {
+		const newPlayList = [...playList];
+		newPlayList.splice(index, 1);
+		setPlayList(newPlayList);
+		yuxStorage.setItem("playList", JSON.stringify(newPlayList));
+	};
 
-  return (
-    <>
-      {contextHolder}
-      <Dialog open={openDialog} onClose={handleClose} fullWidth>
-        <DialogTitle>
-          <span>请输入好友分享给你的歌单码</span>
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            <span>
-              当好友分享歌单后，会获得一个歌单码。请输入这个歌单码来获取这个歌单。获取成功后，分享的歌单中的歌曲将添加到您的歌单中。
-            </span>
-          </DialogContentText>
-          <TextField
-            margin="dense"
-            label="歌单码"
-            type="text"
-            fullWidth
-            variant="standard"
-            value={uuidtext}
-            onChange={handlechange}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>
-            <span>取消</span>
-          </Button>
-          <Button onClick={handleCheckUUID}>
-            <span>获取歌单内歌曲</span>
-          </Button>
-        </DialogActions>
-      </Dialog>
-      <Paper elevation={3}>
-        <div style={{ margin: "20px" }}>
-          {Array.isArray(playList) && playList.length > 0 ? (
-            <List>
-              {playList.map((song, index) => (
-                <ListItem key={index}>
-                  <ListItemText primary={song.title} secondary={song.artist} />
-                  <ButtonGroup>
-                    <Button
-                      onClick={() => handleListenClick(song.id)}
-                      variant="contained"
-                      disabled={disabled}
-                    >
-                      <span>播放</span>
-                    </Button>
-                    <Button
-                      onClick={() => handleDeleteClick(index)}
-                      variant="contained"
-                      disabled={disabled}
-                    >
-                      <span>删除</span>
-                    </Button>
-                    <Button
-                      onClick={() =>
-                        handleInsectSongClick({
-                          id: song.id,
-                          name: song.title,
-                          artist: song.artist,
-                        })
-                      }
-                      variant="contained"
-                      disabled={disabled}
-                    >
-                      <span>下首播</span>
-                    </Button>
-                  </ButtonGroup>
-                </ListItem>
-              ))}
-            </List>
-          ) : (
-            <Empty description="还没有歌曲哦~" />
-          )}
-          <Card
-            style={{
-              marginTop: "10px",
-            }}
-          >
-            <CardContent
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Typography
-                variant="body2"
-                gutterBottom
-                style={{ marginTop: "10px" }}
-              >
-                <span>注：个人歌单功能为</span>
-                <ExperimentTwoTone />
-                <span>
-                  实验性功能，且需要登录后才能分享歌单。
-                  <br />
-                  <br />
-                  请注意，我们系统会自动保存您在歌单方面的更改。
-                  <br />
-                  这些数据是保存在您本地设备上的，也就是说，除非您分享了歌单，否则只有您才能看到和听到您的歌单。
-                  <br />
-                  我们强烈建议您不要尝试自行修改歌单数据。如果您进行任何修改，可能会造成不可预测的系统问题，这可能会影响您歌单的完整性和可用性。
-                  <br />
-                  <br />
-                  当前仅支持部分歌曲加歌单播放，开发者正在全力开发啦~
-                  <br />
-                  如果您想分享歌单的话，攒够十首您和您好友喜欢听的歌，就可以分享啦~但是请合理使用哦，有时间限制哒~
-                </span>
-              </Typography>
-              {gedanidshow ? (
-                <Typography
-                  variant="body2"
-                  gutterBottom
-                  style={{ marginTop: "10px" }}
-                >
-                  <span>
-                    分享成功啦~ 您的歌单ID为：
-                    <br />
-                    <br />
-                    {gedanidc}
-                    <br />
-                    <br />
-                    收好它哦！下次打开可能就没有啦~赶快把它分享给好友吧~
-                  </span>
-                </Typography>
-              ) : (
-                <></>
-              )}
-              <ButtonGroup style={{ marginTop: "10px" }}>
-                <Button
-                  onClick={() => {
-                    setPlayList([]);
-                    yuxStorage.removeItem("playList");
-                  }}
-                  variant="contained"
-                  disabled={disabled || playList.length === 0}
-                >
-                  <span>清空歌单</span>
-                </Button>
-                <Button
-                  onClick={() => {
-                    handleShare();
-                  }}
-                  variant="contained"
-                  disabled={
-                    disabled ||
-                    playList.length === 0 ||
-                    playList.length < 10 ||
-                    sharedisabled ||
-                    !profile
-                  }
-                >
-                  分享我的歌单
-                </Button>
-                <Button
-                  onClick={() => handleGetMySongs()}
-                  variant="contained"
-                  disabled={disabled || !profile || checkisabled}
-                >
-                  获取我的歌单
-                </Button>
-                <Button
-                  onClick={() => handleClickOpen()}
-                  variant="contained"
-                  disabled={disabled || checkisabled}
-                >
-                  获取好友的歌单
-                </Button>
-              </ButtonGroup>
-            </CardContent>
-          </Card>
-        </div>
-      </Paper>
-    </>
-  );
+	return (
+		<>
+			{contextHolder}
+			<Dialog
+				open={openDialog}
+				onClose={handleClose}
+				fullWidth
+			>
+				<DialogTitle>
+					<span>请输入好友分享给你的歌单码</span>
+				</DialogTitle>
+				<DialogContent>
+					<DialogContentText>
+						<span>
+							当好友分享歌单后，会获得一个歌单码。请输入这个歌单码来获取这个歌单。获取成功后，分享的歌单中的歌曲将添加到您的歌单中。
+						</span>
+					</DialogContentText>
+					<TextField
+						margin="dense"
+						label="歌单码"
+						type="text"
+						fullWidth
+						variant="standard"
+						value={uuidtext}
+						onChange={handlechange}
+					/>
+				</DialogContent>
+				<DialogActions>
+					<Button onClick={handleClose}>
+						<span>取消</span>
+					</Button>
+					<Button onClick={handleCheckUUID}>
+						<span>获取歌单内歌曲</span>
+					</Button>
+				</DialogActions>
+			</Dialog>
+			<Paper elevation={3}>
+				<div style={{ margin: "20px" }}>
+					{Array.isArray(playList) && playList.length > 0 ? (
+						<List>
+							{playList.map((song, index) => (
+								<ListItem key={index}>
+									<ListItemText
+										primary={song.title}
+										secondary={song.artist}
+									/>
+									<ButtonGroup>
+										<Button
+											onClick={() => handleListenClick(song.id)}
+											variant="contained"
+											disabled={disabled}
+										>
+											<span>播放</span>
+										</Button>
+										<Button
+											onClick={() => handleDeleteClick(index)}
+											variant="contained"
+											disabled={disabled}
+										>
+											<span>删除</span>
+										</Button>
+										<Button
+											onClick={() =>
+												handleInsectSongClick({
+													id: song.id,
+													name: song.title,
+													artist: song.artist,
+												})
+											}
+											variant="contained"
+											disabled={disabled}
+										>
+											<span>下首播</span>
+										</Button>
+									</ButtonGroup>
+								</ListItem>
+							))}
+						</List>
+					) : (
+						<Empty description="还没有歌曲哦~" />
+					)}
+					<Card
+						style={{
+							marginTop: "10px",
+						}}
+					>
+						<CardContent
+							style={{
+								display: "flex",
+								flexDirection: "column",
+								justifyContent: "center",
+								alignItems: "center",
+							}}
+						>
+							<Typography
+								variant="body2"
+								gutterBottom
+								style={{ marginTop: "10px" }}
+							>
+								<span>注：个人歌单功能为</span>
+								<ExperimentTwoTone />
+								<span>
+									实验性功能，且需要登录后才能分享歌单。
+									<br />
+									<br />
+									请注意，我们系统会自动保存您在歌单方面的更改。
+									<br />
+									这些数据是保存在您本地设备上的，也就是说，除非您分享了歌单，否则只有您才能看到和听到您的歌单。
+									<br />
+									我们强烈建议您不要尝试自行修改歌单数据。如果您进行任何修改，可能会造成不可预测的系统问题，这可能会影响您歌单的完整性和可用性。
+									<br />
+									<br />
+									当前仅支持部分歌曲加歌单播放，开发者正在全力开发啦~
+									<br />
+									如果您想分享歌单的话，攒够十首您和您好友喜欢听的歌，就可以分享啦~但是请合理使用哦，有时间限制哒~
+								</span>
+							</Typography>
+							{gedanidshow ? (
+								<Typography
+									variant="body2"
+									gutterBottom
+									style={{ marginTop: "10px" }}
+								>
+									<span>
+										分享成功啦~ 您的歌单ID为：
+										<br />
+										<br />
+										{gedanidc}
+										<br />
+										<br />
+										收好它哦！下次打开可能就没有啦~赶快把它分享给好友吧~
+									</span>
+								</Typography>
+							) : (
+								<></>
+							)}
+							<ButtonGroup style={{ marginTop: "10px" }}>
+								<Button
+									onClick={() => {
+										setPlayList([]);
+										yuxStorage.removeItem("playList");
+									}}
+									variant="contained"
+									disabled={disabled || playList.length === 0}
+								>
+									<span>清空歌单</span>
+								</Button>
+								<Button
+									onClick={() => {
+										handleShare();
+									}}
+									variant="contained"
+									disabled={
+										disabled ||
+										playList.length === 0 ||
+										playList.length < 10 ||
+										sharedisabled ||
+										!profile
+									}
+								>
+									分享我的歌单
+								</Button>
+								<Button
+									onClick={() => handleGetMySongs()}
+									variant="contained"
+									disabled={disabled || !profile || checkisabled}
+								>
+									获取我的歌单
+								</Button>
+								<Button
+									onClick={() => handleClickOpen()}
+									variant="contained"
+									disabled={disabled || checkisabled}
+								>
+									获取好友的歌单
+								</Button>
+							</ButtonGroup>
+						</CardContent>
+					</Card>
+				</div>
+			</Paper>
+		</>
+	);
 };
 export default PersonalPlaylist;

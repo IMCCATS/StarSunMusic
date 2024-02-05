@@ -6,23 +6,30 @@ import * as React from "react";
 import { GetYiYan } from "./fetchapi";
 
 export default function YiYan() {
-  const [YiYan, SetYiYan] = React.useState({});
-  React.useEffect(() => {
-    GetYiYan()
-      .then((e) => {
-        SetYiYan(e);
-      })
-      .catch((err) => {});
-  }, []);
-  return (
-    <Card sx={{ minWidth: 275 }} style={{ marginTop: "15px" }}>
-      <CardContent style={{ display: "flex", justifyContent: "center" }}>
-        <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-          <span>
-            ⌈ {YiYan.text} ⌋ —— {YiYan.from}
-          </span>
-        </Typography>
-      </CardContent>
-    </Card>
-  );
+	const [YiYan, SetYiYan] = React.useState({});
+	React.useEffect(() => {
+		GetYiYan()
+			.then((e) => {
+				SetYiYan(e);
+			})
+			.catch((err) => {});
+	}, []);
+	return (
+		<Card
+			sx={{ minWidth: 275 }}
+			style={{ marginTop: "15px" }}
+		>
+			<CardContent style={{ display: "flex", justifyContent: "center" }}>
+				<Typography
+					sx={{ fontSize: 14 }}
+					color="text.secondary"
+					gutterBottom
+				>
+					<span>
+						⌈ {YiYan.text} ⌋ —— {YiYan.from}
+					</span>
+				</Typography>
+			</CardContent>
+		</Card>
+	);
 }
