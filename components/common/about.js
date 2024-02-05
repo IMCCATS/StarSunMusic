@@ -252,7 +252,7 @@ export default function Advertisement() {
                 <a
                   onClick={() => {
                     window.open(
-                      "https://cowtransfer.com/s/281d926c73f741",
+                      "https://pan.quark.cn/s/6ffb328f7ece",
                       "mozillaTab",
                       "noopener,noreferrer"
                     );
@@ -263,7 +263,7 @@ export default function Advertisement() {
                     aria-label="点击下载安卓客户端"
                     target="blank"
                   >
-                    点击下载安卓客户端（传输口令 vetmy9）
+                    点击下载安卓客户端（提取码：tzSx）
                   </Link>
                 </a>
               </span>
