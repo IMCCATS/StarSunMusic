@@ -1,4 +1,7 @@
+export const runtime = "edge"; // 'nodejs' (default) | 'edge'
+
 export const dynamic = "force-dynamic";
+
 import { Base64 } from "js-base64";
 
 export async function GET(request) {
