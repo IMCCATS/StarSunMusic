@@ -2,8 +2,8 @@
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
-import { GetYiYan } from "./fetchapi";
 import * as React from "react";
+import { GetYiYan } from "./fetchapi";
 
 export default function YiYan() {
   const [YiYan, SetYiYan] = React.useState({});

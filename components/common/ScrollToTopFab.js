@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { Fab, Typography } from "@mui/material";
 import NavigationIcon from "@mui/icons-material/Navigation";
+import { Fab, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import { useEffect, useState } from "react";
 
 const ScrollToTopFab = () => {
   const [isFabVisible, setIsFabVisible] = useState(false);

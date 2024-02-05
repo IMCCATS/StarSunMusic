@@ -1,8 +1,8 @@
-import $ from "jquery";
-import { cache } from "react";
-import supabase from "@/app/api/supabase";
 import { getShuanQApiClient } from "@/app/api/Api";
+import supabase from "@/app/api/supabase";
+import $ from "jquery";
 import { Base64 } from "js-base64";
+import { cache } from "react";
 
 export const revalidate = 3600; //数据缓存时间
 

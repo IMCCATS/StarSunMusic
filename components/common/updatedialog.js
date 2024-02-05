@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { Dialog, DialogContent, DialogActions, Button } from "@mui/material";
 import {
-  appupdatetime,
   appupdatecontent,
+  appupdatetime,
   appversion,
 } from "@/app/api/appconfig";
 import yuxStorage from "@/app/api/yux-storage";
+import { Button, Dialog, DialogActions, DialogContent } from "@mui/material";
+import { useEffect, useState } from "react";
 
 const UpdateDialog = () => {
   const [open, setOpen] = useState(false);

@@ -1,26 +1,26 @@
-import * as React from "react";
+import PauseIcon from "@mui/icons-material/Pause";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import RepeatOneIcon from "@mui/icons-material/RepeatOne";
 import {
-  Card,
+  Box,
   Button,
+  Card,
   CardContent,
-  Typography,
-  IconButton,
-  Slider,
   Dialog,
+  DialogActions,
   DialogContent,
   DialogTitle,
-  DialogActions,
-  Tooltip,
-  Box,
   Divider,
+  IconButton,
   Link,
+  Slider,
+  Tooltip,
+  Typography,
 } from "@mui/material";
-import PropTypes from "prop-types";
-import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import PauseIcon from "@mui/icons-material/Pause";
-import RepeatOneIcon from "@mui/icons-material/RepeatOne";
+import Tabs from "@mui/material/Tabs";
+import PropTypes from "prop-types";
+import * as React from "react";
 
 const MusicCard = ({ currentSong }) => {
   const [isAudioPlayable, setIsAudioPlayable] = React.useState(true);
