@@ -173,7 +173,7 @@ export const HandleListenSongDatabase = cache(async (id) => {
   });
 }); //歌曲解析函数
 
-export const HandlePlayList = cache(async (ListId) => {
+export const HandlePlayListBeiXuan = cache(async (ListId) => {
   return new Promise((resolve, reject) => {
     HandleAjax("https://api.yimian.xyz/msc/", "get", {
       type: "playlist",
@@ -205,7 +205,7 @@ const ConvertJsonBeiXuanPlaylist = function (serverJson) {
   return convertedJsons;
 };
 
-export const HandlePlayListBeiXuan = cache(async (ListId) => {
+export const HandlePlayList = cache(async (ListId) => {
   return new Promise((resolve, reject) => {
     HandleAjax(
       `https://api.gumengya.com/Api/MusicList?format=json&url=https://music.163.com/playlist?id=${ListId}`,

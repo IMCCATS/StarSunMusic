@@ -32,7 +32,7 @@ export default function Advertisement() {
           <span>星阳音乐系统</span>
         </Typography>
         <Typography sx={{ mb: 1.5 }} color="text.secondary">
-          <span>“音韵流传，乐章永恒”</span>
+          <span>“让音韵流传，让乐章永恒”</span>
         </Typography>
         <Typography variant="body2">
           <span>版本：{appversion}</span>
@@ -240,7 +240,7 @@ export default function Advertisement() {
                     <Typography
                       sx={{ ml: 1, display: { xs: "none", sm: "block" } }}
                     >
-                      <span>— “音韵流传，乐章永恒”</span>
+                      <span>— “让音韵流传，让乐章永恒”</span>
                     </Typography>
                   </Flex>
                 </>

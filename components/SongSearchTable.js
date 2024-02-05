@@ -130,9 +130,11 @@ export default function SongSearchTable({ setcanlistplay }) {
   const AddSearchHistory = () => {
     setallwz("搜索功能加载完成啦~\n请搜索歌曲哦~");
     yuxStorage.getItem("SearchHistory").then((e) => {
-      const savedSearchHistory = JSON.parse(e);
-      if (savedSearchHistory) {
-        SetSearchHistory(savedSearchHistory);
+      if (e) {
+        const savedSearchHistory = JSON.parse(e);
+        if (savedSearchHistory) {
+          SetSearchHistory(savedSearchHistory);
+        }
       }
     });
   };
