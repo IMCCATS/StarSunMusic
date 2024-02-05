@@ -361,7 +361,6 @@ export default function LikeSongBar() {
               variant="standard"
             />
             <TextField
-              autoFocus
               margin="dense"
               id="songname"
               label="歌单名"

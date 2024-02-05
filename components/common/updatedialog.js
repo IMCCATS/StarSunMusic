@@ -67,7 +67,7 @@ const UpdateDialog = () => {
           <p>⭐更新内容：{updateContent}</p>
         </DialogContent>
         <DialogActions>
-          <Button autoFocus onClick={handleClose}>
+          <Button onClick={handleClose}>
             <span>我知道啦~</span>
           </Button>
         </DialogActions>
