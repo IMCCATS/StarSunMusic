@@ -5,7 +5,14 @@ import { Base64 } from "js-base64";
 
 export const revalidate = 3600; //数据缓存时间
 
-const ConvertJson = function (serverJson) {
+/**
+ * @description 转换接口提供的数据为程序可接受的数据
+ * @author 韩研凌(小研同学)
+ * @date 2024/02/06
+ * @param {Array} serverJson 服务器提供的json
+ * @returns {Array} 转换后的数据
+ */
+const ConvertJson = (serverJson) => {
 	const data = serverJson;
 	const convertedJsons = [];
 
@@ -26,7 +33,14 @@ const ConvertJson = function (serverJson) {
 	return convertedJsons;
 }; //转换服务器数据
 
-const ConvertJsonSJK = function (serverJson) {
+/**
+ * @description 转换接口提供的数据为程序可接受的数据
+ * @author 韩研凌(小研同学)
+ * @date 2024/02/06
+ * @param {Array} serverJson 服务器提供的json
+ * @returns {Array} 转换后的数据
+ */
+const ConvertJsonSJK = (serverJson) => {
 	const data = serverJson;
 	const convertedJsons = [];
 
@@ -46,7 +60,14 @@ const ConvertJsonSJK = function (serverJson) {
 	return convertedJsons;
 };
 
-const ConvertJsonSong = function (serverJson) {
+/**
+ * @description 转换接口提供的数据为程序可接受的数据
+ * @author 韩研凌(小研同学)
+ * @date 2024/02/06
+ * @param {Array} serverJson 服务器提供的json
+ * @returns {Array} 转换后的数据
+ */
+const ConvertJsonSong = (serverJson) => {
 	if (
 		serverJson.data &&
 		serverJson.data.songid &&
@@ -77,7 +98,15 @@ const ConvertJsonSong = function (serverJson) {
 	}
 };
 
-export const HandleAjax = async (url, type, data) => {
+/**
+ * @description 全局网络请求函数，接口使用Base64加密
+ * @author 韩研凌(小研同学)
+ * @date 2024/02/06
+ * @param {string} url
+ * @param {string} type
+ * @param {Array} data 请求的数据，Json格式
+ */
+const HandleAjax = async (url, type, data) => {
 	return new Promise((resolve, reject) => {
 		const ad = encodeURIComponent(JSON.stringify({ url, data }));
 		const adc = Base64.encode(ad);
@@ -111,7 +140,15 @@ export const HandleAjax = async (url, type, data) => {
 	});
 }; //全局网络请求函数
 
-export const SearchSong = async (SearchPlatform, SearchTerm) => {
+/**
+ * @description 歌曲搜索函数，通过调用接口请求获取搜索到的歌曲
+ * @author 韩研凌(小研同学)
+ * @date 2024/02/06
+ * @param {string} SearchPlatform 搜索的平台，可选netease,kugou,migu,kuwo(不可用)
+ * @param {string} SearchTerm 搜索的内容
+ * @returns {Promise<Array>} 返回从接口获取到的歌曲数据（数组）
+ */
+const SearchSong = async (SearchPlatform, SearchTerm) => {
 	return new Promise((resolve, reject) => {
 		HandleAjax("https://api.gumengya.com/Api/Music", "get", {
 			format: "json",
@@ -128,7 +165,14 @@ export const SearchSong = async (SearchPlatform, SearchTerm) => {
 	});
 }; //歌曲搜索函数
 
-export const HandleListenSong = async (id) => {
+/**
+ * @description 根据歌曲ID从接口获取歌曲信息并返回
+ * @author 韩研凌(小研同学)
+ * @date 2024/02/06
+ * @param {string} id 歌曲云音乐ID
+ * @returns {Promise<Array>} Promise对象返回歌曲的数据，如果获取错误则拒绝请求
+ */
+const HandleListenSong = async (id) => {
 	return new Promise((resolve, reject) => {
 		HandleAjax("https://api.paugram.com/netease/", "get", {
 			id: `${id}`,
@@ -152,7 +196,15 @@ export const HandleListenSong = async (id) => {
 	});
 }; //歌曲解析函数
 
-export const HandleListenSongDatabase = (id) => {
+/**
+ * @requires @supabase/supabase-js
+ * @description 从数据库获取单个歌曲信息并返回对应内容的方法
+ * @author 韩研凌(小研同学)
+ * @date 2024/02/05
+ * @param {string} id 歌曲在数据库的ID
+ * @returns {Promise<Array>} 数据库获取到的歌曲信息，json格式
+ */
+const HandleListenSongDatabase = (id) => {
 	return new Promise(async (resolve, reject) => {
 		const { data, error } = await supabase
 			.from("MusicSearch")
@@ -170,7 +222,14 @@ export const HandleListenSongDatabase = (id) => {
 	});
 }; //歌曲解析函数
 
-export const HandlePlayListBeiXuan = async (ListId) => {
+/**
+ * @description 从服务器获取歌单中的歌曲数据
+ * @author 韩研凌(小研同学)
+ * @date 2024/02/06
+ * @param {string} ListId 歌单ID
+ * @returns {Promise<Array>} res 歌单中歌曲数据，数组格式
+ */
+const HandlePlayListBeiXuan = async (ListId) => {
 	return new Promise((resolve, reject) => {
 		HandleAjax("https://api.yimian.xyz/msc/", "get", {
 			type: "playlist",
@@ -185,6 +244,13 @@ export const HandlePlayListBeiXuan = async (ListId) => {
 	});
 }; //歌单解析函数
 
+/**
+ * @description 转换接口提供的数据为程序可接受的数据
+ * @author 韩研凌(小研同学)
+ * @date 2024/02/06
+ * @param {Array} serverJson 服务器提供的json
+ * @returns {Array} 转换后的数据
+ */
 const ConvertJsonBeiXuanPlaylist = function (serverJson) {
 	const data = serverJson;
 	const convertedJsons = [];
@@ -202,7 +268,14 @@ const ConvertJsonBeiXuanPlaylist = function (serverJson) {
 	return convertedJsons;
 };
 
-export const HandlePlayList = async (ListId) => {
+/**
+ * @description 从服务器获取歌单中的歌曲数据
+ * @author 韩研凌(小研同学)
+ * @date 2024/02/06
+ * @param {string} ListId 歌单ID
+ * @returns {Promise<Array>} res 歌单中歌曲数据，数组格式
+ */
+const HandlePlayList = async (ListId) => {
 	return new Promise((resolve, reject) => {
 		HandleAjax(
 			`https://api.gumengya.com/Api/MusicList?format=json&url=https://music.163.com/playlist?id=${ListId}`,
@@ -218,7 +291,16 @@ export const HandlePlayList = async (ListId) => {
 	});
 }; //备选歌单解析函数
 
-export const LoadMoreSearchSong = async (Term, Platform, Page) => {
+/**
+ * @description 从服务器获取更多歌曲，补充到前台
+ * @author 韩研凌(小研同学)
+ * @date 2024/02/06
+ * @param {string} Term 搜索的内容
+ * @param {string} Platform 搜索的平台
+ * @param {string} Page 当前搜索的页面
+ * @returns {Promise<Array>} CCJson 第Page页在服务器的歌曲数据
+ */
+const LoadMoreSearchSong = async (Term, Platform, Page) => {
 	return new Promise((resolve, reject) => {
 		HandleAjax("https://api.gumengya.com/Api/Music", "get", {
 			format: "json",
@@ -236,7 +318,12 @@ export const LoadMoreSearchSong = async (Term, Platform, Page) => {
 	});
 }; //加载更多歌曲函数
 
-export const GetYiYan = async () => {
+/**
+ * @description 从接口获取每日一言返回前台，无需参数
+ * @author 韩研凌(小研同学)
+ * @date 2024/02/06
+ */
+const GetYiYan = async () => {
 	return new Promise((resolve, reject) => {
 		HandleAjax("https://v1.hitokoto.cn", "get", {
 			c: "i",
@@ -271,7 +358,7 @@ export const GetYiYan = async () => {
  * @param  pitch  读取时声音的音高 0~2  正常1
  * @returns SpeechSynthesisUtterance
  */
-export default function speak(
+function speak(
 	{ text, speechRate, lang, volume, pitch },
 	endEvent,
 	startEvent
@@ -302,7 +389,7 @@ export default function speak(
 	return speechUtterance;
 }
 
-// export const Login = async (account, password, machine_code, machine_info) => {
+// const Login = async (account, password, machine_code, machine_info) => {
 //   return new Promise((resolve, reject) => {
 //     const LoginApi = getShuanQApiClient();
 //     LoginApi.setRequestApi("/api/member_app/login");
@@ -365,7 +452,13 @@ export default function speak(
 //   });
 // }; //登录
 
-export const GetRegCode = async (phone) => {
+/**
+ * @description 向服务器发送获取验证码请求
+ * @author 韩研凌(小研同学)
+ * @date 2024/02/06
+ * @param {string} phone 用户手机号
+ */
+const GetRegCode = async (phone) => {
 	return new Promise((resolve, reject) => {
 		const GetRegisterCodeApi = getShuanQApiClient();
 		GetRegisterCodeApi.setRequestApi("/api/member_app/get_login_sms_code");
@@ -417,7 +510,14 @@ export const GetRegCode = async (phone) => {
 	});
 };
 
-export const CodeLogin = async (phone, code) => {
+/**
+ * @description 使用验证码登录
+ * @author 韩研凌(小研同学)
+ * @date 2024/02/06
+ * @param {string} phone 用户手机号
+ * @param {string} code 用户验证码
+ */
+const CodeLogin = async (phone, code) => {
 	return new Promise((resolve, reject) => {
 		const CodeLoginApi = getShuanQApiClient();
 		CodeLoginApi.setRequestApi("/api/member_app/phone_login");
@@ -476,4 +576,18 @@ export const CodeLogin = async (phone, code) => {
 				reject("请求失败");
 			});
 	});
+};
+
+export {
+	HandleAjax,
+	HandleListenSong,
+	HandleListenSongDatabase,
+	HandlePlayList,
+	HandlePlayListBeiXuan,
+	SearchSong,
+	CodeLogin,
+	GetRegCode,
+	LoadMoreSearchSong,
+	speak,
+	GetYiYan,
 };
