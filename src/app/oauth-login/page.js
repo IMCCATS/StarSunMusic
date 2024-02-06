@@ -231,6 +231,7 @@ export default function LoginPage() {
 							<Box sx={{ mt: 2 }}>
 								<Flex gap="middle">
 									<TextField
+										autoFocus
 										id="outlined-basic"
 										label="手机号"
 										variant="outlined"
@@ -246,6 +247,7 @@ export default function LoginPage() {
 							<Box sx={{ mt: 2 }}>
 								<Flex gap="middle">
 									<TextField
+										autoFocus
 										id="outlined-basic"
 										label="验证码"
 										variant="outlined"
