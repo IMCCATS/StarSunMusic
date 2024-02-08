@@ -310,13 +310,15 @@ const PersonalPlaylist = () => {
 										>
 											<span>下首播</span>
 										</Button>
-										<Button
-											onClick={() => console.log(song)}
-											variant="contained"
-											disabled={disabled}
-										>
-											<span>打印</span>
-										</Button>
+										{process.env.NODE_ENV === "development" && (
+											<Button
+												onClick={() => console.log(song)}
+												variant="contained"
+												disabled={disabled}
+											>
+												<span>打印</span>
+											</Button>
+										)}
 									</ButtonGroup>
 								</ListItem>
 							))}

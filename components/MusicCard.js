@@ -640,6 +640,8 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
 												</DialogTitle>
 												<DialogContent>
 													<Tabs
+														variant="scrollable"
+														scrollButtons="auto"
 														value={value}
 														onChange={handleChange}
 													>

@@ -70,7 +70,17 @@ export default function UserAva() {
 
 		Promise.all([b, c, d, e])
 			.then(async ([bb, cc, dd, ee]) => {
-				if (c) {
+				if (cc) {
+					const fullPhone = cc;
+					const lastFourDigits = fullPhone.slice(-4); // 获取手机号后四位
+					setuser(`用户${lastFourDigits}`); // 组合成 "用户" + 手机号后四位
+
+					// 格式化手机号，中间四位用*代替
+					const maskedPhone = `${fullPhone.slice(
+						0,
+						3
+					)}****${lastFourDigits}`;
+					setmobile(maskedPhone);
 					const text = ee + cc + bb + ee;
 					if (text) {
 						const ecode = await sha256(text);
@@ -97,7 +107,6 @@ export default function UserAva() {
 						setprofile(false);
 					}
 				} else {
-					messageApi.error("技术问题出现啦，快联系开发者修复~");
 					setprofile(false);
 				}
 			})
@@ -109,18 +118,6 @@ export default function UserAva() {
 					console.error("Error fetching app data:", error);
 				}
 			});
-
-		yuxStorage.getItem("userprofile").then((e) => {
-			if (e) {
-				const fullPhone = e;
-				const lastFourDigits = fullPhone.slice(-4); // 获取手机号后四位
-				setuser(`用户${lastFourDigits}`); // 组合成 "用户" + 手机号后四位
-
-				// 格式化手机号，中间四位用*代替
-				const maskedPhone = `${fullPhone.slice(0, 3)}****${lastFourDigits}`;
-				setmobile(maskedPhone);
-			}
-		});
 	}, []);
 
 	const handleLogin = () => {

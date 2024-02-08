@@ -41,7 +41,8 @@ import FingerprintJS from "@fingerprintjs/fingerprintjs";
 import yuxStorage from "@/app/api/yux-storage";
 import ListIcon from "@mui/icons-material/List";
 import SearchIcon from "@mui/icons-material/Search";
-import { DeveloperBoard } from "@mui/icons-material";
+import { DeveloperBoard, Settings } from "@mui/icons-material";
+import SystemSettings from "../../../components/Settings/Settings";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
 	return (
@@ -122,17 +123,32 @@ function StarSunMusic() {
 	};
 
 	const handleNextSongClick = () => {
+		const handlePlayComplete = () => {
+			const play = () => {
+				setCurrentSong({
+					title: "播放列表播放完成提示",
+					artist: "星阳音乐系统",
+					cover: "/logo.png",
+					link: "/finish_list.mp3",
+					lyric: "[00:00.00]星阳音乐系统提醒您，播放列表播放完成！",
+				});
+			};
+			yuxStorage
+				.getItem("handleCannotPlay")
+				.then((e) => {
+					if (e === "1") {
+						play();
+					}
+				})
+				.catch((e) => {
+					play();
+				});
+		};
 		const index = lastPlayedSongIndex + 1;
 		// 检查索引是否越界
 		if (index >= PlayingSongs.length) {
 			messageApi.success("播放列表播放完成");
-			setCurrentSong({
-				title: "播放列表播放完成提示",
-				artist: "星阳音乐系统",
-				cover: "/logo.png",
-				link: "/finish_list.mp3",
-				lyric: "[00:00.00]星阳音乐系统提醒您，播放列表播放完成！",
-			});
+			handlePlayComplete();
 			return;
 		}
 		if (
@@ -245,6 +261,7 @@ function StarSunMusic() {
 						canlistplay={canlistplay}
 					/>
 					<Dialog
+						style={{ zIndex: 998 }}
 						fullWidth
 						open={Clickopen}
 						onClose={() => {
@@ -402,6 +419,20 @@ function StarSunMusic() {
 								>
 									<ListIcon />
 									播放列表
+								</Button>
+								<Button
+									variant="contained"
+									sx={{
+										height: "56px",
+										marginTop: "10px",
+										marginRight: "10px",
+									}}
+									onClick={() => {
+										handleopen("系统设置", <SystemSettings />);
+									}}
+								>
+									<Settings />
+									系统设置
 								</Button>
 							</Flex>
 						</CardContent>
