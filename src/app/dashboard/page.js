@@ -20,7 +20,10 @@ import Typography from "@mui/material/Typography";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import LikeSongBar from "../../../components/LikeSongsBar";
 import { ConfigProvider, Flex, message } from "antd";
-import { HandleListenSong } from "../../../components/common/fetchapi";
+import {
+	GetAppData,
+	HandleListenSong,
+} from "../../../components/common/fetchapi";
 import {
 	Backdrop,
 	Button,
@@ -77,6 +80,8 @@ function StarSunMusic() {
 					setTimeout(() => {
 						router.push("/");
 					}, 5000);
+				} else {
+					GetAppData();
 				}
 			})
 			.catch((e) => {
@@ -86,15 +91,8 @@ function StarSunMusic() {
 				}, 5000);
 			});
 	};
-	// const AddyuxStorageDebug = () => {
-	//   window.addEventListener("storage", (e) => {
-	//     if (e.key) {
-	//       yuxStorage.setItem(e.key, e.oldValue);
-	//     }
-	//   });
-	// };
+
 	React.useEffect(() => {
-		// AddyuxStorageDebug();
 		CheckPolicy();
 	}, []);
 
@@ -127,7 +125,14 @@ function StarSunMusic() {
 		const index = lastPlayedSongIndex + 1;
 		// 检查索引是否越界
 		if (index >= PlayingSongs.length) {
-			messageApi.success("列表播放已完成");
+			messageApi.success("播放列表播放完成");
+			setCurrentSong({
+				title: "播放列表播放完成提示",
+				artist: "星阳音乐系统",
+				cover: "/logo.png",
+				link: "/finish_list.mp3",
+				lyric: "[00:00.00]星阳音乐系统提醒您，播放列表播放完成！",
+			});
 			return;
 		}
 		if (

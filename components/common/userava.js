@@ -16,7 +16,7 @@ import {
 	MenuItem,
 	Typography,
 } from "@mui/material";
-import { Descriptions, Divider, Flex, message } from "antd";
+import { Descriptions, Divider, Flex, message, Modal } from "antd";
 import { useRouter } from "next/navigation";
 import * as React from "react";
 const crypto = require("crypto");
@@ -32,27 +32,33 @@ export default function UserAva() {
 	const [mobile, setmobile] = React.useState("");
 
 	const handleQuitLogin = () => {
-		handleCloseC();
-		setdisabled(true);
-		yuxStorage.removeItem("userprofile").then(() => {
-			yuxStorage.removeItem("mobiletoken").then(() => {
-				yuxStorage.removeItem("ykey").then(() => {
-					yuxStorage.removeItem("skey").then(() => {
-						setprofile(false);
-						setTimeout(() => {
-							messageApi.success("退出登录成功~");
-							setdisabled(false);
-						}, 1000);
+		Modal.confirm({
+			title: "确认退出登录？",
+			content: <p>此操作将退出您的账户登录。</p>,
+			okText: "确认",
+			cancelText: "取消",
+			onOk() {
+				handleCloseC();
+				setdisabled(true);
+				yuxStorage.removeItem("userprofile").then(() => {
+					yuxStorage.removeItem("mobiletoken").then(() => {
+						yuxStorage.removeItem("ykey").then(() => {
+							yuxStorage.removeItem("skey").then(() => {
+								setprofile(false);
+								setTimeout(() => {
+									messageApi.success("退出登录成功~");
+									setdisabled(false);
+								}, 1000);
+							});
+						});
 					});
 				});
-			});
+			},
+			onCancel() {},
 		});
 	};
 
 	React.useEffect(() => {
-		yuxStorage.getItem("userprofile").then((a) => {
-			setuser("当前登录用户：" + a);
-		});
 		const b = yuxStorage.getItem("mobiletoken");
 		const c = yuxStorage.getItem("userprofile");
 		const d = yuxStorage.getItem("ykey");
@@ -103,6 +109,18 @@ export default function UserAva() {
 					console.error("Error fetching app data:", error);
 				}
 			});
+
+		yuxStorage.getItem("userprofile").then((e) => {
+			if (e) {
+				const fullPhone = e;
+				const lastFourDigits = fullPhone.slice(-4); // 获取手机号后四位
+				setuser(`用户${lastFourDigits}`); // 组合成 "用户" + 手机号后四位
+
+				// 格式化手机号，中间四位用*代替
+				const maskedPhone = `${fullPhone.slice(0, 3)}****${lastFourDigits}`;
+				setmobile(maskedPhone);
+			}
+		});
 	}, []);
 
 	const handleLogin = () => {
@@ -122,20 +140,6 @@ export default function UserAva() {
 				router.push("/oauth-login");
 			});
 	};
-
-	React.useEffect(() => {
-		if (profile) {
-			yuxStorage.getItem("userprofile").then((e) => {
-				const fullPhone = e; // 假设 e 中有一个 phone 属性包含完整的手机号
-				const lastFourDigits = fullPhone.slice(-4); // 获取手机号后四位
-				setuser(`用户${lastFourDigits}`); // 组合成 "用户" + 手机号后四位
-
-				// 格式化手机号，中间四位用*代替
-				const maskedPhone = `${fullPhone.slice(0, 3)}****${lastFourDigits}`;
-				setmobile(maskedPhone);
-			});
-		}
-	}, [profile]);
 
 	const handleMenu = (event) => {
 		setAnchorEl(event.currentTarget);

@@ -1,7 +1,9 @@
 import { getShuanQApiClient } from "@/app/api/Api";
 import supabase from "@/app/api/supabase";
+import yuxStorage from "@/app/api/yux-storage";
 import $ from "jquery";
 import { Base64 } from "js-base64";
+import { Modal } from "antd";
 
 export const revalidate = 3600; //数据缓存时间
 
@@ -575,6 +577,85 @@ const CodeLogin = async (phone, code) => {
 				console.log("请求失败" + error);
 				reject("请求失败");
 			});
+	});
+};
+
+/**
+ * @description 从服务器获取应用信息
+ * @author 韩研凌(小研同学)
+ * @date 2024/02/08
+ */
+export const GetAppData = async () => {
+	return new Promise((resolve, reject) => {
+		const GetAppDataApi = getShuanQApiClient();
+		GetAppDataApi.setRequestApi("/api/app/get_app_info");
+
+		GetAppDataApi.sendRequest()
+			.then((response) => {
+				const responseJson = GetAppDataApi.getResponseJsonObject(); //获取响应json对象
+				const responseCode = responseJson.code; //得到请求响应返回状态码
+				const responseMessage = responseJson.message; //得到请求响应返回信息
+				if (responseCode !== 1) {
+					//接口业务码响应非成功-将服务器返回信息提示
+					console.warn(responseMessage);
+					return;
+				}
+				if (!GetAppDataApi.requestDataSignatureVerify()) {
+					//响应数据验签检测未通过
+					console.warn("响应数据验签失败");
+					return;
+				}
+				if (!GetAppDataApi.requestSafeCodeVerify()) {
+					//防劫持验证检测未通过
+					console.warn("检测到数据被劫持篡改了，请检查网络环境是否安全！");
+					return;
+				}
+				if (!GetAppDataApi.requestDataTimeDifferenceVerify()) {
+					//响应数据检测验证不通过
+					console.warn(
+						"响应数据异常，与服务器时差相差过多，请检查系统时钟是否正确！"
+					);
+					return;
+				}
+				const dataJson = GetAppDataApi.getDecryptResponseData(); // 解密aes得到原始未加密的dataJson数据
+
+				let data = JSON.parse(dataJson);
+				// console.log("data：", JSON.stringify(data));
+
+				//业务代码
+				const Announcement = data.info.param_extend_config.Announcement;
+				if (Announcement) {
+					ShowAnnouncement(Announcement);
+				}
+			})
+			.catch((error) => {
+				console.log("请求失败" + error);
+				reject("请求失败");
+			});
+	});
+};
+
+/**
+ * @description 给用户展示公告
+ * @author 韩研凌(小研同学)
+ * @date 2024/02/08
+ * @param {string} Announcement
+ */
+const ShowAnnouncement = (Announcement) => {
+	yuxStorage.getItem("LastAnnouncementVersion").then((e) => {
+		const A_Object = JSON.parse(Base64.decode(Announcement));
+		if ((e && e.version < A_Object.version) || !e) {
+			Modal.info({
+				title: "公告",
+				content: <p style={{ whiteSpace: "pre-wrap" }}>{A_Object.text}</p>,
+				okText: "阅读完成",
+				onOk() {
+					yuxStorage
+						.setItem("LastAnnouncementVersion", A_Object.version)
+						.then((e) => {});
+				},
+			});
+		}
 	});
 };
 
