@@ -217,6 +217,13 @@ export default function SongSearchTable({ setcanlistplay }) {
 		setcanlistplay(true);
 	};
 
+	const handleListenClicksjk = (song) => {
+		Setplaystatus("4");
+		SetPlayingSongs(sjk_songs);
+		setCurrentSong(song);
+		setcanlistplay(true);
+	};
+
 	const handleSearchKG = async () => {
 		if (!searchTerm) {
 			messageApi.error("您没有输入搜索内容哦~");
@@ -1086,7 +1093,7 @@ export default function SongSearchTable({ setcanlistplay }) {
 																<ButtonGroup>
 																	<Button
 																		onClick={() =>
-																			handleListenClickLinethree(
+																			handleListenClicksjk(
 																				song
 																			)
 																		}
