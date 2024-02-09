@@ -1,5 +1,5 @@
 import yuxStorage from "@/app/api/yux-storage";
-import { Card, Flex, Typography, Switch, message } from "antd";
+import { Card, Flex, Typography, Switch, message, List } from "antd";
 import * as React from "react";
 const { Text } = Typography;
 export default function SystemSettings() {
@@ -60,6 +60,17 @@ export default function SystemSettings() {
 				messageApi.error("设置失败");
 			});
 	};
+
+	const data = [
+		{
+			label: "无法播放时操作",
+			description: "当列表播放时遇到无法播放的歌曲时的操作",
+			enableLabel: "语音提示",
+			disabledLabel: "直接跳过",
+			switchState: CannotPlaySwitchState,
+			switchOnchange: CannotPlaySwitchOnChange,
+		},
+	];
 	return (
 		<>
 			{contextHolder}
@@ -71,27 +82,29 @@ export default function SystemSettings() {
 						title={"播放设置"}
 						description={"此处为音乐播放的配置"}
 					/>
-					<Flex
-						gap={"middle"}
-						vertical
-						wrap="wrap"
-					>
-						<Flex
-							gap={"large"}
-							align="center"
-							justify="center"
-							style={{ marginTop: "2vmin" }}
-						>
-							<>
-								<Text strong>无法播放时操作</Text>
-								<Switch
-									checkedChildren="语音提示"
-									unCheckedChildren="直接跳过"
-									value={CannotPlaySwitchState}
-									onChange={CannotPlaySwitchOnChange}
+					<List
+						style={{ marginTop: "10px" }}
+						bordered
+						dataSource={data}
+						renderItem={(item) => (
+							<List.Item
+								extra={
+									<Switch
+										checkedChildren={item.enableLabel}
+										unCheckedChildren={item.disabledLabel}
+										value={item.switchState}
+										onChange={item.switchOnchange}
+									/>
+								}
+							>
+								<List.Item.Meta
+									title={item.label}
+									description={item.description}
 								/>
-							</>
-							{/* <>
+							</List.Item>
+						)}
+					/>
+					{/* <>
 								<Text strong>无法播放时操作</Text>
 								<Switch
 									checkedChildren="语音提示"
@@ -100,8 +113,6 @@ export default function SystemSettings() {
 									onChange={CannotPlaySwitchOnChange}
 								/>
 							</> */}
-						</Flex>
-					</Flex>
 				</Card>
 			)}
 		</>

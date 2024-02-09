@@ -1,5 +1,6 @@
 "use client";
 import { appupdatecontent, appversion } from "@/app/api/appconfig";
+import supabase from "@/app/api/supabase";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
 	Accordion,
@@ -7,6 +8,7 @@ import {
 	AccordionSummary,
 	Link,
 	Tooltip,
+	Button,
 } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -292,17 +294,36 @@ export default function Advertisement() {
 							style={{ fontSize: "14px" }}
 						>
 							<span>
-								若您使用安卓等支持APK程序的设备，可下载客户端。客户端支持后台自动列表播放，无需频繁返回前台。链接：
-								<Link
-									underline="hover"
-									aria-label="点击下载安卓客户端"
-									target="blank"
-									href={"https://pan.quark.cn/s/6ffb328f7ece"}
-									rel={"noopener noreferrer"}
-								>
-									点击下载安卓客户端（提取码：tzSx）
-								</Link>
+								若您使用安卓等支持APK程序的设备，可下载客户端。客户端支持后台自动列表播放，无需频繁返回前台。
 							</span>
+							<Button
+								onClick={async () => {
+									// 创建一个新的 iframe 元素
+									let iframe = document.createElement("iframe");
+
+									// 将 iframe 的 'src' 属性设置为文件的 URL
+									iframe.src =
+										"https://plazsrgymwabvajemcpl.supabase.co/storage/v1/object/sign/Packages/StarSunMusic/TestPackages/1/DCloud_Wap2App/StarSunMusic_DCloudPack_Wap2App_TestVersion_1.0.0.zip?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJQYWNrYWdlcy9TdGFyU3VuTXVzaWMvVGVzdFBhY2thZ2VzLzEvRENsb3VkX1dhcDJBcHAvU3RhclN1bk11c2ljX0RDbG91ZFBhY2tfV2FwMkFwcF9UZXN0VmVyc2lvbl8xLjAuMC56aXAiLCJpYXQiOjE3MDc0NDQxOTgsImV4cCI6MjAyMjgwNDE5OH0.kMNeAq0KoyMn38AF-79HXDcn755IBR9AFsUovC-ylvI";
+
+									// 设置 iframe 的 'id' 以便稍后移除
+									iframe.id = "download_iframe";
+
+									// 将 iframe 设置为隐藏
+									iframe.style.display = "none";
+
+									// 将 iframe 添加到页面中
+									document.body.appendChild(iframe);
+
+									// 一段时间后移除这些 iframe
+									setTimeout(() => {
+										let iframe =
+											document.getElementById("download_iframe");
+										document.body.removeChild(iframe);
+									}, 5000);
+								}}
+							>
+								点击下载安卓客户端
+							</Button>
 						</Typography>
 					</AccordionDetails>
 				</Accordion>

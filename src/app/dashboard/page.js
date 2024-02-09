@@ -263,6 +263,7 @@ function StarSunMusic() {
 					<Dialog
 						style={{ zIndex: 998 }}
 						fullWidth
+						maxWidth={"95vw"}
 						open={Clickopen}
 						onClose={() => {
 							SetClickopen(false);
