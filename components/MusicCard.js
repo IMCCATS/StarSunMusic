@@ -162,6 +162,60 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
 				} else {
 					navigator.mediaSession.setActionHandler("nexttrack", null);
 				}
+				yuxStorage
+					.getItem("handleLeftEvent")
+					.then((e) => {
+						if (e === "0") {
+							navigator.mediaSession.setActionHandler(
+								"previoustrack",
+								null
+							);
+						} else {
+							navigator.mediaSession.setActionHandler(
+								"previoustrack",
+								() => {
+									addSongToLocalPlaylist(currentSong);
+									// 让我们检查一下浏览器是否支持通知
+									if (!("Notification" in window)) {
+										console.log("此浏览器不支持通知。");
+									} else {
+										Notification.requestPermission().then(
+											(permission) => {
+												const img = "/logo.png";
+												const text = `歌曲:${currentSong.title} — ${currentSong.artist}收藏成功~`;
+												const notification = new Notification(
+													"星阳音乐系统 · 操作结果提示",
+													{ body: text, icon: img }
+												);
+											}
+										);
+									}
+								}
+							);
+						}
+					})
+					.catch((e) => {
+						navigator.mediaSession.setActionHandler(
+							"previoustrack",
+							() => {
+								addSongToLocalPlaylist(currentSong);
+								if (!("Notification" in window)) {
+									console.log("此浏览器不支持通知。");
+								} else {
+									Notification.requestPermission().then(
+										(permission) => {
+											const img = "/logo.png";
+											const text = `歌曲:${currentSong.title} — ${currentSong.artist}收藏成功~`;
+											const notification = new Notification(
+												"星阳音乐系统 · 操作结果提示",
+												{ body: text, icon: img }
+											);
+										}
+									);
+								}
+							}
+						);
+					});
 			}
 		}
 	}, [listplaying, currentSong]);
@@ -616,6 +670,17 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
 					} else {
 						message.info("歌单已存在本歌曲了哦~");
 					}
+				} else {
+					let playlist = [];
+					playlist.push(song);
+					yuxStorage
+						.setItem("playList", JSON.stringify(playlist))
+						.then((e) => {
+							messageApi.success("添加成功啦~");
+						})
+						.catch((err) => {
+							message.info("添加失败~");
+						});
 				}
 			})
 			.catch((err) => {
