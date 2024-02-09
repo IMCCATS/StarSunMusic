@@ -195,9 +195,29 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
 		};
 
 		const handleError = () => {
-			audioRef.current.src = "/failNew.mp3";
-			audioRef.current.play();
-			setIsAudioPlayable(false);
+			const play = () => {
+				audioRef.current.src = "/failNew.mp3";
+				audioRef.current.play();
+				setIsAudioPlayable(false);
+			};
+			if (listplaying) {
+				yuxStorage
+					.getItem("handleCannotPlay")
+					.then((e) => {
+						if (e === "0") {
+							setTimeout(() => {
+								setisPlayComplete(true);
+							}, 500);
+						} else {
+							play();
+						}
+					})
+					.catch((e) => {
+						play();
+					});
+			} else {
+				play();
+			}
 		};
 
 		if (audioRef.current) {
@@ -616,7 +636,7 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
 							<AppBar
 								position="fixed"
 								color="primary"
-								sx={{ top: "auto", bottom: 0, pb: "20px" }}
+								sx={{ top: "auto", bottom: 0 }}
 							>
 								<IconButton
 									color="inherit"
@@ -1483,7 +1503,7 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
 							<AppBar
 								position="fixed"
 								color="primary"
-								sx={{ top: "auto", bottom: 0, pb: "20px" }}
+								sx={{ top: "auto", bottom: 0 }}
 							>
 								<Flex
 									gap={"middle"}
