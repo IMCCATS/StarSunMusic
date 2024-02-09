@@ -14,7 +14,7 @@ export const revalidate = 3600; //数据缓存时间
  * @param {Array} serverJson 服务器提供的json
  * @returns {Array} 转换后的数据
  */
-const ConvertJson = (serverJson) => {
+const ConvertJson = (serverJson, pt) => {
 	const data = serverJson;
 	const convertedJsons = [];
 
@@ -28,6 +28,7 @@ const ConvertJson = (serverJson) => {
 			lyric: data[i].lrc,
 			link: data[i].url,
 			name: data[i].title,
+			fromst: pt,
 		};
 		convertedJsons.push(convertedJson);
 	}
@@ -55,6 +56,7 @@ const ConvertJsonSJK = (serverJson) => {
 			cover: data[i].cover,
 			lyric: data[i].lyric,
 			link: atob(data[i].link),
+			fromst: "sjk",
 		};
 		convertedJsons.push(convertedJson);
 	}
@@ -87,6 +89,7 @@ const ConvertJsonSong = (serverJson) => {
 			cover: serverJson.data.pic,
 			link: serverJson.data.url,
 			lyric: serverJson.data.lrc,
+			fromst: "netease",
 		};
 	} else {
 		return {
@@ -96,6 +99,7 @@ const ConvertJsonSong = (serverJson) => {
 			cover: "https://p2.music.126.net/W9fKQlL6b3YzcoTlZoT7nA==/109951167402688889.jpg?param=250y250",
 			lyric: "[00:00.00] 作词 : 不会低调的狗\n[00:01.00] 作曲 : 不会低调的狗\n[00:02.00] 编曲 : 不会低调的狗\n[99:00.00]纯音乐，请欣赏\n",
 			link: "https://music.163.com/song/media/outer/url?id=1965822544",
+			fromst: "netease",
 		};
 	}
 };
@@ -158,7 +162,7 @@ const SearchSong = async (SearchPlatform, SearchTerm) => {
 			site: `${SearchPlatform}`,
 		})
 			.then((res) => {
-				const CCJson = ConvertJson(res.data);
+				const CCJson = ConvertJson(res.data, SearchPlatform);
 				resolve(CCJson);
 			})
 			.catch((error) => {
@@ -180,7 +184,7 @@ const HandleListenSong = async (id) => {
 			id: `${id}`,
 		})
 			.then((res) => {
-				resolve(res);
+				resolve({ ...res, fromst: "netease" });
 			})
 			.catch((error) => {
 				HandleAjax("https://api.gumengya.com/Api/Netease", "get", {
@@ -263,6 +267,7 @@ const ConvertJsonBeiXuanPlaylist = function (serverJson) {
 			name: data[i].name,
 			artist: data[i].artist,
 			cover: data[i].cover,
+			fromst: "netease",
 		};
 		convertedJsons.push(convertedJson);
 	}
@@ -311,7 +316,7 @@ const LoadMoreSearchSong = async (Term, Platform, Page) => {
 			page: `${Page}`,
 		})
 			.then((res) => {
-				const CCJson = ConvertJson(res.data);
+				const CCJson = ConvertJson(res.data, Platform);
 				resolve(CCJson);
 			})
 			.catch((error) => {

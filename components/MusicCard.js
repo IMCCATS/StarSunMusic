@@ -195,11 +195,6 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
 		};
 
 		const handleError = () => {
-			const play = () => {
-				audioRef.current.src = "/failNew.mp3";
-				audioRef.current.play();
-				setIsAudioPlayable(false);
-			};
 			if (listplaying) {
 				yuxStorage
 					.getItem("handleCannotPlay")
@@ -209,14 +204,20 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
 								setisPlayComplete(true);
 							}, 500);
 						} else {
-							play();
+							setIsAudioPlayable(false);
+							audioRef.current.src = "/failNew.mp3";
+							audioRef.current.play();
 						}
 					})
 					.catch((e) => {
-						play();
+						setIsAudioPlayable(false);
+						audioRef.current.src = "/failNew.mp3";
+						audioRef.current.play();
 					});
 			} else {
-				play();
+				setIsAudioPlayable(false);
+				audioRef.current.src = "/failNew.mp3";
+				audioRef.current.play();
 			}
 		};
 
@@ -1251,12 +1252,7 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
 																			color="inherit"
 																			onClick={() => {
 																				addSongToLocalPlaylist(
-																					{
-																						title: currentSong.title,
-																						artist:
-																							currentSong.artist,
-																						id: currentSong.id,
-																					}
+																					currentSong
 																				);
 																			}}
 																			disabled={

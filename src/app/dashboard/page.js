@@ -68,6 +68,7 @@ function StarSunMusic() {
 	const [PlayingSongs, SetPlayingSongs] = React.useState([]);
 	const [open, setOpen] = React.useState(false);
 	const [profile, setprofile] = React.useState(false);
+	const [playstatus, Setplaystatus] = React.useState("");
 
 	const handleClick = () => {
 		setOpen(true);
@@ -157,14 +158,18 @@ function StarSunMusic() {
 		}
 		if (
 			PlayingSongs[index] &&
-			(PlayingSongs[index].id || PlayingSongs[index].id)
+			PlayingSongs[index].id &&
+			PlayingSongs[index].fromst
 		) {
-			if (PlayingSongs[index].id) {
-				handleListenClick(PlayingSongs[index].id, index);
-			} else if (PlayingSongs[index].id) {
+			if (PlayingSongs[index].fromst !== "netease") {
+				setCurrentSong(PlayingSongs[index]);
+				setLastPlayedSongIndex(index);
+			} else {
 				handleListenClick(PlayingSongs[index].id, index);
 			}
 			setisPlayComplete(false);
+		} else {
+			messageApi.error("参数缺失，快联系开发者修复！");
 		}
 	};
 
@@ -253,6 +258,8 @@ function StarSunMusic() {
 					setdisabled,
 					profile,
 					setprofile,
+					playstatus,
+					Setplaystatus,
 				}}
 			>
 				<AppBar />

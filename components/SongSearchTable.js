@@ -35,6 +35,8 @@ import { Element, scroller } from "react-scroll";
 import { CurrentSongContext } from "../src/app/dashboard/page";
 import {
 	HandleListenSong,
+	HandleListenSongKugou,
+	HandleListenSongMigu,
 	LoadMoreSearchSong,
 	SearchSong,
 } from "./common/fetchapi";
@@ -46,6 +48,7 @@ export default function SongSearchTable({ setcanlistplay }) {
 		disabled,
 		setdisabled,
 		handleInsectSongClick,
+		Setplaystatus,
 	} = React.useContext(CurrentSongContext);
 	const [isneteaseLoading, setIsneteaseLoading] = React.useState(true);
 	const [iskgLoading, setIskgLoading] = React.useState(true);
@@ -189,6 +192,7 @@ export default function SongSearchTable({ setcanlistplay }) {
 		setdisabled(true);
 		HandleListenSong(id)
 			.then((e) => {
+				Setplaystatus("1");
 				setCurrentSong(e);
 				SetPlayingSongs(netease_songs);
 				setcanlistplay(true);
@@ -199,9 +203,18 @@ export default function SongSearchTable({ setcanlistplay }) {
 			});
 	};
 
-	const handleListenClickLinethree = (song) => {
-		setcanlistplay(false);
+	const handleListenClickKugou = (song) => {
+		Setplaystatus("2");
+		SetPlayingSongs(kugou_songs);
 		setCurrentSong(song);
+		setcanlistplay(true);
+	};
+
+	const handleListenClickMigu = (song) => {
+		Setplaystatus("3");
+		SetPlayingSongs(migu_songs);
+		setCurrentSong(song);
+		setcanlistplay(true);
 	};
 
 	const handleSearchKG = async () => {
@@ -803,7 +816,7 @@ export default function SongSearchTable({ setcanlistplay }) {
 																<ButtonGroup>
 																	<Button
 																		onClick={() =>
-																			handleListenClickLinethree(
+																			handleListenClickKugou(
 																				song
 																			)
 																		}
@@ -938,7 +951,7 @@ export default function SongSearchTable({ setcanlistplay }) {
 																<ButtonGroup>
 																	<Button
 																		onClick={() =>
-																			handleListenClickLinethree(
+																			handleListenClickMigu(
 																				song
 																			)
 																		}

@@ -16,6 +16,7 @@ export default function SongList() {
 
 	const {
 		lastPlayedSongIndex,
+		playstatus,
 		SetPlayingSongs,
 		setCurrentSong,
 		setLastPlayedSongIndex,
@@ -48,35 +49,6 @@ export default function SongList() {
 			cancelText: "取消",
 			okText: "确定",
 		});
-	};
-
-	const moveUp = (indexOnCurrentPage) => {
-		const selectedGlobalIndexC =
-			getGlobalIndexFromCurrentPage(indexOnCurrentPage);
-		if (getGlobalIndexFromCurrentPage(selectedGlobalIndexC - 1) >= 0) {
-			const updatedPlayingSongs = [...PlayingSongs];
-			const temp = updatedPlayingSongs[selectedGlobalIndexC - 1];
-			updatedPlayingSongs[selectedGlobalIndexC - 1] =
-				updatedPlayingSongs[selectedGlobalIndexC];
-			updatedPlayingSongs[selectedGlobalIndexC] = temp;
-			SetPlayingSongs(updatedPlayingSongs);
-		}
-	};
-
-	const moveDown = (indexOnCurrentPage) => {
-		const selectedGlobalIndexC =
-			getGlobalIndexFromCurrentPage(indexOnCurrentPage);
-		if (
-			getGlobalIndexFromCurrentPage(selectedGlobalIndexC + 1) <
-			PlayingSongs.length
-		) {
-			const updatedPlayingSongs = [...PlayingSongs];
-			const temp = updatedPlayingSongs[selectedGlobalIndexC + 1];
-			updatedPlayingSongs[selectedGlobalIndexC + 1] =
-				updatedPlayingSongs[selectedGlobalIndexC];
-			updatedPlayingSongs[selectedGlobalIndexC] = temp;
-			SetPlayingSongs(updatedPlayingSongs);
-		}
 	};
 
 	const handleListenClick = (id) => {
@@ -136,24 +108,16 @@ export default function SongList() {
 									)}
 								</>
 								<Button
-									color="primary"
-									onClick={() => moveUp(index)}
-									disabled={getGlobalIndexFromCurrentPage(index) === 0}
-								>
-									🔼
-								</Button>
-								<Button
-									color="primary"
-									onClick={() => moveDown(index)}
-									disabled={
-										getGlobalIndexFromCurrentPage(index) ===
-										PlayingSongs.length - 1
-									}
-								>
-									🔽
-								</Button>
-								<Button
-									onClick={() => handleListenClick(song.id)}
+									onClick={() => {
+										if (playstatus === "1") {
+											handleListenClick(song.id);
+										} else {
+											setCurrentSong(song);
+											setLastPlayedSongIndex(
+												getGlobalIndexFromCurrentPage(index)
+											);
+										}
+									}}
 									variant="contained"
 								>
 									播放

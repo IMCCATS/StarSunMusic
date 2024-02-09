@@ -52,22 +52,34 @@ const PersonalPlaylist = () => {
 		profile,
 	} = React.useContext(CurrentSongContext);
 
-	const handleListenClick = (id) => {
-		setdisabled(true);
-		HandleListenSong(id)
-			.then((e) => {
-				setCurrentSong(e);
-				const b = playList.map((song) => {
-					return { ...song, name: song.title };
-				});
-				SetPlayingSongs(b);
-				setLastPlayedSongIndex(b.findIndex((song) => song.id === id));
-				setcanlistplay(true);
-				setdisabled(false);
-			})
-			.catch((error) => {
-				setdisabled(false);
+	const handleListenClick = (song) => {
+		if (song.fromst !== "netease") {
+			setCurrentSong(song);
+			const b = playList.map((song) => {
+				return { ...song, name: song.title };
 			});
+			SetPlayingSongs(b);
+			setLastPlayedSongIndex(b.findIndex((songe) => songe.id === song.id));
+			setcanlistplay(true);
+		} else {
+			setdisabled(true);
+			HandleListenSong(song.id)
+				.then((e) => {
+					setCurrentSong(e);
+					const b = playList.map((song) => {
+						return { ...song, name: song.title };
+					});
+					SetPlayingSongs(b);
+					setLastPlayedSongIndex(
+						b.findIndex((songe) => songe.id === song.id)
+					);
+					setcanlistplay(true);
+					setdisabled(false);
+				})
+				.catch((error) => {
+					setdisabled(false);
+				});
+		}
 	};
 
 	// 获取播放列表的函数
@@ -284,7 +296,7 @@ const PersonalPlaylist = () => {
 									/>
 									<ButtonGroup>
 										<Button
-											onClick={() => handleListenClick(song.id)}
+											onClick={() => handleListenClick(song)}
 											variant="contained"
 											disabled={disabled}
 										>
