@@ -95,6 +95,10 @@ function StarSunMusic() {
 
 	React.useEffect(() => {
 		CheckPolicy();
+		let hm = document.createElement("script");
+		hm.src = "https://hm.baidu.com/hm.js?68cb9d0aa571714fd6cb36083949f31e";
+		let s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(hm, s);
 	}, []);
 
 	const [messageApi, contextHolder] = message.useMessage();
@@ -134,7 +138,7 @@ function StarSunMusic() {
 				});
 			};
 			yuxStorage
-				.getItem("handleCannotPlay")
+				.getItem("handlePlaylistEnd")
 				.then((e) => {
 					if (e === "1") {
 						play();
