@@ -63,10 +63,10 @@ export default function SystemSettings() {
 
 	const data = [
 		{
-			label: "无法播放时操作",
-			description: "当列表播放时遇到无法播放的歌曲时的操作",
+			label: "列表播放完成时操作",
+			description: "当列表播放时列表歌曲全部播放完成时的操作",
 			enableLabel: "语音提示",
-			disabledLabel: "直接跳过",
+			disabledLabel: "关闭提醒",
 			switchState: CannotPlaySwitchState,
 			switchOnchange: CannotPlaySwitchOnChange,
 		},
