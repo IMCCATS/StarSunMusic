@@ -116,7 +116,7 @@ export default function SystemSettings() {
 	return (
 		<>
 			{contextHolder}
-			{isNaN(PlaylistEndSwitchState) || isNaN(ListPlayFailedSwitchState) ? (
+			{/* {isNaN(PlaylistEndSwitchState) || isNaN(ListPlayFailedSwitchState) ? (
 				<Text>设置加载中...</Text>
 			) : (
 				<Card>
@@ -147,7 +147,8 @@ export default function SystemSettings() {
 						)}
 					/>
 				</Card>
-			)}
+			)} */}
+			<Text>设置维护中</Text>
 		</>
 	);
 }
