@@ -34,18 +34,22 @@ import { Flex, message } from "antd";
 import copy from "copy-to-clipboard";
 import PropTypes from "prop-types";
 import * as React from "react";
+import { HandleListenSong } from "./common/fetchapi";
 
-const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
+const MusicCard = ({
+	PlayingSongs,
+	setCurrentSong,
+	currentSong,
+	canlistplay,
+	lastPlayedSongIndex,
+	setLastPlayedSongIndex,
+	setdisabled,
+}) => {
 	const [isAudioPlayable, setIsAudioPlayable] = React.useState(true);
 	const [isPlaying, setIsPlaying] = React.useState(false);
 	const [volume, setVolume] = React.useState(100);
 	const [value, setValue] = React.useState(0);
 	const [islistplayable, setlistplayable] = React.useState(true);
-
-	const handleChange = (event, newValue) => {
-		setValue(newValue);
-	};
-
 	const [Fullscreen, setFullscreen] = React.useState(false);
 	const [progress, setProgress] = React.useState(0);
 	const [lyrics, setLyrics] = React.useState([]);
@@ -56,6 +60,82 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
 	const audioRef = React.useRef(null);
 	const [open, setOpen] = React.useState(false);
 	const [isReplay, setisReplay] = React.useState(false);
+	const [messageApi, contextHolder] = message.useMessage();
+	const [Panelopen, setPanelOpen] = React.useState(false);
+	const [Showing, setShowing] = React.useState(false);
+
+	const nextsong = () => {
+		const handleListenClick = (id, index) => {
+			setdisabled(true);
+			HandleListenSong(id)
+				.then((e) => {
+					setCurrentSong(e);
+					setLastPlayedSongIndex(index);
+					setdisabled(false);
+				})
+				.catch((error) => {
+					setdisabled(false);
+				});
+		};
+		const handlePlayComplete = () => {
+			const play = () => {
+				setCurrentSong({
+					title: "播放列表播放完成提示",
+					artist: "星阳音乐系统",
+					cover: "/logo.png",
+					link: "/finish_list.mp3",
+					lyric: "[00:00.00]星阳音乐系统提醒您，播放列表播放完成！",
+				});
+			};
+			yuxStorage
+				.getItem("handlePlaylistEnd")
+				.then((e) => {
+					if (e === "1") {
+						play();
+					}
+				})
+				.catch((e) => {
+					play();
+				});
+		};
+
+		try {
+			const index = lastPlayedSongIndex + 1;
+			// 检查索引是否越界
+			if (index >= PlayingSongs.length) {
+				messageApi.success("播放列表播放完成");
+				handlePlayComplete();
+				return;
+			}
+			if (
+				PlayingSongs[index] &&
+				PlayingSongs[index].id &&
+				PlayingSongs[index].fromst
+			) {
+				if (PlayingSongs[index].fromst !== "netease") {
+					setCurrentSong(PlayingSongs[index]);
+					setLastPlayedSongIndex(index);
+				} else {
+					handleListenClick(PlayingSongs[index].id, index);
+				}
+			} else {
+				messageApi.error("参数缺失，快联系开发者修复！");
+			}
+		} catch (error) {
+			messageApi.error("出现问题，快联系开发者修复！");
+			if (process.env.NODE_ENV === "development") {
+				console.warn(error);
+			}
+		}
+	};
+
+	const handleExpandPanel = () => {
+		setPanelOpen(!Panelopen);
+	};
+
+	const handleChange = (event, newValue) => {
+		setValue(newValue);
+	};
 
 	const handleClickOpen = () => {
 		setOpen(true);
@@ -64,8 +144,6 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
 	const handleClose = () => {
 		setOpen(false);
 	};
-
-	const [messageApi, contextHolder] = message.useMessage();
 
 	const handleAudioTimeUpdate = () => {
 		const currentTime = audioRef.current.currentTime;
@@ -128,29 +206,6 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
 			return [];
 		}
 	};
-
-	const SetMetaData = () => {
-		if (currentSong) {
-			if ("mediaSession" in navigator) {
-				navigator.mediaSession.metadata = new MediaMetadata({
-					title: currentSong.title,
-					artist: currentSong.artist,
-					album: currentSong.title,
-					artwork: [
-						{
-							src: currentSong.cover,
-							sizes: "96x96",
-							type: "image/png",
-						},
-					],
-				});
-			}
-		}
-	};
-
-	React.useEffect(() => {
-		SetMetaData();
-	}, [currentSong]);
 
 	React.useEffect(() => {
 		if (currentSong) {
@@ -255,7 +310,8 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
 					.then((e) => {
 						if (e === "0") {
 							setTimeout(() => {
-								setisPlayComplete(true);
+								audioRef.current.currentTime =
+									audioRef.current.duration;
 							}, 500);
 						} else {
 							setIsAudioPlayable(false);
@@ -295,7 +351,7 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
 				setIsPlaying(true);
 			}, 1000);
 		} else if (listplaying) {
-			setisPlayComplete(true);
+			nextsong();
 		}
 	};
 	React.useEffect(() => {
@@ -338,9 +394,35 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
 		}
 	}, [lyrics, currentSong]);
 
+	React.useEffect(() => {
+		if (currentSong) {
+			if (isAudioPlayable) {
+				if ("mediaSession" in navigator) {
+					navigator.mediaSession.metadata = new MediaMetadata({
+						title: currentSong.title,
+						artist: currentSong.artist,
+						album: currentSong.title,
+						artwork: [
+							{
+								src: currentSong.cover,
+								sizes: "96x96",
+								type: "image/png",
+							},
+						],
+					});
+				}
+				document.title = `${currentSong.title} — ${currentSong.artist} · 星阳音乐系统`;
+			} else {
+				if ("mediaSession" in navigator) {
+					navigator.mediaSession.metadata = null;
+				}
+				document.title = "首页 · 星阳音乐系统";
+			}
+		}
+	}, [currentSong, isAudioPlayable]);
+
 	const formatLyrics = () => {
 		if (!isAudioPlayable) {
-			document.title = "首页 · 星阳音乐系统";
 			return (
 				<Typography
 					variant="body1"
@@ -351,7 +433,6 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
 			);
 		} else {
 			if (lyrics && lyrics.length > 0) {
-				document.title = currentSong.title + " · 星阳音乐系统";
 				return (
 					<Typography
 						key={
@@ -378,7 +459,6 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
 					</Typography>
 				);
 			} else {
-				document.title = "首页 · 星阳音乐系统";
 				return (
 					<Typography
 						variant="body1"
@@ -636,14 +716,6 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
 		};
 	}
 
-	const [Panelopen, setPanelOpen] = React.useState(false);
-
-	const handleExpandPanel = () => {
-		setPanelOpen(!Panelopen);
-	};
-
-	const [Showing, setShowing] = React.useState(false);
-
 	const handleShowing = () => {
 		setShowing(!Showing);
 	};
@@ -748,20 +820,6 @@ const MusicCard = ({ currentSong, setisPlayComplete, canlistplay }) => {
 														value={value}
 														index={0}
 													>
-														<Typography variant="body1">
-															<span
-																style={{
-																	WebkitUserSelect: "none",
-																	MozUserSelect: "none",
-																	msUserSelect: "none",
-																	userSelect: "none",
-																	display: "flex",
-																	justifyContent: "center",
-																}}
-															>
-																歌词将自动滚动，并非无歌词信息哦~
-															</span>
-														</Typography>
 														{!currentSong && (
 															<Typography variant="body1">
 																<span

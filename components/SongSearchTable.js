@@ -303,6 +303,7 @@ export default function SongSearchTable({ setcanlistplay }) {
 				cover: data[i].cover,
 				lyric: data[i].lyric,
 				link: atob(data[i].link),
+				fromst: "sjk",
 			};
 			convertedJsons.push(convertedJson);
 		}

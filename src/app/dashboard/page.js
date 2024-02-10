@@ -62,7 +62,6 @@ function StarSunMusic() {
 	const router = useRouter();
 	const [lastPlayedSongIndex, setLastPlayedSongIndex] = React.useState(0);
 	const [currentSong, setCurrentSong] = React.useState(null);
-	const [isPlayComplete, setisPlayComplete] = React.useState(false);
 	const [playingpage, setplayingpage] = React.useState("");
 	const [canlistplay, setcanlistplay] = React.useState(false);
 	const [PlayingSongs, SetPlayingSongs] = React.useState([]);
@@ -104,19 +103,6 @@ function StarSunMusic() {
 
 	const [messageApi, contextHolder] = message.useMessage();
 
-	const handleListenClick = (id, index) => {
-		setdisabled(true);
-		HandleListenSong(id)
-			.then((e) => {
-				setCurrentSong(e);
-				setLastPlayedSongIndex(index);
-				setdisabled(false);
-			})
-			.catch((error) => {
-				setdisabled(false);
-			});
-	};
-
 	const handleInsectSongClick = (newSong) => {
 		const index = lastPlayedSongIndex + 1;
 		SetPlayingSongs((prevSongs) => {
@@ -126,58 +112,6 @@ function StarSunMusic() {
 		});
 		messageApi.success("已经添加到下首播~");
 	};
-
-	const handleNextSongClick = () => {
-		const handlePlayComplete = () => {
-			const play = () => {
-				setCurrentSong({
-					title: "播放列表播放完成提示",
-					artist: "星阳音乐系统",
-					cover: "/logo.png",
-					link: "/finish_list.mp3",
-					lyric: "[00:00.00]星阳音乐系统提醒您，播放列表播放完成！",
-				});
-			};
-			yuxStorage
-				.getItem("handlePlaylistEnd")
-				.then((e) => {
-					if (e === "1") {
-						play();
-					}
-				})
-				.catch((e) => {
-					play();
-				});
-		};
-		const index = lastPlayedSongIndex + 1;
-		// 检查索引是否越界
-		if (index >= PlayingSongs.length) {
-			messageApi.success("播放列表播放完成");
-			handlePlayComplete();
-			return;
-		}
-		if (
-			PlayingSongs[index] &&
-			PlayingSongs[index].id &&
-			PlayingSongs[index].fromst
-		) {
-			if (PlayingSongs[index].fromst !== "netease") {
-				setCurrentSong(PlayingSongs[index]);
-				setLastPlayedSongIndex(index);
-			} else {
-				handleListenClick(PlayingSongs[index].id, index);
-			}
-			setisPlayComplete(false);
-		} else {
-			messageApi.error("参数缺失，快联系开发者修复！");
-		}
-	};
-
-	React.useEffect(() => {
-		if (isPlayComplete) {
-			handleNextSongClick();
-		}
-	}, [isPlayComplete]);
 
 	const [disabled, setdisabled] = React.useState(false);
 	const [fingerprintidc, setfingerprintidc] = React.useState("");
@@ -243,9 +177,7 @@ function StarSunMusic() {
 			</Snackbar>
 			<CurrentSongContext.Provider
 				value={{
-					isPlayComplete,
 					setCurrentSong,
-					setisPlayComplete,
 					setcanlistplay,
 					playingpage,
 					setplayingpage,
@@ -267,8 +199,12 @@ function StarSunMusic() {
 				<UpdateDialog />
 				<div>
 					<MusicCard
+						setdisabled={setdisabled}
+						setLastPlayedSongIndex={setLastPlayedSongIndex}
+						lastPlayedSongIndex={lastPlayedSongIndex}
+						PlayingSongs={PlayingSongs}
+						setCurrentSong={setCurrentSong}
 						currentSong={currentSong}
-						setisPlayComplete={setisPlayComplete}
 						canlistplay={canlistplay}
 					/>
 					<Dialog
