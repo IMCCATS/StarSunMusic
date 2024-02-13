@@ -71,7 +71,7 @@ const ConvertJsonSJK = (serverJson) => {
  * @param {Array} serverJson 服务器提供的json
  * @returns {Array} 转换后的数据
  */
-const ConvertJsonSong = (serverJson) => {
+const ConvertJsonSong = (serverJson, pt) => {
 	if (
 		serverJson.data &&
 		serverJson.data.songid &&
@@ -89,15 +89,17 @@ const ConvertJsonSong = (serverJson) => {
 			cover: serverJson.data.pic,
 			link: serverJson.data.url,
 			lyric: serverJson.data.lrc,
-			fromst: "netease",
+			fromst: pt,
 		};
 	} else {
 		return {
 			id: 1965822544,
 			title: "钉钉视频会议来电铃声（电音完整版)",
 			artist: "不会低调的狗",
-			cover: "https://p2.music.126.net/W9fKQlL6b3YzcoTlZoT7nA==/109951167402688889.jpg?param=250y250",
-			lyric: "[00:00.00] 作词 : 不会低调的狗\n[00:01.00] 作曲 : 不会低调的狗\n[00:02.00] 编曲 : 不会低调的狗\n[99:00.00]纯音乐，请欣赏\n",
+			cover:
+				"https://p2.music.126.net/W9fKQlL6b3YzcoTlZoT7nA==/109951167402688889.jpg?param=250y250",
+			lyric:
+				"[00:00.00] 作词 : 不会低调的狗\n[00:01.00] 作曲 : 不会低调的狗\n[00:02.00] 编曲 : 不会低调的狗\n[99:00.00]纯音乐，请欣赏\n",
 			link: "https://music.163.com/song/media/outer/url?id=1965822544",
 			fromst: "netease",
 		};
@@ -192,7 +194,7 @@ const HandleListenSong = async (id) => {
 					format: "json",
 				})
 					.then((res) => {
-						const C = ConvertJsonSong(res);
+						const C = ConvertJsonSong(res, "netease");
 						resolve(C);
 					})
 					.catch((error) => {
@@ -209,7 +211,7 @@ const HandleListenKugou = (id) => {
 			format: "json",
 		})
 			.then((res) => {
-				const C = ConvertJsonSong(res);
+				const C = ConvertJsonSong(res, "kugou");
 				resolve(C);
 			})
 			.catch((error) => {
@@ -225,7 +227,7 @@ const HandleListenMigu = (id) => {
 			format: "json",
 		})
 			.then((res) => {
-				const C = ConvertJsonSong(res);
+				const C = ConvertJsonSong(res, "migu");
 				resolve(C);
 			})
 			.catch((error) => {

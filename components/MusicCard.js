@@ -12,6 +12,7 @@ import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import QueueMusicIcon from "@mui/icons-material/QueueMusic";
 import RepeatOneIcon from "@mui/icons-material/RepeatOne";
 import SkipNextIcon from "@mui/icons-material/SkipNext";
+import { saveAs } from "file-saver";
 import {
 	AppBar,
 	Box,
@@ -255,55 +256,42 @@ const MusicCard = ({
 					.getItem("handleLeftEvent")
 					.then((e) => {
 						if (e === "0") {
-							navigator.mediaSession.setActionHandler(
-								"previoustrack",
-								null
-							);
+							navigator.mediaSession.setActionHandler("previoustrack", null);
 						} else {
-							navigator.mediaSession.setActionHandler(
-								"previoustrack",
-								() => {
-									addSongToLocalPlaylist(currentSong);
-									// 让我们检查一下浏览器是否支持通知
-									if (!("Notification" in window)) {
-										console.log("此浏览器不支持通知。");
-									} else {
-										Notification.requestPermission().then(
-											(permission) => {
-												const img = "/logo.png";
-												const text = `歌曲:${currentSong.title} — ${currentSong.artist}收藏成功~`;
-												const notification = new Notification(
-													"星阳音乐系统 · 操作结果提示",
-													{ body: text, icon: img }
-												);
-											}
-										);
-									}
-								}
-							);
-						}
-					})
-					.catch((e) => {
-						navigator.mediaSession.setActionHandler(
-							"previoustrack",
-							() => {
+							navigator.mediaSession.setActionHandler("previoustrack", () => {
 								addSongToLocalPlaylist(currentSong);
+								// 让我们检查一下浏览器是否支持通知
 								if (!("Notification" in window)) {
 									console.log("此浏览器不支持通知。");
 								} else {
-									Notification.requestPermission().then(
-										(permission) => {
-											const img = "/logo.png";
-											const text = `歌曲:${currentSong.title} — ${currentSong.artist}收藏成功~`;
-											const notification = new Notification(
-												"星阳音乐系统 · 操作结果提示",
-												{ body: text, icon: img }
-											);
-										}
-									);
+									Notification.requestPermission().then((permission) => {
+										const img = "/logo.png";
+										const text = `歌曲:${currentSong.title} — ${currentSong.artist}收藏成功~`;
+										const notification = new Notification(
+											"星阳音乐系统 · 操作结果提示",
+											{ body: text, icon: img }
+										);
+									});
 								}
+							});
+						}
+					})
+					.catch((e) => {
+						navigator.mediaSession.setActionHandler("previoustrack", () => {
+							addSongToLocalPlaylist(currentSong);
+							if (!("Notification" in window)) {
+								console.log("此浏览器不支持通知。");
+							} else {
+								Notification.requestPermission().then((permission) => {
+									const img = "/logo.png";
+									const text = `歌曲:${currentSong.title} — ${currentSong.artist}收藏成功~`;
+									const notification = new Notification(
+										"星阳音乐系统 · 操作结果提示",
+										{ body: text, icon: img }
+									);
+								});
 							}
-						);
+						});
 					});
 			}
 		}
@@ -344,8 +332,7 @@ const MusicCard = ({
 					.then((e) => {
 						if (e === "0") {
 							setTimeout(() => {
-								audioRef.current.currentTime =
-									audioRef.current.duration;
+								audioRef.current.currentTime = audioRef.current.duration;
 							}, 500);
 						} else {
 							setIsAudioPlayable(false);
@@ -384,7 +371,7 @@ const MusicCard = ({
 				audioRef.current.play();
 				setIsPlaying(true);
 			}, 1000);
-		} else if (listplaying) {
+		} else if (listplaying && currentSong.title !== "播放列表播放完成提示") {
 			nextsong();
 		}
 	};
@@ -470,8 +457,7 @@ const MusicCard = ({
 				return (
 					<Typography
 						key={
-							currentLyricIndex >= 0 &&
-							lyrics[currentLyricIndex] !== undefined
+							currentLyricIndex >= 0 && lyrics[currentLyricIndex] !== undefined
 								? lyrics[currentLyricIndex].time
 								: undefined
 						}
@@ -520,8 +506,7 @@ const MusicCard = ({
 				return (
 					<Typography
 						key={
-							currentLyricIndex >= 0 &&
-							lyrics[currentLyricIndex] !== undefined
+							currentLyricIndex >= 0 && lyrics[currentLyricIndex] !== undefined
 								? lyrics[currentLyricIndex].time
 								: undefined
 						}
@@ -760,9 +745,7 @@ const MusicCard = ({
 			.then((playlist) => {
 				if (playlist) {
 					const playList = JSON.parse(playlist);
-					const existingSongIndex = playList.findIndex(
-						(s) => s.id === song.id
-					);
+					const existingSongIndex = playList.findIndex((s) => s.id === song.id);
 					if (existingSongIndex === -1) {
 						playList.push(song);
 						yuxStorage
@@ -817,9 +800,7 @@ const MusicCard = ({
 								>
 									{Showing ? <ExpandMoreIcon /> : <ExpandLessIcon />}
 								</IconButton>
-								<Toolbar
-									style={{ display: "flex", justifyContent: "center" }}
-								>
+								<Toolbar style={{ display: "flex", justifyContent: "center" }}>
 									{currentSong && (
 										<>
 											<Dialog
@@ -876,40 +857,18 @@ const MusicCard = ({
 																.split("\n")
 																.filter((line) => {
 																	return (
-																		!line.startsWith(
-																			"﻿[id:"
-																		) &&
-																		!line.startsWith(
-																			"[id:"
-																		) &&
+																		!line.startsWith("﻿[id:") &&
+																		!line.startsWith("[id:") &&
 																		line !== "" &&
-																		!line.startsWith(
-																			"[ar:"
-																		) &&
-																		!line.startsWith(
-																			"[ti:"
-																		) &&
-																		!line.startsWith(
-																			"[by:"
-																		) &&
-																		!line.startsWith(
-																			"[hash:"
-																		) &&
-																		!line.startsWith(
-																			"[al:"
-																		) &&
-																		!line.startsWith(
-																			"[sign:"
-																		) &&
-																		!line.startsWith(
-																			"[qq:"
-																		) &&
-																		!line.startsWith(
-																			"[total:"
-																		) &&
-																		!line.startsWith(
-																			"[offset:"
-																		)
+																		!line.startsWith("[ar:") &&
+																		!line.startsWith("[ti:") &&
+																		!line.startsWith("[by:") &&
+																		!line.startsWith("[hash:") &&
+																		!line.startsWith("[al:") &&
+																		!line.startsWith("[sign:") &&
+																		!line.startsWith("[qq:") &&
+																		!line.startsWith("[total:") &&
+																		!line.startsWith("[offset:")
 																	);
 																})
 																.map((line, index) => {
@@ -921,12 +880,9 @@ const MusicCard = ({
 																	// 修改这里，只展示当前及前后两句歌词
 																	if (
 																		index === currentIndex ||
-																		index ===
-																			currentIndex - 1 ||
-																		index ===
-																			currentIndex + 1 ||
-																		index ===
-																			currentIndex + 2 ||
+																		index === currentIndex - 1 ||
+																		index === currentIndex + 1 ||
+																		index === currentIndex + 2 ||
 																		index === currentIndex - 2
 																	) {
 																		const fontSize =
@@ -938,35 +894,28 @@ const MusicCard = ({
 																				? "#00BF63"
 																				: "#AAAAAA";
 
-																		const cleanedLine =
-																			line.replace(
-																				/\[(\d{2}):(\d{2}\.\d{2,3})\]/g,
-																				""
-																			);
+																		const cleanedLine = line.replace(
+																			/\[(\d{2}):(\d{2}\.\d{2,3})\]/g,
+																			""
+																		);
 
 																		return (
 																			<div
 																				key={index}
 																				style={{
-																					WebkitUserSelect:
-																						"none",
-																					MozUserSelect:
-																						"none",
-																					msUserSelect:
-																						"none",
-																					userSelect:
-																						"none",
+																					WebkitUserSelect: "none",
+																					MozUserSelect: "none",
+																					msUserSelect: "none",
+																					userSelect: "none",
 																					display: "flex",
-																					justifyContent:
-																						"center",
+																					justifyContent: "center",
 																				}}
 																			>
 																				<span
 																					style={{
 																						fontSize,
 																						color,
-																						padding:
-																							"3px",
+																						padding: "3px",
 																					}}
 																				>
 																					{cleanedLine}
@@ -998,8 +947,7 @@ const MusicCard = ({
 																</span>
 															</Typography>
 														)}
-														{currentSong &&
-														!currentSong.sub_lyric ? (
+														{currentSong && !currentSong.sub_lyric ? (
 															<Typography
 																variant="body1"
 																style={{ color: "#808080" }}
@@ -1021,83 +969,50 @@ const MusicCard = ({
 														) : (
 															<></>
 														)}
-														{currentSong &&
-														currentSong.sub_lyric ? (
+														{currentSong && currentSong.sub_lyric ? (
 															<div>
 																{currentSong &&
 																	currentSong.sub_lyric
 																		.split("\n")
 																		.filter((line) => {
 																			return (
-																				!line.startsWith(
-																					"﻿[id:"
-																				) &&
-																				!line.startsWith(
-																					"[id:"
-																				) &&
+																				!line.startsWith("﻿[id:") &&
+																				!line.startsWith("[id:") &&
 																				line !== "" &&
-																				!line.startsWith(
-																					"[ar:"
-																				) &&
-																				!line.startsWith(
-																					"[ti:"
-																				) &&
-																				!line.startsWith(
-																					"[by:"
-																				) &&
-																				!line.startsWith(
-																					"[hash:"
-																				) &&
-																				!line.startsWith(
-																					"[al:"
-																				) &&
-																				!line.startsWith(
-																					"[sign:"
-																				) &&
-																				!line.startsWith(
-																					"[qq:"
-																				) &&
-																				!line.startsWith(
-																					"[total:"
-																				) &&
-																				!line.startsWith(
-																					"[offset:"
-																				)
+																				!line.startsWith("[ar:") &&
+																				!line.startsWith("[ti:") &&
+																				!line.startsWith("[by:") &&
+																				!line.startsWith("[hash:") &&
+																				!line.startsWith("[al:") &&
+																				!line.startsWith("[sign:") &&
+																				!line.startsWith("[qq:") &&
+																				!line.startsWith("[total:") &&
+																				!line.startsWith("[offset:")
 																			);
 																		})
 																		.map((line, index) => {
 																			const isPlaying =
-																				currentLyricIndexFY >=
-																					0 &&
-																				index ===
-																					currentLyricIndexFY;
-																			const fontSize =
-																				isPlaying
-																					? "larger"
-																					: "smaller";
+																				currentLyricIndexFY >= 0 &&
+																				index === currentLyricIndexFY;
+																			const fontSize = isPlaying
+																				? "larger"
+																				: "smaller";
 																			const color = isPlaying
 																				? "#00BF63"
 																				: "#808080";
-																			const cleanedLine =
-																				line.replace(
-																					/\[(\d{2}):(\d{2}\.\d{2,3})\]/g,
-																					""
-																				);
+																			const cleanedLine = line.replace(
+																				/\[(\d{2}):(\d{2}\.\d{2,3})\]/g,
+																				""
+																			);
 																			return (
 																				<div
 																					style={{
-																						WebkitUserSelect:
-																							"none",
-																						MozUserSelect:
-																							"none",
-																						msUserSelect:
-																							"none",
-																						userSelect:
-																							"none",
-																						display:
-																							"flex",
-																						justifyContent:
-																							"center",
+																						WebkitUserSelect: "none",
+																						MozUserSelect: "none",
+																						msUserSelect: "none",
+																						userSelect: "none",
+																						display: "flex",
+																						justifyContent: "center",
 																					}}
 																				>
 																					<span
@@ -1105,10 +1020,8 @@ const MusicCard = ({
 																						style={{
 																							fontSize,
 																							color,
-																							padding:
-																								"3px",
-																							padding:
-																								"3px",
+																							padding: "3px",
+																							padding: "3px",
 																						}}
 																					>
 																						{cleanedLine}
@@ -1146,71 +1059,43 @@ const MusicCard = ({
 																.split("\n")
 																.filter((line) => {
 																	return (
-																		!line.startsWith(
-																			"﻿[id:"
-																		) &&
-																		!line.startsWith(
-																			"[id:"
-																		) &&
+																		!line.startsWith("﻿[id:") &&
+																		!line.startsWith("[id:") &&
 																		line !== "" &&
-																		!line.startsWith(
-																			"[ar:"
-																		) &&
-																		!line.startsWith(
-																			"[ti:"
-																		) &&
-																		!line.startsWith(
-																			"[by:"
-																		) &&
-																		!line.startsWith(
-																			"[hash:"
-																		) &&
-																		!line.startsWith(
-																			"[al:"
-																		) &&
-																		!line.startsWith(
-																			"[sign:"
-																		) &&
-																		!line.startsWith(
-																			"[qq:"
-																		) &&
-																		!line.startsWith(
-																			"[total:"
-																		) &&
-																		!line.startsWith(
-																			"[offset:"
-																		)
+																		!line.startsWith("[ar:") &&
+																		!line.startsWith("[ti:") &&
+																		!line.startsWith("[by:") &&
+																		!line.startsWith("[hash:") &&
+																		!line.startsWith("[al:") &&
+																		!line.startsWith("[sign:") &&
+																		!line.startsWith("[qq:") &&
+																		!line.startsWith("[total:") &&
+																		!line.startsWith("[offset:")
 																	);
 																})
 																.map((line, index) => {
 																	const isPlaying =
 																		currentLyricIndex >= 0 &&
-																		index ===
-																			currentLyricIndex;
+																		index === currentLyricIndex;
 																	const fontSize = isPlaying
 																		? "larger"
 																		: "smaller";
 																	const color = isPlaying
 																		? "#00BF63"
 																		: "#808080";
-																	const cleanedLine =
-																		line.replace(
-																			/\[(\d{2}):(\d{2}\.\d{2,3})\]/g,
-																			""
-																		);
+																	const cleanedLine = line.replace(
+																		/\[(\d{2}):(\d{2}\.\d{2,3})\]/g,
+																		""
+																	);
 																	return (
 																		<div
 																			style={{
-																				WebkitUserSelect:
-																					"none",
-																				MozUserSelect:
-																					"none",
-																				msUserSelect:
-																					"none",
+																				WebkitUserSelect: "none",
+																				MozUserSelect: "none",
+																				msUserSelect: "none",
 																				userSelect: "none",
 																				display: "flex",
-																				justifyContent:
-																					"center",
+																				justifyContent: "center",
 																			}}
 																		>
 																			<span
@@ -1260,10 +1145,7 @@ const MusicCard = ({
 																height="64"
 																onError={() => {}}
 																onLoad={() => {
-																	var style =
-																		document.createElement(
-																			"style"
-																		);
+																	var style = document.createElement("style");
 																	style.innerHTML = `
                           @keyframes spin {
                             from {
@@ -1273,9 +1155,7 @@ const MusicCard = ({
                               transform: rotate(0deg);
                             }
                           }`;
-																	document.head.appendChild(
-																		style
-																	);
+																	document.head.appendChild(style);
 																}}
 															/>
 														) : (
@@ -1318,28 +1198,16 @@ const MusicCard = ({
 																	>
 																		<span>
 																			{audioRef.current &&
-																			typeof audioRef.current
-																				.currentTime ===
+																			typeof audioRef.current.currentTime ===
 																				"number" &&
-																			!isNaN(
-																				audioRef.current
-																					.currentTime
-																			) &&
-																			typeof audioRef.current
-																				.duration ===
+																			!isNaN(audioRef.current.currentTime) &&
+																			typeof audioRef.current.duration ===
 																				"number" &&
-																			!isNaN(
-																				audioRef.current
-																					.duration
-																			)
+																			!isNaN(audioRef.current.duration)
 																				? `${formatTime(
-																						audioRef
-																							.current
-																							.currentTime
+																						audioRef.current.currentTime
 																				  )} / ${formatTime(
-																						audioRef
-																							.current
-																							.duration
+																						audioRef.current.duration
 																				  )}`
 																				: "无时间信息"}
 																		</span>
@@ -1347,10 +1215,7 @@ const MusicCard = ({
 																	<IconButton
 																		color="inherit"
 																		onClick={handleTogglePlay}
-																		disabled={
-																			isAudioPlayable ===
-																			false
-																		}
+																		disabled={isAudioPlayable === false}
 																	>
 																		{isPlaying ? (
 																			<PauseIcon />
@@ -1369,12 +1234,9 @@ const MusicCard = ({
 																					audioRef.current.duration)
 																			}
 																			disabled={
-																				listplaying ===
-																					false ||
-																				isAudioPlayable ===
-																					false ||
-																				canlistplay ===
-																					false
+																				listplaying === false ||
+																				isAudioPlayable === false ||
+																				canlistplay === false
 																			}
 																		>
 																			<SkipNextIcon />
@@ -1386,13 +1248,8 @@ const MusicCard = ({
 																	>
 																		<IconButton
 																			color="inherit"
-																			onClick={
-																				handleSetReplay
-																			}
-																			disabled={
-																				isAudioPlayable ===
-																				false
-																			}
+																			onClick={handleSetReplay}
+																			disabled={isAudioPlayable === false}
 																		>
 																			{isReplay ? (
 																				<RepeatOneIcon color="success" />
@@ -1408,15 +1265,11 @@ const MusicCard = ({
 																		<IconButton
 																			color="inherit"
 																			onClick={() => {
-																				addSongToLocalPlaylist(
-																					currentSong
-																				);
+																				addSongToLocalPlaylist(currentSong);
 																			}}
 																			disabled={
-																				isAudioPlayable ===
-																					false ||
-																				canlistplay ===
-																					false
+																				isAudioPlayable === false ||
+																				canlistplay === false
 																			}
 																		>
 																			<FavoriteIcon />
@@ -1429,17 +1282,12 @@ const MusicCard = ({
 																		<IconButton
 																			color="inherit"
 																			onClick={() => {
-																				setlistplaying(
-																					!listplaying
-																				);
+																				setlistplaying(!listplaying);
 																			}}
 																			disabled={
-																				islistplayable ===
-																					false ||
-																				isAudioPlayable ===
-																					false ||
-																				canlistplay ===
-																					false
+																				islistplayable === false ||
+																				isAudioPlayable === false ||
+																				canlistplay === false
 																			}
 																		>
 																			{canlistplay ? (
@@ -1453,56 +1301,51 @@ const MusicCard = ({
 																			)}
 																		</IconButton>
 																	</Tooltip>
-																	{process.env.NODE_ENV ===
-																		"development" && (
+																	{process.env.NODE_ENV === "development" && (
 																		<IconButton
 																			color="inherit"
-																			disabled={
-																				isAudioPlayable ===
-																				false
-																			}
+																			disabled={isAudioPlayable === false}
 																			onClick={() => {
-																				// 创建一个新的 iframe 元素
-																				let iframe =
-																					document.createElement(
-																						"iframe"
+																				if (currentSong.fromst !== "netease") {
+																					fetch(currentSong.link, {
+																						method: "GET",
+																						// 指定响应应作为 Blob 类型返回
+																						responseType: "blob",
+																					})
+																						.then((response) => {
+																							// 检查请求是否成功（HTTP 状态码在 200-299 范围内）
+																							if (!response.ok) {
+																								console.error(
+																									`HTTP error! status: ${response.status}`
+																								);
+																							}
+
+																							// 返回 Promise 对象，解析成 Blob 数据
+																							return response.blob();
+																						})
+																						.then((blob) => {
+																							saveAs(
+																								blob,
+																								`${currentSong.title}-${currentSong.artist}`
+																							);
+																						})
+																						.catch((error) => {
+																							console.error(
+																								"There was an error:",
+																								error
+																							);
+																						});
+
+																					copy(
+																						`${currentSong.title}-${currentSong.artist}`
 																					);
 
-																				// 将 iframe 的 'src' 属性设置为文件的 URL
-																				iframe.src =
-																					currentSong.link;
-
-																				// 设置 iframe 的 'id' 以便稍后移除
-																				iframe.id =
-																					"download_iframe";
-
-																				// 将 iframe 设置为隐藏
-																				iframe.style.display =
-																					"none";
-
-																				// 将 iframe 添加到页面中
-																				document.body.appendChild(
-																					iframe
-																				);
-
-																				copy(
-																					`${currentSong.title}-${currentSong.artist}`
-																				);
-
-																				messageApi.success(
-																					"已复制歌曲信息并启动下载任务~"
-																				);
-
-																				// 一段时间后移除这些 iframe
-																				setTimeout(() => {
-																					let iframe =
-																						document.getElementById(
-																							"download_iframe"
-																						);
-																					document.body.removeChild(
-																						iframe
+																					messageApi.success(
+																						"已复制歌曲信息并启动下载任务~"
 																					);
-																				}, 5000);
+																				} else {
+																					window.open(currentSong.link);
+																				}
 																			}}
 																		>
 																			<Download />
@@ -1511,13 +1354,8 @@ const MusicCard = ({
 
 																	<IconButton
 																		color="inherit"
-																		onClick={
-																			handleExpandPanel
-																		}
-																		disabled={
-																			isAudioPlayable ===
-																			false
-																		}
+																		onClick={handleExpandPanel}
+																		disabled={isAudioPlayable === false}
 																	>
 																		{Panelopen ? (
 																			<ExpandMoreIcon />
@@ -1530,16 +1368,9 @@ const MusicCard = ({
 																<Flex>
 																	<Slider
 																		value={progress}
-																		onChange={
-																			handleSliderChange
-																		}
-																		onDragEnd={
-																			handleSliderDragEnd
-																		}
-																		disabled={
-																			isAudioPlayable ===
-																			false
-																		}
+																		onChange={handleSliderChange}
+																		onDragEnd={handleSliderDragEnd}
+																		disabled={isAudioPlayable === false}
 																	/>
 																</Flex>
 															</Flex>
@@ -1563,13 +1394,8 @@ const MusicCard = ({
 																		<IconButton
 																			color="inherit"
 																			aria-label="file button"
-																			onClick={
-																				handleClickOpen
-																			}
-																			disabled={
-																				isAudioPlayable ===
-																				false
-																			}
+																			onClick={handleClickOpen}
+																			disabled={isAudioPlayable === false}
 																		>
 																			<FileIcon />
 																		</IconButton>
@@ -1580,13 +1406,8 @@ const MusicCard = ({
 																	>
 																		<IconButton
 																			color="inherit"
-																			onClick={
-																				handleFullScreen
-																			}
-																			disabled={
-																				isAudioPlayable ===
-																				false
-																			}
+																			onClick={handleFullScreen}
+																			disabled={isAudioPlayable === false}
 																		>
 																			{Fullscreen ? (
 																				<FullscreenExitIcon />
@@ -1602,30 +1423,18 @@ const MusicCard = ({
 																		<IconButton
 																			color="inherit"
 																			onClick={() => {
-																				const name =
-																					currentSong.title +
-																					" ";
-																				handleVedioClick(
-																					name
-																				);
+																				const name = currentSong.title + " ";
+																				handleVedioClick(name);
 																			}}
-																			disabled={
-																				isAudioPlayable ===
-																				false
-																			}
+																			disabled={isAudioPlayable === false}
 																		>
 																			<OndemandVideoIcon />
 																		</IconButton>
 																	</Tooltip>
 																	<Slider
 																		value={volume}
-																		onChange={
-																			handleVolumeChange
-																		}
-																		disabled={
-																			isAudioPlayable ===
-																			false
-																		}
+																		onChange={handleVolumeChange}
+																		disabled={isAudioPlayable === false}
 																	/>
 																	<Typography
 																		variant="caption"
@@ -1633,9 +1442,7 @@ const MusicCard = ({
 																			margin: "8px 0",
 																		}}
 																	>
-																		<span>
-																			音量: {volume}%
-																		</span>
+																		<span>音量: {volume}%</span>
 																	</Typography>
 																</CardContent>
 															</Card>
@@ -1668,11 +1475,7 @@ const MusicCard = ({
 										onClick={handleShowing}
 										disabled={isAudioPlayable === false}
 									>
-										{Showing ? (
-											<ExpandMoreIcon />
-										) : (
-											<ExpandLessIcon />
-										)}
+										{Showing ? <ExpandMoreIcon /> : <ExpandLessIcon />}
 									</IconButton>
 									<div>{formatLyrics()}</div>
 								</Flex>

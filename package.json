@@ -23,6 +23,7 @@
     "copy-to-clipboard": "^3.3.3",
     "crypto-js": "^4.2.0",
     "dayjs": "^1.11.10",
+    "file-saver": "^2.0.5",
     "jquery": "^3.7.0",
     "js-base64": "^3.7.6",
     "lrc-parser": "^1.0.1",
