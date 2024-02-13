@@ -28,9 +28,7 @@ const HomePage = () => {
 	const [open, setOpen] = React.useState(false);
 
 	React.useEffect(() => {
-		setTimeout(() => {
-			handleClickOpen();
-		}, 5000);
+		handleClickOpen();
 	}, []);
 
 	const handleClickOpen = () => {

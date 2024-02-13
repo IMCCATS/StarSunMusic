@@ -202,6 +202,38 @@ const HandleListenSong = async (id) => {
 	});
 }; //歌曲解析函数
 
+const HandleListenKugou = (id) => {
+	return new Promise((resolve, reject) => {
+		HandleAjax("https://api.gumengya.com/Api/KuGou", "get", {
+			id: `${id}`,
+			format: "json",
+		})
+			.then((res) => {
+				const C = ConvertJsonSong(res);
+				resolve(C);
+			})
+			.catch((error) => {
+				reject("请求失败，请稍后重试~");
+			});
+	});
+};
+
+const HandleListenMigu = (id) => {
+	return new Promise((resolve, reject) => {
+		HandleAjax("https://api.gumengya.com/Api/MiGu", "get", {
+			id: `${id}`,
+			format: "json",
+		})
+			.then((res) => {
+				const C = ConvertJsonSong(res);
+				resolve(C);
+			})
+			.catch((error) => {
+				reject("请求失败，请稍后重试~");
+			});
+	});
+};
+
 /**
  * @requires @supabase/supabase-js
  * @description 从数据库获取单个歌曲信息并返回对应内容的方法
@@ -676,4 +708,6 @@ export {
 	LoadMoreSearchSong,
 	speak,
 	GetYiYan,
+	HandleListenKugou,
+	HandleListenMigu,
 };

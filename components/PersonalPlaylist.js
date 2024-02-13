@@ -21,7 +21,11 @@ import {
 import { Empty, message } from "antd";
 import * as React from "react";
 import { CurrentSongContext } from "../src/app/dashboard/page";
-import { HandleListenSong } from "./common/fetchapi";
+import {
+	HandleListenKugou,
+	HandleListenMigu,
+	HandleListenSong,
+} from "./common/fetchapi";
 
 const PersonalPlaylist = () => {
 	const [messageApi, contextHolder] = message.useMessage();
@@ -51,35 +55,39 @@ const PersonalPlaylist = () => {
 		handleInsectSongClick,
 		profile,
 	} = React.useContext(CurrentSongContext);
-
-	const handleListenClick = (song) => {
-		if (song.fromst !== "netease") {
+	const handleListenClick = (songc) => {
+		const setSongData = (song) => {
 			setCurrentSong(song);
-			const b = playList.map((song) => {
-				return { ...song, name: song.title };
-			});
-			SetPlayingSongs(b);
-			setLastPlayedSongIndex(b.findIndex((songe) => songe.id === song.id));
+			const mappedSongs = playList.map((songItem) => ({
+				...songItem,
+				name: songItem.title,
+			}));
+			SetPlayingSongs(mappedSongs);
+			setLastPlayedSongIndex(
+				mappedSongs.findIndex((songe) => songe.id === songc.id)
+			);
 			setcanlistplay(true);
+		};
+
+		setdisabled(true);
+
+		if (songc.fromst !== "netease") {
+			switch (songc.fromst) {
+				case "sjk":
+					setSongData(songc);
+					break;
+				case "kugou":
+					HandleListenKugou(songc.id).then(setSongData);
+					break;
+				case "migu":
+					HandleListenMigu(songc.id).then(setSongData);
+					break;
+			}
 		} else {
-			setdisabled(true);
-			HandleListenSong(song.id)
-				.then((e) => {
-					setCurrentSong(e);
-					const b = playList.map((song) => {
-						return { ...song, name: song.title };
-					});
-					SetPlayingSongs(b);
-					setLastPlayedSongIndex(
-						b.findIndex((songe) => songe.id === song.id)
-					);
-					setcanlistplay(true);
-					setdisabled(false);
-				})
-				.catch((error) => {
-					setdisabled(false);
-				});
+			HandleListenSong(songc.id).then(setSongData);
 		}
+
+		setdisabled(false);
 	};
 
 	// 获取播放列表的函数

@@ -34,7 +34,11 @@ import { Flex, message } from "antd";
 import copy from "copy-to-clipboard";
 import PropTypes from "prop-types";
 import * as React from "react";
-import { HandleListenSong } from "./common/fetchapi";
+import {
+	HandleListenKugou,
+	HandleListenMigu,
+	HandleListenSong,
+} from "./common/fetchapi";
 
 const MusicCard = ({
 	PlayingSongs,
@@ -65,18 +69,41 @@ const MusicCard = ({
 	const [Showing, setShowing] = React.useState(false);
 
 	const nextsong = () => {
-		const handleListenClick = (id, index) => {
+		const handleListenClick = (id, index, plat) => {
 			setdisabled(true);
-			HandleListenSong(id)
-				.then((e) => {
-					setCurrentSong(e);
-					setLastPlayedSongIndex(index);
-					setdisabled(false);
-				})
-				.catch((error) => {
-					setdisabled(false);
-				});
+			if (plat === "netease") {
+				HandleListenSong(id)
+					.then((e) => {
+						setCurrentSong(e);
+						setLastPlayedSongIndex(index);
+						setdisabled(false);
+					})
+					.catch((error) => {
+						setdisabled(false);
+					});
+			} else if (plat === "kugou") {
+				HandleListenKugou(id)
+					.then((e) => {
+						setCurrentSong(e);
+						setLastPlayedSongIndex(index);
+						setdisabled(false);
+					})
+					.catch((error) => {
+						setdisabled(false);
+					});
+			} else if (plat === "migu") {
+				HandleListenMigu(id)
+					.then((e) => {
+						setCurrentSong(e);
+						setLastPlayedSongIndex(index);
+						setdisabled(false);
+					})
+					.catch((error) => {
+						setdisabled(false);
+					});
+			}
 		};
+
 		const handlePlayComplete = () => {
 			const play = () => {
 				setCurrentSong({
@@ -112,11 +139,18 @@ const MusicCard = ({
 				PlayingSongs[index].id &&
 				PlayingSongs[index].fromst
 			) {
-				if (PlayingSongs[index].fromst !== "netease") {
-					setCurrentSong(PlayingSongs[index]);
-					setLastPlayedSongIndex(index);
+				const a = PlayingSongs[index].fromst;
+				if (a !== "netease") {
+					if (a === "sjk") {
+						setCurrentSong(PlayingSongs[index]);
+						setLastPlayedSongIndex(index);
+					} else if (a === "kugou") {
+						handleListenClick(PlayingSongs[index].id, index, "kugou");
+					} else if (a === "migu") {
+						handleListenClick(PlayingSongs[index].id, index, "migu");
+					}
 				} else {
-					handleListenClick(PlayingSongs[index].id, index);
+					handleListenClick(PlayingSongs[index].id, index, "netease");
 				}
 			} else {
 				messageApi.error("参数缺失，快联系开发者修复！");
