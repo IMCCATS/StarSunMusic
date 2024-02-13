@@ -43,6 +43,7 @@ import ListIcon from "@mui/icons-material/List";
 import SearchIcon from "@mui/icons-material/Search";
 import { DeveloperBoard, Settings } from "@mui/icons-material";
 import SystemSettings from "../../../components/Settings/Settings";
+import Banner from "../../../components/common/Banner";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
 	return (
@@ -170,9 +171,7 @@ function StarSunMusic() {
 					severity="warning"
 					sx={{ width: "100%" }}
 				>
-					<span>
-						您还没有同意用户协议与隐私政策，5秒后将自动跳转首页！
-					</span>
+					<span>您还没有同意用户协议与隐私政策，5秒后将自动跳转首页！</span>
 				</Alert>
 			</Snackbar>
 			<CurrentSongContext.Provider
@@ -195,6 +194,7 @@ function StarSunMusic() {
 				}}
 			>
 				<AppBar />
+				<Banner />
 				<Advertisement />
 				<UpdateDialog />
 				<div>
@@ -218,9 +218,7 @@ function StarSunMusic() {
 						scroll={"paper"}
 					>
 						<DialogTitle>{CurrentCptName}</DialogTitle>
-						<DialogContent dividers={true}>
-							{CurrentComponent}
-						</DialogContent>
+						<DialogContent dividers={true}>{CurrentComponent}</DialogContent>
 						<DialogActions>
 							<Button
 								onClick={() => {
@@ -308,9 +306,7 @@ function StarSunMusic() {
 															color="text.secondary"
 															gutterBottom
 														>
-															<p>
-																FingerPrint：{fingerprintidc}
-															</p>
+															<p>FingerPrint：{fingerprintidc}</p>
 														</Typography>
 													</CardContent>
 												</Card>
@@ -345,9 +341,7 @@ function StarSunMusic() {
 									onClick={() => {
 										handleopen(
 											"搜索歌曲",
-											<SongSearchTable
-												setcanlistplay={setcanlistplay}
-											/>
+											<SongSearchTable setcanlistplay={setcanlistplay} />
 										);
 									}}
 								>

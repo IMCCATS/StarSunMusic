@@ -330,10 +330,8 @@ const MusicCard = ({
 				yuxStorage
 					.getItem("handleCannotPlay")
 					.then((e) => {
-						if (e === "0") {
-							setTimeout(() => {
-								audioRef.current.currentTime = audioRef.current.duration;
-							}, 500);
+						if (e && e === "0") {
+							nextsong();
 						} else {
 							setIsAudioPlayable(false);
 							audioRef.current.src = "/failNew.mp3";
