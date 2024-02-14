@@ -1,5 +1,5 @@
 import yuxStorage from "@/app/api/yux-storage";
-import { Download } from "@mui/icons-material";
+import { CloseOutlined, Download } from "@mui/icons-material";
 import FileIcon from "@mui/icons-material/Article";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -14,11 +14,8 @@ import RepeatOneIcon from "@mui/icons-material/RepeatOne";
 import SkipNextIcon from "@mui/icons-material/SkipNext";
 import { saveAs } from "file-saver";
 import {
-	AppBar,
 	Box,
 	Button,
-	Card,
-	CardContent,
 	Dialog,
 	DialogActions,
 	DialogContent,
@@ -28,10 +25,11 @@ import {
 	Toolbar,
 	Tooltip,
 	Typography,
+	Slide,
 } from "@mui/material";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
-import { Flex, message } from "antd";
+import { Flex, message, Card } from "antd";
 import copy from "copy-to-clipboard";
 import PropTypes from "prop-types";
 import * as React from "react";
@@ -40,6 +38,16 @@ import {
 	HandleListenMigu,
 	HandleListenSong,
 } from "./common/fetchapi";
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+	return (
+		<Slide
+			direction="up"
+			ref={ref}
+			{...props}
+		/>
+	);
+});
 
 const MusicCard = ({
 	PlayingSongs,
@@ -784,50 +792,311 @@ const MusicCard = ({
 						ref={audioRef}
 						onEnded={handleReplay}
 					/>
-					{Showing ? (
-						<>
+					<Dialog
+						fullScreen
+						open={Showing}
+						TransitionComponent={Transition}
+					>
+						<DialogContent>
 							<IconButton
 								color="inherit"
 								onClick={handleShowing}
-								disabled={isAudioPlayable === false}
 							>
-								{Showing ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+								<CloseOutlined />
 							</IconButton>
-							<Toolbar style={{ display: "flex", justifyContent: "center" }}>
-								{currentSong && (
-									<>
-										<Dialog
-											open={open}
-											onClose={handleClose}
-											fullWidth
-										>
-											<DialogTitle>
-												<span>歌曲歌词</span>
-											</DialogTitle>
-											<DialogContent>
-												<Tabs
-													variant="scrollable"
-													scrollButtons="auto"
-													value={value}
-													onChange={handleChange}
-												>
-													<Tab
-														label="滚动歌词"
-														{...a11yProps(0)}
-													/>
-													<Tab
-														label="翻译歌词"
-														{...a11yProps(1)}
-													/>
-													<Tab
-														label="原歌词"
-														{...a11yProps(2)}
-													/>
-												</Tabs>
-												<CustomTabPanel
-													value={value}
-													index={0}
-												>
+							<IconButton color="inherit">
+								<img
+									width={"24px"}
+									src="/logo.png"
+								/>
+							</IconButton>
+							<Flex
+								vertical
+								align="center"
+								justify="center"
+							>
+								<Toolbar style={{ display: "flex", justifyContent: "center" }}>
+									{currentSong && (
+										<>
+											<Dialog
+												open={open}
+												onClose={handleClose}
+												fullWidth
+											>
+												<DialogTitle>
+													<span>歌曲歌词</span>
+												</DialogTitle>
+												<DialogContent>
+													<Tabs
+														variant="scrollable"
+														scrollButtons="auto"
+														value={value}
+														onChange={handleChange}
+													>
+														<Tab
+															label="翻译歌词"
+															{...a11yProps(0)}
+														/>
+														<Tab
+															label="原歌词"
+															{...a11yProps(1)}
+														/>
+													</Tabs>
+
+													<CustomTabPanel
+														value={value}
+														index={0}
+													>
+														{!currentSong && (
+															<Typography variant="body1">
+																<span
+																	style={{
+																		WebkitUserSelect: "none",
+																		MozUserSelect: "none",
+																		msUserSelect: "none",
+																		userSelect: "none",
+																		display: "flex",
+																		justifyContent: "center",
+																	}}
+																>
+																	暂无歌词信息哦！
+																</span>
+															</Typography>
+														)}
+														{currentSong && !currentSong.sub_lyric ? (
+															<Typography
+																variant="body1"
+																style={{ color: "#808080" }}
+															>
+																<span
+																	style={{
+																		WebkitUserSelect: "none",
+																		MozUserSelect: "none",
+																		msUserSelect: "none",
+																		userSelect: "none",
+																		padding: "3px",
+																		display: "flex",
+																		justifyContent: "center",
+																	}}
+																>
+																	本歌曲暂无翻译歌词哦~
+																</span>
+															</Typography>
+														) : (
+															<></>
+														)}
+														{currentSong && currentSong.sub_lyric ? (
+															<div>
+																{currentSong &&
+																	currentSong.sub_lyric
+																		.split("\n")
+																		.filter((line) => {
+																			return (
+																				!line.startsWith("﻿[id:") &&
+																				!line.startsWith("[id:") &&
+																				line !== "" &&
+																				!line.startsWith("[ar:") &&
+																				!line.startsWith("[ti:") &&
+																				!line.startsWith("[by:") &&
+																				!line.startsWith("[hash:") &&
+																				!line.startsWith("[al:") &&
+																				!line.startsWith("[sign:") &&
+																				!line.startsWith("[qq:") &&
+																				!line.startsWith("[total:") &&
+																				!line.startsWith("[offset:")
+																			);
+																		})
+																		.map((line, index) => {
+																			const isPlaying =
+																				currentLyricIndexFY >= 0 &&
+																				index === currentLyricIndexFY;
+																			const fontSize = isPlaying
+																				? "larger"
+																				: "smaller";
+																			const color = isPlaying
+																				? "#00BF63"
+																				: "#808080";
+																			const cleanedLine = line.replace(
+																				/\[(\d{2}):(\d{2}\.\d{2,3})\]/g,
+																				""
+																			);
+																			return (
+																				<div
+																					style={{
+																						WebkitUserSelect: "none",
+																						MozUserSelect: "none",
+																						msUserSelect: "none",
+																						userSelect: "none",
+																						display: "flex",
+																						justifyContent: "center",
+																					}}
+																				>
+																					<span
+																						key={index}
+																						style={{
+																							fontSize,
+																							color,
+																							padding: "3px",
+																							padding: "3px",
+																						}}
+																					>
+																						{cleanedLine}
+																					</span>
+																					<br />
+																				</div>
+																			);
+																		})}
+															</div>
+														) : (
+															<></>
+														)}
+													</CustomTabPanel>
+													<CustomTabPanel
+														value={value}
+														index={1}
+													>
+														{!currentSong && (
+															<Typography variant="body1">
+																<span
+																	style={{
+																		WebkitUserSelect: "none",
+																		MozUserSelect: "none",
+																		msUserSelect: "none",
+																		userSelect: "none",
+																	}}
+																>
+																	暂无歌词信息哦！
+																</span>
+															</Typography>
+														)}
+														{currentSong &&
+															currentSong.lyric &&
+															currentSong.lyric
+																.split("\n")
+																.filter((line) => {
+																	return (
+																		!line.startsWith("﻿[id:") &&
+																		!line.startsWith("[id:") &&
+																		line !== "" &&
+																		!line.startsWith("[ar:") &&
+																		!line.startsWith("[ti:") &&
+																		!line.startsWith("[by:") &&
+																		!line.startsWith("[hash:") &&
+																		!line.startsWith("[al:") &&
+																		!line.startsWith("[sign:") &&
+																		!line.startsWith("[qq:") &&
+																		!line.startsWith("[total:") &&
+																		!line.startsWith("[offset:")
+																	);
+																})
+																.map((line, index) => {
+																	const isPlaying =
+																		currentLyricIndex >= 0 &&
+																		index === currentLyricIndex;
+																	const fontSize = isPlaying
+																		? "larger"
+																		: "smaller";
+																	const color = isPlaying
+																		? "#00BF63"
+																		: "#808080";
+																	const cleanedLine = line.replace(
+																		/\[(\d{2}):(\d{2}\.\d{2,3})\]/g,
+																		""
+																	);
+																	return (
+																		<div
+																			style={{
+																				WebkitUserSelect: "none",
+																				MozUserSelect: "none",
+																				msUserSelect: "none",
+																				userSelect: "none",
+																				display: "flex",
+																				justifyContent: "center",
+																			}}
+																		>
+																			<span
+																				key={index}
+																				style={{
+																					fontSize,
+																					color,
+																					padding: "3px",
+																				}}
+																			>
+																				{cleanedLine}
+																			</span>
+																			<br />
+																		</div>
+																	);
+																})}
+													</CustomTabPanel>
+												</DialogContent>
+												<DialogActions>
+													<Button onClick={handleClose}>
+														<span>好的</span>
+													</Button>
+												</DialogActions>
+											</Dialog>
+											<Flex
+												vertical
+												gap={"small"}
+											>
+												<>
+													<Flex
+														vertical
+														align="center"
+														justify="center"
+														style={{
+															padding: "15px",
+															flexGrow: 1,
+														}}
+													>
+														{currentSong.cover ? (
+															<img
+																style={{
+																	borderRadius: "50%",
+																	border: "1px solid black",
+																	animation: isPlaying
+																		? "spin 10s linear infinite"
+																		: "none",
+																}}
+																src={currentSong.cover}
+																alt="Thumbnail"
+																onError={() => {}}
+																onLoad={() => {
+																	var style = document.createElement("style");
+																	style.innerHTML = `
+															  @keyframes spin {
+															    from {
+															      transform: rotate(360deg);
+															    }
+															    to {
+															      transform: rotate(0deg);
+															    }
+															  }`;
+																	document.head.appendChild(style);
+																}}
+															/>
+														) : (
+															"暂无图片哦~"
+														)}
+														<Flex
+															vertical
+															style={{ marginTop: "10px" }}
+															align="center"
+															justify="center"
+														>
+															<Typography
+																color="inherit"
+																variant="h5"
+															>
+																<span>{currentSong.title}</span>
+															</Typography>
+															<Typography variant="subtitle1">
+																<span>{currentSong.artist}</span>
+															</Typography>
+														</Flex>
+													</Flex>
+
 													{!currentSong && (
 														<Typography variant="body1">
 															<span
@@ -919,235 +1188,30 @@ const MusicCard = ({
 																}
 																return null;
 															})}
-												</CustomTabPanel>
-												<CustomTabPanel
-													value={value}
-													index={1}
+												</>
+												<div
+													style={{
+														position: "fixed",
+														bottom: 0,
+														left: "10vw",
+														right: "10vw",
+														background: "white",
+													}}
 												>
-													{!currentSong && (
-														<Typography variant="body1">
-															<span
-																style={{
-																	WebkitUserSelect: "none",
-																	MozUserSelect: "none",
-																	msUserSelect: "none",
-																	userSelect: "none",
-																	display: "flex",
-																	justifyContent: "center",
-																}}
-															>
-																暂无歌词信息哦！
-															</span>
-														</Typography>
-													)}
-													{currentSong && !currentSong.sub_lyric ? (
-														<Typography
-															variant="body1"
-															style={{ color: "#808080" }}
-														>
-															<span
-																style={{
-																	WebkitUserSelect: "none",
-																	MozUserSelect: "none",
-																	msUserSelect: "none",
-																	userSelect: "none",
-																	padding: "3px",
-																	display: "flex",
-																	justifyContent: "center",
-																}}
-															>
-																本歌曲暂无翻译歌词哦~
-															</span>
-														</Typography>
-													) : (
-														<></>
-													)}
-													{currentSong && currentSong.sub_lyric ? (
-														<div>
-															{currentSong &&
-																currentSong.sub_lyric
-																	.split("\n")
-																	.filter((line) => {
-																		return (
-																			!line.startsWith("﻿[id:") &&
-																			!line.startsWith("[id:") &&
-																			line !== "" &&
-																			!line.startsWith("[ar:") &&
-																			!line.startsWith("[ti:") &&
-																			!line.startsWith("[by:") &&
-																			!line.startsWith("[hash:") &&
-																			!line.startsWith("[al:") &&
-																			!line.startsWith("[sign:") &&
-																			!line.startsWith("[qq:") &&
-																			!line.startsWith("[total:") &&
-																			!line.startsWith("[offset:")
-																		);
-																	})
-																	.map((line, index) => {
-																		const isPlaying =
-																			currentLyricIndexFY >= 0 &&
-																			index === currentLyricIndexFY;
-																		const fontSize = isPlaying
-																			? "larger"
-																			: "smaller";
-																		const color = isPlaying
-																			? "#00BF63"
-																			: "#808080";
-																		const cleanedLine = line.replace(
-																			/\[(\d{2}):(\d{2}\.\d{2,3})\]/g,
-																			""
-																		);
-																		return (
-																			<div
-																				style={{
-																					WebkitUserSelect: "none",
-																					MozUserSelect: "none",
-																					msUserSelect: "none",
-																					userSelect: "none",
-																					display: "flex",
-																					justifyContent: "center",
-																				}}
-																			>
-																				<span
-																					key={index}
-																					style={{
-																						fontSize,
-																						color,
-																						padding: "3px",
-																						padding: "3px",
-																					}}
-																				>
-																					{cleanedLine}
-																				</span>
-																				<br />
-																			</div>
-																		);
-																	})}
-														</div>
-													) : (
-														<></>
-													)}
-												</CustomTabPanel>
-												<CustomTabPanel
-													value={value}
-													index={2}
-												>
-													{!currentSong && (
-														<Typography variant="body1">
-															<span
-																style={{
-																	WebkitUserSelect: "none",
-																	MozUserSelect: "none",
-																	msUserSelect: "none",
-																	userSelect: "none",
-																}}
-															>
-																暂无歌词信息哦！
-															</span>
-														</Typography>
-													)}
-													{currentSong &&
-														currentSong.lyric &&
-														currentSong.lyric
-															.split("\n")
-															.filter((line) => {
-																return (
-																	!line.startsWith("﻿[id:") &&
-																	!line.startsWith("[id:") &&
-																	line !== "" &&
-																	!line.startsWith("[ar:") &&
-																	!line.startsWith("[ti:") &&
-																	!line.startsWith("[by:") &&
-																	!line.startsWith("[hash:") &&
-																	!line.startsWith("[al:") &&
-																	!line.startsWith("[sign:") &&
-																	!line.startsWith("[qq:") &&
-																	!line.startsWith("[total:") &&
-																	!line.startsWith("[offset:")
-																);
-															})
-															.map((line, index) => {
-																const isPlaying =
-																	currentLyricIndex >= 0 &&
-																	index === currentLyricIndex;
-																const fontSize = isPlaying
-																	? "larger"
-																	: "smaller";
-																const color = isPlaying ? "#00BF63" : "#808080";
-																const cleanedLine = line.replace(
-																	/\[(\d{2}):(\d{2}\.\d{2,3})\]/g,
-																	""
-																);
-																return (
-																	<div
-																		style={{
-																			WebkitUserSelect: "none",
-																			MozUserSelect: "none",
-																			msUserSelect: "none",
-																			userSelect: "none",
-																			display: "flex",
-																			justifyContent: "center",
-																		}}
-																	>
-																		<span
-																			key={index}
-																			style={{
-																				fontSize,
-																				color,
-																				padding: "3px",
-																			}}
-																		>
-																			{cleanedLine}
-																		</span>
-																		<br />
-																	</div>
-																);
-															})}
-												</CustomTabPanel>
-											</DialogContent>
-											<DialogActions>
-												<Button onClick={handleClose}>
-													<span>好的</span>
-												</Button>
-											</DialogActions>
-										</Dialog>
-										<Flex
-											vertical
-											gap={"small"}
-										>
-											<React.Fragment>
-												<Card>
-													<CardContent
-														style={{
-															display: "flex",
-															justifyContent: "center",
-														}}
-													>
+													<Card>
 														<Flex vertical>
-															<Flex>
-																<Typography
-																	variant="caption"
-																	style={{
-																		margin: "8px 0",
-																	}}
+															<Flex wrap="wrap">
+																<IconButton
+																	color="inherit"
+																	onClick={handleTogglePlay}
+																	disabled={isAudioPlayable === false}
 																>
-																	<span>
-																		{audioRef.current &&
-																		typeof audioRef.current.currentTime ===
-																			"number" &&
-																		!isNaN(audioRef.current.currentTime) &&
-																		typeof audioRef.current.duration ===
-																			"number" &&
-																		!isNaN(audioRef.current.duration)
-																			? `${formatTime(
-																					audioRef.current.currentTime
-																			  )} / ${formatTime(
-																					audioRef.current.duration
-																			  )}`
-																			: "无时间信息"}
-																	</span>
-																</Typography>
-
+																	{isPlaying ? (
+																		<PauseIcon />
+																	) : (
+																		<PlayArrowIcon />
+																	)}
+																</IconButton>
 																<Tooltip
 																	title="列表下一曲"
 																	placement="top"
@@ -1277,41 +1341,6 @@ const MusicCard = ({
 																	</IconButton>
 																)}
 
-																<IconButton
-																	color="inherit"
-																	onClick={handleExpandPanel}
-																	disabled={isAudioPlayable === false}
-																>
-																	{Panelopen ? (
-																		<ExpandMoreIcon />
-																	) : (
-																		<ExpandLessIcon />
-																	)}
-																</IconButton>
-															</Flex>
-
-															<Flex>
-																<Slider
-																	value={progress}
-																	onChange={handleSliderChange}
-																	onDragEnd={handleSliderDragEnd}
-																	disabled={isAudioPlayable === false}
-																/>
-															</Flex>
-														</Flex>
-													</CardContent>
-												</Card>
-											</React.Fragment>
-											<div>
-												{Panelopen ? (
-													<>
-														<Card>
-															<CardContent
-															// style={{
-															//   display: "flex",
-															//   justifyContent: "center",
-															// }}
-															>
 																<Tooltip
 																	title="查看歌词"
 																	placement="top"
@@ -1356,35 +1385,61 @@ const MusicCard = ({
 																		<OndemandVideoIcon />
 																	</IconButton>
 																</Tooltip>
-																<Slider
-																	value={volume}
-																	onChange={handleVolumeChange}
-																	disabled={isAudioPlayable === false}
-																/>
-																<Typography
-																	variant="caption"
-																	style={{
-																		margin: "8px 0",
-																	}}
-																>
-																	<span>音量: {volume}%</span>
-																</Typography>
-															</CardContent>
-														</Card>
-													</>
-												) : (
-													<></>
-												)}
-											</div>
-										</Flex>
-									</>
-								)}
-							</Toolbar>
-						</>
-					) : (
-						// 不在展示状态
-						<>
-							{/* <Flex
+															</Flex>
+
+															<Slider
+																value={progress}
+																onChange={handleSliderChange}
+																onDragEnd={handleSliderDragEnd}
+																disabled={isAudioPlayable === false}
+															/>
+															<Typography
+																variant="caption"
+																style={{
+																	margin: "8px 0",
+																}}
+															>
+																<span>
+																	{audioRef.current &&
+																	typeof audioRef.current.currentTime ===
+																		"number" &&
+																	!isNaN(audioRef.current.currentTime) &&
+																	typeof audioRef.current.duration ===
+																		"number" &&
+																	!isNaN(audioRef.current.duration)
+																		? `${formatTime(
+																				audioRef.current.currentTime
+																		  )} / ${formatTime(
+																				audioRef.current.duration
+																		  )}`
+																		: "无时间信息"}
+																</span>
+															</Typography>
+															<Slider
+																value={volume}
+																onChange={handleVolumeChange}
+																disabled={isAudioPlayable === false}
+															/>
+															<Typography
+																variant="caption"
+																style={{
+																	margin: "8px 0",
+																}}
+															>
+																<span>音量: {volume}%</span>
+															</Typography>
+														</Flex>
+													</Card>
+												</div>
+											</Flex>
+										</>
+									)}
+								</Toolbar>
+							</Flex>
+						</DialogContent>
+					</Dialog>
+					<>
+						{/* <Flex
 								gap={"middle"}
 								style={{ display: "flex", justifyContent: "center" }}
 								align="center"
@@ -1398,68 +1453,67 @@ const MusicCard = ({
 								</IconButton>
 								<div>{formatLyrics()}</div>
 							</Flex> */}
-							<Flex
-								align="center"
-								justify="center"
-								style={{
-									padding: "15px",
-									flexGrow: 1,
-								}}
+						<Flex
+							align="center"
+							justify="center"
+							style={{
+								padding: "15px",
+								flexGrow: 1,
+							}}
+						>
+							{currentSong.cover ? (
+								<img
+									style={{
+										borderRadius: "50%",
+										border: "1px solid black",
+										// animation: isPlaying
+										// 	? "spin 10s linear infinite"
+										// 	: "none",
+									}}
+									src={currentSong.cover}
+									alt="Thumbnail"
+									height="30"
+									onError={() => {}}
+									// 				onLoad={() => {
+									// 					var style = document.createElement("style");
+									// 					style.innerHTML = `
+									//   @keyframes spin {
+									//     from {
+									//       transform: rotate(360deg);
+									//     }
+									//     to {
+									//       transform: rotate(0deg);
+									//     }
+									//   }`;
+									// 					document.head.appendChild(style);
+									// 				}}
+								/>
+							) : (
+								"暂无图片哦~"
+							)}
+							<Typography
+								color="inherit"
+								style={{ fontSize: "2vh" }}
+								sx={{ flexGrow: 1, ml: "20px" }}
 							>
-								{currentSong.cover ? (
-									<img
-										style={{
-											borderRadius: "50%",
-											border: "1px solid black",
-											animation: isPlaying
-												? "spin 10s linear infinite"
-												: "none",
-										}}
-										src={currentSong.cover}
-										alt="Thumbnail"
-										height="30"
-										onError={() => {}}
-										onLoad={() => {
-											var style = document.createElement("style");
-											style.innerHTML = `
-                          @keyframes spin {
-                            from {
-                              transform: rotate(360deg);
-                            }
-                            to {
-                              transform: rotate(0deg);
-                            }
-                          }`;
-											document.head.appendChild(style);
-										}}
-									/>
-								) : (
-									"暂无图片哦~"
-								)}
-								<Typography
-									color="inherit"
-									style={{ fontSize: "2vh" }}
-									sx={{ flexGrow: 1, ml: "20px" }}
-								>
-									<span>{`${currentSong.title} — ${currentSong.artist}`}</span>
-								</Typography>
-								<IconButton
-									color="inherit"
-									onClick={handleTogglePlay}
-									disabled={isAudioPlayable === false}
-								>
-									{isPlaying ? <PauseIcon /> : <PlayArrowIcon />}
-								</IconButton>
-								<IconButton
-									color="inherit"
-									onClick={handleShowing}
-									disabled={isAudioPlayable === false}
-								>
-									{Showing ? <ExpandMoreIcon /> : <ExpandLessIcon />}
-								</IconButton>
-							</Flex>
-						</>
-					)}
+								<span>{`${currentSong.title} — ${currentSong.artist}`}</span>
+							</Typography>
+							<IconButton
+								color="inherit"
+								onClick={handleTogglePlay}
+								disabled={isAudioPlayable === false}
+							>
+								{isPlaying ? <PauseIcon /> : <PlayArrowIcon />}
+							</IconButton>
+							<IconButton
+								color="inherit"
+								onClick={handleShowing}
+								disabled={isAudioPlayable === false}
+							>
+								{Showing ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+							</IconButton>
+						</Flex>
+					</>
 				</>
 			) : (
 				<></>
