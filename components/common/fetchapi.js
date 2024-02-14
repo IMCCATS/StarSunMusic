@@ -136,9 +136,14 @@ const HandleAjax = async (url, type, data) => {
 			success: function (res) {
 				if (res.status === "success") {
 					const data = Base64.decode(res.data);
-					const object = JSON.parse(data);
-					$.Deferred().resolve(object);
-					resolve(object);
+					if (Array.isArray(data)) {
+						$.Deferred().resolve(data);
+						resolve(data);
+					} else {
+						const object = JSON.parse(data);
+						$.Deferred().resolve(object);
+						resolve(object);
+					}
 				} else {
 					$.Deferred().reject("请求失败，请稍后重试~");
 					reject("请求失败，请稍后重试~");

@@ -210,7 +210,7 @@ export default function UserAva() {
 										{nickname}
 									</Typography>
 									<Typography sx={{ color: "text.secondary" }}>
-										手机号: +86 {phoneNumber}
+										用户标识符：{phoneNumber}
 									</Typography>
 								</Flex>
 							</Flex>

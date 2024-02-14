@@ -7,14 +7,19 @@ import {
 	StepLabel,
 	Button,
 	TextField,
+	Link,
 	Typography,
 } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
-import { Flex, message } from "antd";
+import { Flex, message, Divider, Modal } from "antd";
 import { useRouter } from "next/navigation";
 import Script from "next/script";
 import * as React from "react";
-import { CodeLogin, GetRegCode } from "../../../components/common/fetchapi";
+import {
+	CodeLogin,
+	GetRegCode,
+	HandleAjax,
+} from "../../../components/common/fetchapi";
 const crypto = require("crypto");
 import yuxStorage from "@/app/api/yux-storage";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
@@ -153,9 +158,7 @@ export default function LoginPage() {
 								setsending(true);
 								GetRegCode(username)
 									.then((e) => {
-										setActiveStep(
-											(prevActiveStep) => prevActiveStep + 1
-										);
+										setActiveStep((prevActiveStep) => prevActiveStep + 1);
 										setsending(false);
 										messageApi.success("验证码发送成功，请注意查收");
 									})
@@ -168,6 +171,94 @@ export default function LoginPage() {
 			} catch (error) {
 				messageApi.error("验证脚本加载失败了哦，请您检查是否被浏览器拦截~");
 			}
+		}
+	};
+
+	const [type, settype] = React.useState("");
+
+	const InitSocietyLogin = (platform) => {
+		try {
+			initGeetest4(
+				{
+					captchaId: "c1677059124b92b9dfb3c8919755b459",
+					product: "bind",
+				},
+				function (captcha) {
+					// captcha为验证码实例
+					captcha.appendTo("#captcha");
+					captcha
+						.onReady(function () {
+							captcha.showCaptcha();
+						})
+						.onSuccess(function () {
+							Modal.confirm({
+								title: "确认操作",
+								content: (
+									<>
+										<p>
+											您即将使用社交网站账号登录，确认后将跳转外部网站以进行登录操作，您是否同意？
+										</p>
+										<p>
+											获取的数据我们将严格按照
+											<Link
+												target={"_blank"}
+												href="/Policy"
+											>
+												《用户协议与隐私政策》
+											</Link>
+											处理。
+										</p>
+									</>
+								),
+								okText: "确认",
+								cancelText: "取消",
+								onOk() {
+									Init();
+								},
+								onCancel() {},
+							});
+							const Init = () => {
+								setIsLoading(true);
+								HandleAjax(
+									`https://uniqueker.top/connect.php?act=login&appid=${
+										process.env.SocietyLoginAppid
+									}&appkey=${
+										process.env.SocietyLoginAppSe
+									}&type=${platform}&redirect_uri=${
+										process.env.NODE_ENV === "development"
+											? "http://127.0.0.1:3000/oauth-login-callback"
+											: "https://music.lcahy.cn/oauth-login-callback"
+									}`,
+									"get",
+									{}
+								)
+									.then((ec) => {
+										if (ec.code !== 0) {
+											messageApi.error("登录返回数据异常，快联系开发者修复！");
+											setIsLoading(false);
+											settype("");
+											return;
+										}
+										if (ec.qrcode) {
+											router.push(ec.qrcode);
+											return;
+										}
+										router.push(ec.url);
+									})
+									.catch((e) => {
+										messageApi.error("登录数据请求失败，快联系开发者修复！");
+										if (process.env.NODE_ENV === "development") {
+											console.warn(e);
+										}
+										setIsLoading(false);
+										settype("");
+									});
+							};
+						});
+				}
+			);
+		} catch (error) {
+			messageApi.error("验证脚本加载失败了哦，请您检查是否被浏览器拦截~");
 		}
 	};
 
@@ -215,111 +306,237 @@ export default function LoginPage() {
 					</div>
 				) : (
 					<>
-						<Stepper
-							activeStep={activeStep}
-							alternativeLabel
-							sx={{ mt: 1, mb: 1 }}
-						>
-							{steps.map((label) => (
-								<Step key={label}>
-									<StepLabel>{label}</StepLabel>
-								</Step>
-							))}
-						</Stepper>
+						{type === "mobile" && (
+							<>
+								<Stepper
+									activeStep={activeStep}
+									alternativeLabel
+									sx={{ mt: 1, mb: 1 }}
+								>
+									{steps.map((label) => (
+										<Step key={label}>
+											<StepLabel>{label}</StepLabel>
+										</Step>
+									))}
+								</Stepper>
 
-						{activeStep === 0 && (
-							<Box sx={{ mt: 2 }}>
-								<Flex gap="middle">
-									<TextField
-										autoFocus
-										id="outlined-basic"
-										label="手机号"
+								{activeStep === 0 && (
+									<Box sx={{ mt: 2 }}>
+										<Flex gap="middle">
+											<TextField
+												autoFocus
+												id="outlined-basic"
+												label="手机号"
+												variant="outlined"
+												required
+												value={username}
+												onChange={handleUserNameChange}
+												style={{ marginRight: "5px" }}
+											/>
+										</Flex>
+									</Box>
+								)}
+								{activeStep === 1 && (
+									<Box sx={{ mt: 2 }}>
+										<Flex gap="middle">
+											<TextField
+												autoFocus
+												id="outlined-basic"
+												label="验证码"
+												variant="outlined"
+												required
+												value={pass}
+												onChange={handlePassChange}
+												style={{ marginRight: "5px" }}
+											/>
+										</Flex>
+									</Box>
+								)}
+
+								{!isLoading && activeStep === 0 && (
+									<Button
+										color="primary"
+										sx={{ mt: "10px", mb: "10px" }}
 										variant="outlined"
-										required
-										value={username}
-										onChange={handleUserNameChange}
-										style={{ marginRight: "5px" }}
-									/>
-								</Flex>
-							</Box>
-						)}
-						{activeStep === 1 && (
-							<Box sx={{ mt: 2 }}>
-								<Flex gap="middle">
-									<TextField
-										autoFocus
-										id="outlined-basic"
-										label="验证码"
+										startIcon={<KeyboardDoubleArrowLeft />}
+										onClick={() => {
+											setIsLoading(true);
+											router.push("/dashboard");
+										}}
+									>
+										返回主页
+									</Button>
+								)}
+
+								{!isLoading && activeStep > 0 && (
+									<Button
+										color="primary"
+										sx={{ mt: "10px", mb: "10px" }}
 										variant="outlined"
-										required
-										value={pass}
-										onChange={handlePassChange}
-										style={{ marginRight: "5px" }}
-									/>
+										startIcon={<KeyboardDoubleArrowLeft />}
+										onClick={() =>
+											setActiveStep((prevActiveStep) => prevActiveStep - 1)
+										}
+									>
+										上一步
+									</Button>
+								)}
+
+								{!isLoading && activeStep < steps.length - 1 && (
+									<Button
+										color="primary"
+										sx={{ mt: "10px" }}
+										disabled={sending}
+										variant="contained"
+										startIcon={<KeyboardDoubleArrowRightIcon />}
+										onClick={() => {
+											if (activeStep === 0) {
+												handleClickGetCode();
+											} else {
+												setActiveStep((prevActiveStep) => prevActiveStep + 1);
+											}
+										}}
+									>
+										下一步
+									</Button>
+								)}
+
+								{/* 在最后一步显示登录按钮 */}
+								{!isLoading && activeStep === steps.length - 1 && (
+									<Button
+										variant="contained"
+										color="primary"
+										startIcon={<KeyboardDoubleArrowRightIcon />}
+										onClick={handleClickOpen}
+									>
+										去登录账号
+									</Button>
+								)}
+							</>
+						)}
+						{type === "other" && (
+							<>
+								<Flex gap={"middle"}>
+									<>
+										<Flex
+											vertical
+											gap={"small"}
+											align="center"
+											justify="center"
+										>
+											<p>微信</p>
+											<Button
+												onClick={() => {
+													InitSocietyLogin("wx");
+												}}
+												variant="contained"
+											>
+												点击这里
+											</Button>
+										</Flex>
+									</>
+									<Divider type="vertical" />
+									<>
+										<Flex
+											vertical
+											gap={"small"}
+											align="center"
+											justify="center"
+										>
+											<p>华为</p>
+											<Button
+												onClick={() => {
+													InitSocietyLogin("huawei");
+												}}
+												variant="contained"
+											>
+												点击这里
+											</Button>
+										</Flex>
+									</>
+									<Divider type="vertical" />
+									<>
+										<Flex
+											vertical
+											gap={"small"}
+											align="center"
+											justify="center"
+										>
+											<p>微博</p>
+											<Button
+												onClick={() => {
+													InitSocietyLogin("sina");
+												}}
+												variant="contained"
+											>
+												点击这里
+											</Button>
+										</Flex>
+									</>
+									<Divider type="vertical" />
+									<>
+										<Flex
+											vertical
+											gap={"small"}
+											align="center"
+											justify="center"
+										>
+											<p>QQ</p>
+											<Button
+												onClick={() => {
+													InitSocietyLogin("qq");
+												}}
+												variant="contained"
+											>
+												点击这里
+											</Button>
+										</Flex>
+									</>
 								</Flex>
-							</Box>
+							</>
 						)}
-
-						{!isLoading && activeStep === 0 && (
-							<Button
-								color="primary"
-								sx={{ mt: "10px", mb: "10px" }}
-								variant="outlined"
-								startIcon={<KeyboardDoubleArrowLeft />}
-								onClick={() => {
-									setIsLoading(true);
-									router.push("/dashboard");
-								}}
-							>
-								返回主页
-							</Button>
-						)}
-
-						{!isLoading && activeStep > 0 && (
-							<Button
-								color="primary"
-								sx={{ mt: "10px", mb: "10px" }}
-								variant="outlined"
-								startIcon={<KeyboardDoubleArrowLeft />}
-								onClick={() =>
-									setActiveStep((prevActiveStep) => prevActiveStep - 1)
-								}
-							>
-								上一步
-							</Button>
-						)}
-
-						{!isLoading && activeStep < steps.length - 1 && (
-							<Button
-								color="primary"
-								sx={{ mt: "10px" }}
-								disabled={sending}
-								variant="contained"
-								startIcon={<KeyboardDoubleArrowRightIcon />}
-								onClick={() => {
-									if (activeStep === 0) {
-										handleClickGetCode();
-									} else {
-										setActiveStep(
-											(prevActiveStep) => prevActiveStep + 1
-										);
-									}
-								}}
-							>
-								下一步
-							</Button>
-						)}
-
-						{/* 在最后一步显示登录按钮 */}
-						{!isLoading && activeStep === steps.length - 1 && (
-							<Button
-								variant="contained"
-								color="primary"
-								startIcon={<KeyboardDoubleArrowRightIcon />}
-								onClick={handleClickOpen}
-							>
-								去登录账号
-							</Button>
+						{!type && (
+							<>
+								<Flex gap={"middle"}>
+									<>
+										<Flex
+											vertical
+											gap={"small"}
+											align="center"
+											justify="center"
+										>
+											<p>手机号登录</p>
+											<Button
+												onClick={() => {
+													settype("mobile");
+												}}
+												variant="contained"
+											>
+												点击这里
+											</Button>
+										</Flex>
+									</>
+									<Divider type="vertical" />
+									<>
+										<Flex
+											vertical
+											gap={"small"}
+											align="center"
+											justify="center"
+										>
+											<p>社交账号登录</p>
+											<Button
+												onClick={() => {
+													settype("other");
+												}}
+												variant="contained"
+											>
+												点击这里
+											</Button>
+										</Flex>
+									</>
+								</Flex>
+							</>
 						)}
 					</>
 				)}

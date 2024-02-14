@@ -7,6 +7,8 @@ const nextConfig = {
 		ShuanQ_AppKey: process.env.ShuanQ_AppKey,
 		ShuanQ_AesKey: process.env.ShuanQ_AesKey,
 		SUPABASE_KEY: process.env.SUPABASE_KEY,
+		SocietyLoginAppid: process.env.SocietyLoginAppid,
+		SocietyLoginAppSe: process.env.SocietyLoginAppSe,
 	},
 };
 
