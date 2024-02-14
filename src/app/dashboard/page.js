@@ -191,7 +191,10 @@ function StarSunMusic() {
 					}}
 				>
 					<div>
-						<SafeArea position="top" />
+						<SafeArea
+							position="top"
+							style={{ background: "white" }}
+						/>
 					</div>
 					{contextHolder}
 					<Backdrop
@@ -478,7 +481,10 @@ function StarSunMusic() {
 						</div>
 					</CurrentSongContext.Provider>
 					<div>
-						<SafeArea position="bottom" />
+						<SafeArea
+							position="bottom"
+							style={{ background: "white" }}
+						/>
 					</div>
 				</main>
 			) : (
@@ -495,7 +501,6 @@ function StarSunMusic() {
 }
 
 export default function ToggleColorMode() {
-
 	const theme = createTheme({
 		palette: {
 			primary: { main: "#00BF63", light: "#05ED7D", dark: "#029C51" },

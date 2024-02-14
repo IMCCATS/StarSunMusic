@@ -32,13 +32,13 @@ export default function UserAva() {
 	const [mobile, setmobile] = React.useState("");
 
 	const handleQuitLogin = () => {
+		handleCloseC();
 		Modal.confirm({
 			title: "确认退出登录？",
 			content: <p>此操作将退出您的账户登录。</p>,
 			okText: "确认",
 			cancelText: "取消",
 			onOk() {
-				handleCloseC();
 				setdisabled(true);
 				yuxStorage.removeItem("userprofile").then(() => {
 					yuxStorage.removeItem("mobiletoken").then(() => {
@@ -76,10 +76,7 @@ export default function UserAva() {
 					setuser(`用户${lastFourDigits}`); // 组合成 "用户" + 手机号后四位
 
 					// 格式化手机号，中间四位用*代替
-					const maskedPhone = `${fullPhone.slice(
-						0,
-						3
-					)}****${lastFourDigits}`;
+					const maskedPhone = `${fullPhone.slice(0, 3)}****${lastFourDigits}`;
 					setmobile(maskedPhone);
 					const text = ee + cc + bb + ee;
 					if (text) {
@@ -95,9 +92,7 @@ export default function UserAva() {
 									yuxStorage.removeItem("ykey").then(() => {
 										yuxStorage.removeItem("skey").then(() => {
 											setprofile(false);
-											messageApi.error(
-												"自动登录失败或登录失效啦，请重新登录~"
-											);
+											messageApi.error("自动登录失败或登录失效啦，请重新登录~");
 										});
 									});
 								});
@@ -250,6 +245,7 @@ export default function UserAva() {
 				<MenuItem
 					key={"userinfo"}
 					onClick={() => {
+						handleCloseC();
 						handleopen(
 							"用户信息",
 							<UserInformations
