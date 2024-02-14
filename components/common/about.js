@@ -65,7 +65,7 @@ export default function Advertisement() {
 					>
 						<Link
 							href={"https://ipw.cn/ipv6webcheck/?site=music.lcahy.cn"}
-							rel={"noopener noreferrer"}
+							rel={"noopener noreferrer nofollow external"}
 						>
 							<img
 								alt="IPV6支持性检查网站"
@@ -88,7 +88,7 @@ export default function Advertisement() {
 							}
 							target={"_blank"}
 							underline="none"
-							rel="noopener noreferrer nofollow"
+							rel="noopener noreferrer nofollow external"
 						>
 							图片
 						</Link>
@@ -202,12 +202,41 @@ export default function Advertisement() {
 								本系统仅用作个人音乐欣赏、学习交流，不可用于商业用途。
 							</span>
 							<br />
-							<span>
-								应用程序可能响应较慢或无响应，烦请耐心等待，多次尝试~
-							</span>
+							<span>应用程序可能响应较慢或无响应，烦请耐心等待，多次尝试~</span>
 							<br />
 							<span>如有侵权，请联系public@singtech.top删除。</span>
 						</Typography>
+					</AccordionDetails>
+				</Accordion>
+				<Accordion>
+					<AccordionSummary
+						expandIcon={<ExpandMoreIcon />}
+						aria-controls="panel1a-content"
+					>
+						<Typography>
+							<span>友情链接</span>
+						</Typography>
+					</AccordionSummary>
+					<AccordionDetails>
+						<Flex
+							wrap="wrap"
+							gap={"middle"}
+						>
+							<a
+								target="_blank"
+								href="https://yunfei.kemput.cn/"
+								rel="noopener noreferrer nofollow external"
+							>
+								云飞导航网
+							</a>
+							<a
+								target="_blank"
+								href="https://www.esoot.com/"
+								rel="noopener noreferrer nofollow external"
+							>
+								易搜特收录网
+							</a>
+						</Flex>
 					</AccordionDetails>
 				</Accordion>
 				<Accordion>
@@ -316,8 +345,7 @@ export default function Advertisement() {
 
 									// 一段时间后移除这些 iframe
 									setTimeout(() => {
-										let iframe =
-											document.getElementById("download_iframe");
+										let iframe = document.getElementById("download_iframe");
 										document.body.removeChild(iframe);
 									}, 5000);
 								}}
