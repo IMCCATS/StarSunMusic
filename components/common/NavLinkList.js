@@ -63,7 +63,7 @@ const LinkChecker = ({ href, children }) => {
 		<a
 			target={status === "available" ? "_blank" : ""}
 			href={status === "available" ? href : "#"}
-			rel="noopener noreferrer nofollow external"
+			// rel="noopener noreferrer nofollow external"
 		>
 			{loading
 				? `${children}：正在检查链接可用性...`
