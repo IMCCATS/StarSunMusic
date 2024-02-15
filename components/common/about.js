@@ -16,6 +16,7 @@ import Typography from "@mui/material/Typography";
 import { Col, Flex, QRCode, Row, Statistic } from "antd";
 import dayjs from "dayjs";
 import CountUp from "react-countup";
+import NavLinkList from "./NavLinkList";
 
 const calculateDays = (dateString) => {
 	const today = dayjs(); // 获取当前日期时间
@@ -218,25 +219,7 @@ export default function Advertisement() {
 						</Typography>
 					</AccordionSummary>
 					<AccordionDetails>
-						<Flex
-							wrap="wrap"
-							gap={"middle"}
-						>
-							<a
-								target="_blank"
-								href="https://yunfei.kemput.cn/"
-								rel="noopener noreferrer nofollow external"
-							>
-								云飞导航网
-							</a>
-							<a
-								target="_blank"
-								href="https://www.esoot.com/"
-								rel="noopener noreferrer nofollow external"
-							>
-								易搜特收录网
-							</a>
-						</Flex>
+						<NavLinkList />
 					</AccordionDetails>
 				</Accordion>
 				<Accordion>
