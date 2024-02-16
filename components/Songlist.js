@@ -8,6 +8,7 @@ import {
 } from "@mui/material";
 import { Flex, Modal, Tag } from "antd";
 import React, { useState } from "react";
+
 import { HandleListenSong } from "./common/fetchapi";
 
 export default function SongList() {
@@ -89,24 +90,33 @@ export default function SongList() {
 				{currentSongs.length > 0 ? (
 					currentSongs.map((song, index) => (
 						<ListItem key={song.id}>
+							<>
+								{lastPlayedSongIndex ===
+								getGlobalIndexFromCurrentPage(index) ? (
+									<img
+										src="/playing.svg"
+										style={{ marginRight: "5px" }}
+										width={"20px"}
+									/>
+								) : lastPlayedSongIndex ===
+								  getGlobalIndexFromCurrentPage(index - 1) ? (
+									<Tag
+										style={{ marginRight: "5px" }}
+										color="blue"
+									>
+										下一曲
+									</Tag>
+								) : (
+									<></>
+								)}
+							</>
 							<ListItemText
-								primary={`第${getGlobalIndexFromCurrentPage(
-									index + 1
-								)}首—${song.name}`}
+								primary={`第${getGlobalIndexFromCurrentPage(index + 1)}首—${
+									song.name
+								}`}
 								secondary={`${song.artist}`}
 							/>
 							<Flex gap="small">
-								<>
-									{lastPlayedSongIndex ===
-									getGlobalIndexFromCurrentPage(index) ? (
-										<Tag color="success">播放中</Tag>
-									) : lastPlayedSongIndex ===
-									  getGlobalIndexFromCurrentPage(index - 1) ? (
-										<Tag color="blue">下一曲</Tag>
-									) : (
-										<></>
-									)}
-								</>
 								<Button
 									onClick={() => {
 										if (playstatus === "1") {

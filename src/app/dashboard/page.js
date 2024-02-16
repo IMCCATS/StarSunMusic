@@ -243,7 +243,12 @@ function StarSunMusic() {
 							Setplaystatus,
 						}}
 					>
-						<div style={{ display: seeing === "1" ? "block" : "none" }}>
+						<div
+							style={{
+								display: seeing === "1" ? "block" : "none",
+								paddingBottom: currentSong ? "100px" : "60px",
+							}}
+						>
 							<Swiper
 								loop
 								autoplay
@@ -429,19 +434,34 @@ function StarSunMusic() {
 							</Card>
 						</div>
 
-						<div style={{ display: seeing === "2" ? "block" : "none" }}>
+						<div
+							style={{
+								display: seeing === "2" ? "block" : "none",
+								paddingBottom: currentSong ? "100px" : "60px",
+							}}
+						>
 							<TopBar />
 							<TopBarBS />
 						</div>
 
-						<div style={{ display: seeing === "3" ? "block" : "none" }}>
+						<div
+							style={{
+								display: seeing === "3" ? "block" : "none",
+								paddingBottom: currentSong ? "100px" : "60px",
+							}}
+						>
 							<LikeSongBar />
 							<SongBar />
 						</div>
 
 						<ScrollToTopFab />
 
-						<div style={{ display: seeing === "4" ? "block" : "none" }}>
+						<div
+							style={{
+								display: seeing === "4" ? "block" : "none",
+								paddingBottom: currentSong ? "100px" : "60px",
+							}}
+						>
 							<AppBar />
 							<JuanZeng />
 							<About />
