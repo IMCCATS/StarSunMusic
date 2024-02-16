@@ -1,5 +1,10 @@
 import yuxStorage from "@/app/api/yux-storage";
-import { CloseOutlined, Download } from "@mui/icons-material";
+import {
+	CloseOutlined,
+	Download,
+	KeyboardDoubleArrowDownOutlined,
+	KeyboardDoubleArrowUpOutlined,
+} from "@mui/icons-material";
 import FileIcon from "@mui/icons-material/Article";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -782,7 +787,7 @@ const MusicCard = ({
 				message.info("添加失败~");
 			});
 	};
-
+	const [a, seta] = React.useState(true);
 	return (
 		<>
 			{contextHolder}
@@ -1039,6 +1044,8 @@ const MusicCard = ({
 											<Flex
 												vertical
 												gap={"small"}
+												align="center"
+												justify="center"
 											>
 												<>
 													<Flex
@@ -1059,6 +1066,7 @@ const MusicCard = ({
 																		? "spin 10s linear infinite"
 																		: "none",
 																}}
+																height={"100px"}
 																src={currentSong.cover}
 																alt="Thumbnail"
 																onError={() => {}}
@@ -1087,107 +1095,114 @@ const MusicCard = ({
 														>
 															<Typography
 																color="inherit"
-																variant="h5"
+																variant="h6"
 															>
 																<span>{currentSong.title}</span>
 															</Typography>
-															<Typography variant="subtitle1">
+															<Typography variant="subtitle2">
 																<span>{currentSong.artist}</span>
 															</Typography>
 														</Flex>
 													</Flex>
 
-													{!currentSong && (
-														<Typography variant="body1">
-															<span
-																style={{
-																	WebkitUserSelect: "none",
-																	MozUserSelect: "none",
-																	msUserSelect: "none",
-																	userSelect: "none",
-																	display: "flex",
-																	justifyContent: "center",
-																}}
-															>
-																暂无歌词信息哦！
-															</span>
-														</Typography>
-													)}
-													{currentSong &&
-														currentSong.lyric &&
-														currentSong.lyric
-															.split("\n")
-															.filter((line) => {
-																return (
-																	!line.startsWith("﻿[id:") &&
-																	!line.startsWith("[id:") &&
-																	line !== "" &&
-																	!line.startsWith("[ar:") &&
-																	!line.startsWith("[ti:") &&
-																	!line.startsWith("[by:") &&
-																	!line.startsWith("[hash:") &&
-																	!line.startsWith("[al:") &&
-																	!line.startsWith("[sign:") &&
-																	!line.startsWith("[qq:") &&
-																	!line.startsWith("[total:") &&
-																	!line.startsWith("[offset:")
-																);
-															})
-															.map((line, index) => {
-																const currentIndex =
-																	currentLyricIndex >= 0
-																		? currentLyricIndex
-																		: -1;
-
-																// 修改这里，只展示当前及前后两句歌词
-																if (
-																	index === currentIndex ||
-																	index === currentIndex - 1 ||
-																	index === currentIndex + 1 ||
-																	index === currentIndex + 2 ||
-																	index === currentIndex - 2
-																) {
-																	const fontSize =
-																		index === currentIndex
-																			? "larger"
-																			: "medium";
-																	const color =
-																		index === currentIndex
-																			? "#00BF63"
-																			: "#AAAAAA";
-
-																	const cleanedLine = line.replace(
-																		/\[(\d{2}):(\d{2}\.\d{2,3})\]/g,
-																		""
-																	);
-
+													<Flex
+														vertical
+														gap={"small"}
+														align="center"
+														justify="center"
+													>
+														{!currentSong && (
+															<Typography variant="body1">
+																<span
+																	style={{
+																		WebkitUserSelect: "none",
+																		MozUserSelect: "none",
+																		msUserSelect: "none",
+																		userSelect: "none",
+																		display: "flex",
+																		justifyContent: "center",
+																	}}
+																>
+																	暂无歌词信息哦！
+																</span>
+															</Typography>
+														)}
+														{currentSong &&
+															currentSong.lyric &&
+															currentSong.lyric
+																.split("\n")
+																.filter((line) => {
 																	return (
-																		<div
-																			key={index}
-																			style={{
-																				WebkitUserSelect: "none",
-																				MozUserSelect: "none",
-																				msUserSelect: "none",
-																				userSelect: "none",
-																				display: "flex",
-																				justifyContent: "center",
-																			}}
-																		>
-																			<span
+																		!line.startsWith("﻿[id:") &&
+																		!line.startsWith("[id:") &&
+																		line !== "" &&
+																		!line.startsWith("[ar:") &&
+																		!line.startsWith("[ti:") &&
+																		!line.startsWith("[by:") &&
+																		!line.startsWith("[hash:") &&
+																		!line.startsWith("[al:") &&
+																		!line.startsWith("[sign:") &&
+																		!line.startsWith("[qq:") &&
+																		!line.startsWith("[total:") &&
+																		!line.startsWith("[offset:")
+																	);
+																})
+																.map((line, index) => {
+																	const currentIndex =
+																		currentLyricIndex >= 0
+																			? currentLyricIndex
+																			: -1;
+
+																	// 修改这里，只展示当前及前后两句歌词
+																	if (
+																		index === currentIndex ||
+																		index === currentIndex - 1 ||
+																		index === currentIndex + 1 ||
+																		index === currentIndex + 2 ||
+																		index === currentIndex - 2
+																	) {
+																		const fontSize =
+																			index === currentIndex
+																				? "larger"
+																				: "medium";
+																		const color =
+																			index === currentIndex
+																				? "#00BF63"
+																				: "#AAAAAA";
+
+																		const cleanedLine = line.replace(
+																			/\[(\d{2}):(\d{2}\.\d{2,3})\]/g,
+																			""
+																		);
+
+																		return (
+																			<div
+																				key={index}
 																				style={{
-																					fontSize,
-																					color,
-																					padding: "3px",
+																					WebkitUserSelect: "none",
+																					MozUserSelect: "none",
+																					msUserSelect: "none",
+																					userSelect: "none",
+																					display: "flex",
+																					justifyContent: "center",
 																				}}
 																			>
-																				{cleanedLine}
-																			</span>
-																			<br />
-																		</div>
-																	);
-																}
-																return null;
-															})}
+																				<span
+																					style={{
+																						fontSize,
+																						color,
+																						padding: "3px",
+																					}}
+																				>
+																					{cleanedLine}
+																				</span>
+																				<br />
+																			</div>
+																		);
+																	}
+																	return null;
+																})}
+													</Flex>
 												</>
 												<div
 													style={{
@@ -1199,6 +1214,28 @@ const MusicCard = ({
 													}}
 												>
 													<Card>
+														<Flex
+															gap={"middle"}
+															justify="center"
+															align="center"
+														>
+															<IconButton
+																color="inherit"
+																onClick={() => {
+																	seta(!a);
+																}}
+																disabled={isAudioPlayable === false}
+															>
+																{a ? (
+																	<KeyboardDoubleArrowDownOutlined />
+																) : (
+																	<KeyboardDoubleArrowUpOutlined />
+																)}
+															</IconButton>
+															<p>显示或隐藏操作卡片</p>
+														</Flex>
+													</Card>
+													<Card style={{ display: a ? "block" : "none" }}>
 														<Flex vertical>
 															<Flex wrap="wrap">
 																<IconButton

@@ -3,7 +3,7 @@ import supabase from "@/app/api/supabase";
 import yuxStorage from "@/app/api/yux-storage";
 import $ from "jquery";
 import { Base64 } from "js-base64";
-import { Modal } from "antd";
+import { Modal } from "antd-mobile";
 
 export const revalidate = 3600; //数据缓存时间
 
@@ -689,14 +689,11 @@ const ShowAnnouncement = (Announcement) => {
 	yuxStorage.getItem("LastAnnouncementVersion").then((e) => {
 		const A_Object = JSON.parse(Base64.decode(Announcement));
 		if ((e && e.version < A_Object.version) || !e) {
-			Modal.info({
-				title: "公告",
+			Modal.alert({
 				content: <p style={{ whiteSpace: "pre-wrap" }}>{A_Object.text}</p>,
-				okText: "阅读完成",
-				onOk() {
-					yuxStorage
-						.setItem("LastAnnouncementVersion", A_Object.version)
-						.then((e) => {});
+				confirmText: "收到",
+				onConfirm: async () => {
+					await yuxStorage.setItem("LastAnnouncementVersion", A_Object.version);
 				},
 			});
 		}
