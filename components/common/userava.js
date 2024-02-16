@@ -14,6 +14,8 @@ import {
 	IconButton,
 	Menu,
 	MenuItem,
+	Backdrop,
+	CircularProgress,
 	Typography,
 } from "@mui/material";
 import { Descriptions, Divider, Flex, message, Modal } from "antd";
@@ -23,9 +25,9 @@ const crypto = require("crypto");
 
 export default function UserAva() {
 	const router = useRouter();
-	const { setdisabled, profile, setprofile } =
-		React.useContext(CurrentSongContext);
+	const { profile, setprofile } = React.useContext(CurrentSongContext);
 
+	const [disabled, setdisabled] = React.useState(false);
 	const [anchorEl, setAnchorEl] = React.useState(null);
 	const [messageApi, contextHolder] = message.useMessage();
 	const [user, setuser] = React.useState("");
@@ -191,6 +193,14 @@ export default function UserAva() {
 		];
 		return (
 			<>
+				<Backdrop
+					sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+					open={disabled}
+				>
+					<CircularProgress color="inherit" />
+					<span style={{ marginLeft: "15px" }}>正在加载</span>
+				</Backdrop>
+
 				<Card sx={{ minWidth: 275 }}>
 					<CardContent>
 						<Flex
