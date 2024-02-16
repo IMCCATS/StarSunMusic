@@ -11,8 +11,6 @@ import {
 	DialogContent,
 	DialogContentText,
 	DialogTitle,
-	List,
-	ListItem,
 	ListItemText,
 	Paper,
 	TextField,
@@ -20,6 +18,7 @@ import {
 } from "@mui/material";
 import { Empty, message } from "antd";
 import * as React from "react";
+import { List, SwipeAction } from "antd-mobile";
 import { CurrentSongContext } from "../src/app/dashboard/page";
 import {
 	HandleListenKugou,
@@ -69,25 +68,33 @@ const PersonalPlaylist = () => {
 			setcanlistplay(true);
 		};
 
-		setdisabled(true);
-
 		if (songc.fromst !== "netease") {
 			switch (songc.fromst) {
 				case "sjk":
 					setSongData(songc);
 					break;
 				case "kugou":
-					HandleListenKugou(songc.id).then(setSongData);
+					setdisabled(true);
+					HandleListenKugou(songc.id).then((e) => {
+						setSongData(e);
+						setdisabled(false);
+					});
 					break;
 				case "migu":
-					HandleListenMigu(songc.id).then(setSongData);
+					setdisabled(true);
+					HandleListenMigu(songc.id).then((e) => {
+						setSongData(e);
+						setdisabled(false);
+					});
 					break;
 			}
 		} else {
-			HandleListenSong(songc.id).then(setSongData);
+			setdisabled(true);
+			HandleListenSong(songc.id).then((e) => {
+				setSongData(e);
+				setdisabled(false);
+			});
 		}
-
-		setdisabled(false);
 	};
 
 	// 获取播放列表的函数
@@ -297,50 +304,52 @@ const PersonalPlaylist = () => {
 					{Array.isArray(playList) && playList.length > 0 ? (
 						<List>
 							{playList.map((song, index) => (
-								<ListItem key={index}>
-									<ListItemText
-										primary={song.title}
-										secondary={song.artist}
-									/>
-									<ButtonGroup>
-										<Button
-											onClick={() => handleListenClick(song)}
-											variant="contained"
-											disabled={disabled}
-										>
-											<span>播放</span>
-										</Button>
-										<Button
-											onClick={() => handleDeleteClick(index)}
-											variant="contained"
-											disabled={disabled}
-										>
-											<span>删除</span>
-										</Button>
-										<Button
-											onClick={() =>
+								<SwipeAction
+									key={index}
+									leftActions={[
+										{
+											key: "delete",
+											text: "删除",
+											color: "danger",
+											onclick: async () => {
+												handleDeleteClick(index);
+											},
+										},
+									]}
+									rightActions={[
+										{
+											key: "insect",
+											text: "下首播",
+											color: "primary",
+											onclick: async () => {
 												handleInsectSongClick({
 													id: song.id,
 													name: song.title,
 													artist: song.artist,
-												})
-											}
-											variant="contained"
-											disabled={disabled}
-										>
-											<span>下首播</span>
-										</Button>
-										{process.env.NODE_ENV === "development" && (
-											<Button
-												onClick={() => console.log(song)}
-												variant="contained"
-												disabled={disabled}
-											>
-												<span>打印</span>
-											</Button>
-										)}
-									</ButtonGroup>
-								</ListItem>
+												});
+											},
+										},
+										process.env.NODE_ENV === "development" && {
+											key: "print",
+											text: "打印",
+											color: "primary",
+											onclick: async () => {
+												console.log(song);
+											},
+										},
+									]}
+								>
+									<List.Item
+										onClick={() => {
+											handleListenClick(song);
+										}}
+									>
+										<ListItemText
+											primary={song.title}
+											secondary={song.artist}
+										/>
+									</List.Item>
+								</SwipeAction>
 							))}
 						</List>
 					) : (
