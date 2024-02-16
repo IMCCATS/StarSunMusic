@@ -24,11 +24,9 @@ import { SafeArea, TabBar, Swiper, Image, Skeleton } from "antd-mobile";
 import { UnorderedListOutline, UserOutline } from "antd-mobile-icons";
 import { GetAppData } from "../../../components/common/fetchapi";
 import {
-	Backdrop,
 	Button,
 	Card,
 	CardContent,
-	CircularProgress,
 	Dialog,
 	DialogActions,
 	DialogContent,
@@ -197,13 +195,6 @@ function StarSunMusic() {
 						/>
 					</div>
 					{contextHolder}
-					<Backdrop
-						sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-						open={disabled}
-					>
-						<CircularProgress color="inherit" />
-						<span style={{ marginLeft: "15px" }}>正在加载</span>
-					</Backdrop>
 					<meta
 						httpEquiv="Content-Security-Policy"
 						content="upgrade-insecure-requests"
@@ -477,6 +468,7 @@ function StarSunMusic() {
 							}}
 						>
 							<MusicCard
+								disabled={disabled}
 								setdisabled={setdisabled}
 								setLastPlayedSongIndex={setLastPlayedSongIndex}
 								lastPlayedSongIndex={lastPlayedSongIndex}
