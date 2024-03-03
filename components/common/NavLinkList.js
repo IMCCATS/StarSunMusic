@@ -82,7 +82,6 @@ const NavLinkList = () => {
 			wrap="wrap"
 			gap="middle"
 		>
-			<LinkChecker href="https://yunfei.kemput.cn/">云飞导航网</LinkChecker>
 			<LinkChecker href="https://www.esoot.com/">易搜特收录网</LinkChecker>
 		</Flex>
 	);

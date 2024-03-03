@@ -3,6 +3,8 @@ export const metadata = {
 	description: "星阳音乐系统",
 };
 
+import "./a.css";
+
 export default function RootLayout(props) {
 	const { children } = props;
 	return (
