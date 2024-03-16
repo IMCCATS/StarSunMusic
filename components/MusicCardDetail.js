@@ -2,45 +2,26 @@ import PauseIcon from "@mui/icons-material/Pause";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import RepeatOneIcon from "@mui/icons-material/RepeatOne";
 import {
-	Box,
-	Button,
 	Card,
 	CardContent,
-	Dialog,
-	DialogActions,
-	DialogContent,
-	DialogTitle,
-	Divider,
 	IconButton,
 	Link,
 	Slider,
 	Tooltip,
 	Typography,
 } from "@mui/material";
-import Tab from "@mui/material/Tab";
-import Tabs from "@mui/material/Tabs";
-import PropTypes from "prop-types";
+import { Flex, Divider, Row, Col } from "antd";
 import * as React from "react";
 
 const MusicCard = ({ currentSong }) => {
 	const [isAudioPlayable, setIsAudioPlayable] = React.useState(true);
 	const [isPlaying, setIsPlaying] = React.useState(false);
-	const [value, setValue] = React.useState(0);
-	const handleChange = (event, newValue) => {
-		setValue(newValue);
-	};
 	const [progress, setProgress] = React.useState(0);
 	const [lyrics, setLyrics] = React.useState([]);
 	const [lyricsFY, setLyricsFY] = React.useState([]);
-	const [currentLyricIndexFY, setCurrentLyricIndexFY] = React.useState(0);
 	const [currentLyricIndex, setCurrentLyricIndex] = React.useState(0);
 	const audioRef = React.useRef(null);
-	const [open, setOpen] = React.useState(false);
 	const [isReplay, setisReplay] = React.useState(false);
-
-	const handleClose = () => {
-		setOpen(false);
-	};
 
 	const handleAudioTimeUpdate = () => {
 		const currentTime = audioRef.current.currentTime;
@@ -58,20 +39,6 @@ const MusicCard = ({ currentSong }) => {
 		}
 
 		setCurrentLyricIndex(currentLyricIndex);
-
-		if (Array.isArray(lyricsFY) && lyricsFY.length > 0) {
-			const currentLyricFY = lyricsFY.find(
-				(lyricsFY) => lyricsFY.time > currentTime
-			);
-			if (currentLyricFY) {
-				currentLyricIndexFY = lyricsFY.indexOf(currentLyricFY) - 1;
-				if (currentLyricIndexFY < 0) {
-					currentLyricIndexFY = 0;
-				}
-			}
-		}
-
-		setCurrentLyricIndexFY(currentLyricIndexFY);
 
 		const duration = audioRef.current.duration;
 		const progressPercent = (currentTime / duration) * 100;
@@ -192,81 +159,6 @@ const MusicCard = ({ currentSong }) => {
 		}
 	}, [lyrics, currentSong]);
 
-	const formatLyrics = () => {
-		if (!isAudioPlayable) {
-			document.title = "单曲播放 · 星阳音乐系统";
-			return (
-				<Typography variant="body1">
-					<span>本歌曲暂不支持播放哦~</span>
-				</Typography>
-			);
-		} else {
-			if (lyrics && lyrics.length > 0) {
-				document.title = currentSong.title + " · 星阳音乐系统";
-				return (
-					<Typography
-						key={
-							currentLyricIndex >= 0 &&
-							lyrics[currentLyricIndex] !== undefined
-								? lyrics[currentLyricIndex].time
-								: undefined
-						}
-						variant="body1"
-						style={{ whiteSpace: "pre-line" }}
-					>
-						{currentLyricIndex >= 0 &&
-						lyrics[currentLyricIndex] !== undefined &&
-						lyrics[currentLyricIndex].text ? (
-							<span>{lyrics[currentLyricIndex].text}</span>
-						) : (
-							<span>~</span>
-						)}
-					</Typography>
-				);
-			} else {
-				document.title = "单曲播放 · 星阳音乐系统";
-				return (
-					<Typography variant="body1">
-						<span>
-							本歌曲歌词暂不支持自动播放哦，如需查看请点击查看全部歌词~
-						</span>
-					</Typography>
-				);
-			}
-		}
-	};
-
-	const formatLyricsFY = () => {
-		if (!isAudioPlayable) {
-			return <></>;
-		} else {
-			if (lyricsFY && lyricsFY.length > 0) {
-				return (
-					<Typography
-						key={
-							currentLyricIndexFY >= 0 &&
-							lyricsFY[currentLyricIndexFY] !== undefined
-								? lyricsFY[currentLyricIndexFY].time
-								: undefined
-						}
-						variant="body1"
-						style={{ whiteSpace: "pre-line" }}
-					>
-						{currentLyricIndexFY >= 0 &&
-						lyricsFY[currentLyricIndexFY] !== undefined &&
-						lyricsFY[currentLyricIndexFY].text ? (
-							<span>{lyricsFY[currentLyricIndexFY].text}</span>
-						) : (
-							<></>
-						)}
-					</Typography>
-				);
-			} else {
-				return <></>;
-			}
-		}
-	};
-
 	const handleSliderChange = async (event, newValue) => {
 		setProgress(newValue);
 		const duration = audioRef.current.duration;
@@ -315,38 +207,7 @@ const MusicCard = ({ currentSong }) => {
 			.toString()
 			.padStart(2, "0")}`;
 	};
-	function CustomTabPanel(props) {
-		const { children, value, index, ...other } = props;
 
-		return (
-			<div
-				role="tabpanel"
-				hidden={value !== index}
-				id={`simple-tabpanel-${index}`}
-				aria-labelledby={`simple-tab-${index}`}
-				{...other}
-			>
-				{value === index && (
-					<Box sx={{ p: 3 }}>
-						<Typography>{children}</Typography>
-					</Box>
-				)}
-			</div>
-		);
-	}
-
-	CustomTabPanel.propTypes = {
-		children: PropTypes.node,
-		index: PropTypes.number.isRequired,
-		value: PropTypes.number.isRequired,
-	};
-
-	function a11yProps(index) {
-		return {
-			id: `simple-tab-${index}`,
-			"aria-controls": `simple-tabpanel-${index}`,
-		};
-	}
 	return (
 		<Card style={{ marginTop: "15px" }}>
 			<CardContent id="MusicCard">
@@ -357,37 +218,56 @@ const MusicCard = ({ currentSong }) => {
 				)}
 				{currentSong && (
 					<>
-						<Dialog
-							open={open}
-							onClose={handleClose}
-						>
-							<DialogTitle>
-								<span>歌曲歌词</span>
-							</DialogTitle>
-							<DialogContent>
-								<Tabs
-									value={value}
-									onChange={handleChange}
+						<Row>
+							<Col flex={1}>
+								<Flex
+									vertical
+									gap={"2px"}
+									align="center"
 								>
-									<Tab
-										label="原歌词"
-										{...a11yProps(0)}
-									/>
-									<Tab
-										label="翻译歌词"
-										{...a11yProps(1)}
-									/>
-								</Tabs>
-								<CustomTabPanel
-									value={value}
-									index={0}
+									<Typography variant="h5">
+										<span>{currentSong.title}</span>
+									</Typography>
+									<Typography variant="subtitle1">
+										<span>{currentSong.artist}</span>
+									</Typography>
+									{currentSong.cover && (
+										<img
+											src={currentSong.cover}
+											alt="Thumbnail"
+											height={64}
+											width={64}
+											onError={() => {}}
+										/>
+									)}
+									{!currentSong.cover && "暂无图片哦~"}
+								</Flex>
+							</Col>
+							<Col flex={4}>
+								<Flex
+									vertical
+									gap={"small"}
+									align="center"
+									justify="center"
 								>
 									{!currentSong && (
 										<Typography variant="body1">
-											<span>暂无歌词信息哦！</span>
+											<span
+												style={{
+													WebkitUserSelect: "none",
+													MozUserSelect: "none",
+													msUserSelect: "none",
+													userSelect: "none",
+													display: "flex",
+													justifyContent: "center",
+												}}
+											>
+												暂无歌词信息哦！
+											</span>
 										</Typography>
 									)}
 									{currentSong &&
+										currentSong.lyric &&
 										currentSong.lyric
 											.split("\n")
 											.filter((line) => {
@@ -407,127 +287,57 @@ const MusicCard = ({ currentSong }) => {
 												);
 											})
 											.map((line, index) => {
-												const isPlaying =
-													currentLyricIndex >= 0 &&
-													index === currentLyricIndex;
-												const fontSize = isPlaying
-													? "larger"
-													: "smaller";
-												const color = isPlaying
-													? "#1976D2"
-													: "#808080";
-												const cleanedLine = line.replace(
-													/\[(\d{2}):(\d{2}\.\d{2,3})\]/g,
-													""
-												);
-												return (
-													<>
-														<span
+												const currentIndex =
+													currentLyricIndex >= 0 ? currentLyricIndex : -1;
+
+												// 修改这里，只展示当前及前后两句歌词
+												if (
+													index === currentIndex ||
+													index === currentIndex - 1 ||
+													index === currentIndex + 1 ||
+													index === currentIndex + 2 ||
+													index === currentIndex - 2
+												) {
+													const fontSize =
+														index === currentIndex ? "larger" : "medium";
+													const color =
+														index === currentIndex ? "#1976D2" : "#808080";
+
+													const cleanedLine = line.replace(
+														/\[(\d{2}):(\d{2}\.\d{2,3})\]/g,
+														""
+													);
+
+													return (
+														<div
 															key={index}
-															style={{ fontSize, color }}
+															style={{
+																WebkitUserSelect: "none",
+																MozUserSelect: "none",
+																msUserSelect: "none",
+																userSelect: "none",
+																display: "flex",
+																justifyContent: "center",
+															}}
 														>
-															{cleanedLine}
-														</span>
-														<br />
-													</>
-												);
+															<span
+																style={{
+																	fontSize,
+																	color,
+																}}
+															>
+																{cleanedLine}
+															</span>
+															<br />
+														</div>
+													);
+												}
+												return null;
 											})}
-								</CustomTabPanel>
-								<CustomTabPanel
-									value={value}
-									index={1}
-								>
-									{!currentSong && (
-										<Typography variant="body1">
-											<span>暂无歌词信息哦！</span>
-										</Typography>
-									)}
-									{currentSong && !currentSong.sub_lyric ? (
-										<Typography
-											variant="body1"
-											style={{ color: "#808080" }}
-										>
-											<span>本歌曲暂无翻译歌词哦~</span>
-										</Typography>
-									) : (
-										<></>
-									)}
-									{currentSong && currentSong.sub_lyric ? (
-										<div>
-											{currentSong &&
-												currentSong.sub_lyric
-													.split("\n")
-													.filter((line) => {
-														return (
-															!line.startsWith("﻿[id:") &&
-															!line.startsWith("[id:") &&
-															line !== "" &&
-															!line.startsWith("[ar:") &&
-															!line.startsWith("[ti:") &&
-															!line.startsWith("[by:") &&
-															!line.startsWith("[hash:") &&
-															!line.startsWith("[al:") &&
-															!line.startsWith("[sign:") &&
-															!line.startsWith("[qq:") &&
-															!line.startsWith("[total:") &&
-															!line.startsWith("[offset:")
-														);
-													})
-													.map((line, index) => {
-														const isPlaying =
-															currentLyricIndexFY >= 0 &&
-															index === currentLyricIndexFY;
-														const fontSize = isPlaying
-															? "larger"
-															: "smaller";
-														const color = isPlaying
-															? "#1976D2"
-															: "#808080";
-														const cleanedLine = line.replace(
-															/\[(\d{2}):(\d{2}\.\d{2,3})\]/g,
-															""
-														);
-														return (
-															<>
-																<span
-																	key={index}
-																	style={{ fontSize, color }}
-																>
-																	{cleanedLine}
-																</span>
-																<br />
-															</>
-														);
-													})}
-										</div>
-									) : (
-										<></>
-									)}
-								</CustomTabPanel>
-							</DialogContent>
-							<DialogActions>
-								<Button onClick={handleClose}>
-									<span>好的</span>
-								</Button>
-							</DialogActions>
-						</Dialog>
-						<Typography variant="h5">
-							<span>{currentSong.title}</span>
-						</Typography>
-						<Typography variant="subtitle1">
-							<span>{currentSong.artist}</span>
-						</Typography>
-						{currentSong.cover && (
-							<img
-								src={currentSong.cover}
-								alt="Thumbnail"
-								height="64"
-								onError={() => {}}
-							/>
-						)}
-						{!currentSong.cover && "暂无图片哦~"}
-						<div>{formatLyrics()}</div>
-						<div>{formatLyricsFY()}</div>
+								</Flex>
+							</Col>
+						</Row>
+
 						<audio
 							ref={audioRef}
 							onEnded={handleReplay}
@@ -548,9 +358,9 @@ const MusicCard = ({ currentSong }) => {
 								!isNaN(audioRef.current.currentTime) &&
 								typeof audioRef.current.duration === "number" &&
 								!isNaN(audioRef.current.duration)
-									? `${formatTime(
-											audioRef.current.currentTime
-									  )} / ${formatTime(audioRef.current.duration)}`
+									? `${formatTime(audioRef.current.currentTime)} / ${formatTime(
+											audioRef.current.duration
+									  )}`
 									: "歌曲加载中"}
 							</span>
 						</Typography>
@@ -581,16 +391,14 @@ const MusicCard = ({ currentSong }) => {
 						>
 							<span>更多功能请到系统内体验~</span>
 						</Typography>
-						<Divider
-							style={{ marginTop: "10px", marginBottom: "10px" }}
-						/>
+						<Divider style={{ marginTop: "10px", marginBottom: "10px" }} />
 						<Typography
 							variant="caption"
 							style={{ margin: "8px 0" }}
 						>
 							<span>
-								本歌曲由 星阳音乐系统 · 单曲播放功能 提供 |
-								畅哥科技&trade; 强力驱动 |{" "}
+								本歌曲由 星阳音乐系统 · 单曲播放功能 提供 | 畅哥科技&trade;
+								强力驱动 |{" "}
 								<Link
 									onClick={() => {
 										window.open("https://music.lcahy.cn/");
