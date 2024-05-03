@@ -4,7 +4,7 @@ import axios from "axios";
 //全局验证配置对象
 const ShuanQConfig = {
 	ShuanQ_Host: process.env.ShuanQ_Host, //后台配置-站点地址
-	ShuanQ_AppId: "2", //后台配置-应用ID-在应用列表获得
+	ShuanQ_AppId: process.env.ShuanQ_AppID, //后台配置-应用ID-在应用列表获得
 	ShuanQ_AppKey: process.env.ShuanQ_AppKey, //后台配置-应用密钥-在应用列表获得
 	ShuanQ_AesKey: process.env.ShuanQ_AesKey, //后台配置-算法密钥aes-在 接口通信与加密配置 里生成
 	ShuanQ_SignatureTimeLimitMinimum: 90, //本地配置-允许请求时差最小值-单位为秒
@@ -12,18 +12,6 @@ const ShuanQConfig = {
 	ShuanQ_HeartbeatFrequency: 300, //本地配置-心跳验证间隔频率-单位为秒
 	Debug: false, //开启调试输出
 };
-/*
-            接口传输验签方式：MD5
-            接口响应验签方式：MD5
-            接口响应验签参数字串计算规则：方式3
-            接口数据传输加密算法：aes
-            接口数据传输加密后的编码方式：base64
-            接口参数名传输是否加密：加密
-            接口参数值传输是否加密：加密
-            接口响应数据加密：加密
-            网络验证系统官网：http://shuanq.cn
-            当前对接案例作者QQ：775294825
-        */
 
 //验证接口类
 class ShuanQApiClient {

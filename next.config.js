@@ -3,6 +3,7 @@
 const nextConfig = {
 	transpilePackages: ["antd-mobile"],
 	env: {
+		ShuanQ_AppID: process.env.ShuanQ_AppID,
 		ShuanQ_Host: process.env.ShuanQ_Host,
 		ShuanQ_AppKey: process.env.ShuanQ_AppKey,
 		ShuanQ_AesKey: process.env.ShuanQ_AesKey,
