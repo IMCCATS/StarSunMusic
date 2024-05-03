@@ -1,6 +1,5 @@
 "use client";
 import { appupdatecontent, appversion } from "@/app/api/appconfig";
-import supabase from "@/app/api/supabase";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
 	Accordion,

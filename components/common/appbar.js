@@ -6,8 +6,8 @@ import IconButton from "@mui/material/IconButton";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
-import UserAva from "./userava";
 import { Flex, Card } from "antd";
+import { Avatar } from "@mui/material";
 
 export default function PrimarySearchAppBar() {
 	return (
@@ -42,9 +42,9 @@ export default function PrimarySearchAppBar() {
 				>
 					<Card.Meta
 						style={{ whiteSpace: "pre-wrap" }}
-						avatar={<UserAva />}
+						avatar={<Avatar />}
 						title={"用户"}
-						description={`知之者不如好之者，好之者不如乐之者。\n点击头像可以管理用户状态（登录/退出）。`}
+						description={`知之者不如好之者，好之者不如乐之者。`}
 					/>
 				</Flex>
 			</Card>

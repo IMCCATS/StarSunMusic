@@ -1,5 +1,4 @@
 "use client";
-import supabase from "@/app/api/supabase";
 import yuxStorage from "@/app/api/yux-storage";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import {
@@ -35,8 +34,6 @@ import { Element, scroller } from "react-scroll";
 import { CurrentSongContext } from "../src/app/dashboard/page";
 import {
 	HandleListenSong,
-	HandleListenSongKugou,
-	HandleListenSongMigu,
 	LoadMoreSearchSong,
 	SearchSong,
 } from "./common/fetchapi";
@@ -53,16 +50,13 @@ export default function SongSearchTable({ setcanlistplay }) {
 	const [isneteaseLoading, setIsneteaseLoading] = React.useState(true);
 	const [iskgLoading, setIskgLoading] = React.useState(true);
 	const [ismgLoading, setIsmgLoading] = React.useState(true);
-	const [issjkLoading, setIssjkLoading] = React.useState(true);
 	const [netease_songs, setNeteaseSongs] = React.useState([]);
 	const [kugou_songs, setKGSongs] = React.useState([]);
 	const [migu_songs, setMGSongs] = React.useState([]);
-	const [sjk_songs, setSJKSongs] = React.useState([]);
 	const [messageApi, contextHolder] = message.useMessage();
 	const [jzwz1, setneteasewz] = React.useState("搜索功能加载中...");
 	const [jzwz2, setkgwz] = React.useState("搜索功能加载中...");
 	const [jzwz3, setmgwz] = React.useState("搜索功能加载中...");
-	const [jzwz4, setsjkwz] = React.useState("搜索功能加载中...");
 	const [searchTerm, setSearchTerm] = React.useState("");
 	const [fxopen, fxsetOpen] = React.useState(false);
 	const [shareurl, setshareurl] = React.useState("暂无~");
@@ -114,7 +108,6 @@ export default function SongSearchTable({ setcanlistplay }) {
 		setneteasewz(wz);
 		setkgwz(wz);
 		setmgwz(wz);
-		setsjkwz(wz);
 	};
 
 	const AddHistory = (searchTerm) => {
@@ -155,7 +148,6 @@ export default function SongSearchTable({ setcanlistplay }) {
 		setIsneteaseLoading(true);
 		setIskgLoading(true);
 		setIsmgLoading(true);
-		setIssjkLoading(true);
 		AddSearchHistory();
 		setValue(0);
 		await handleSearch();
@@ -217,13 +209,6 @@ export default function SongSearchTable({ setcanlistplay }) {
 		setcanlistplay(true);
 	};
 
-	const handleListenClicksjk = (song) => {
-		Setplaystatus("4");
-		SetPlayingSongs(sjk_songs);
-		setCurrentSong(song);
-		setcanlistplay(true);
-	};
-
 	const handleSearchKG = async () => {
 		if (!searchTerm) {
 			messageApi.error("您没有输入搜索内容哦~");
@@ -266,49 +251,6 @@ export default function SongSearchTable({ setcanlistplay }) {
 				setMGSongs([]);
 				setIsmgLoading(false);
 			});
-	};
-
-	const handleSearchSJK = async () => {
-		if (!searchTerm) {
-			messageApi.error("您没有输入搜索内容哦~");
-			return;
-		}
-		setSJKSongs([]);
-		setsjkwz("正在搜索中哦~\n搜索可能较慢，请耐心等待哦~");
-		const { data, error } = await supabase
-			.from("MusicSearch")
-			.select("*")
-			.textSearch("title", `${searchTerm}`, {
-				type: "websearch",
-			});
-		if (data) {
-			const CCJson = ConvertJsonSJK(data);
-			setSJKSongs(CCJson);
-			setIssjkLoading(false);
-		} else {
-			setSJKSongs([]);
-			setIssjkLoading(false);
-		}
-	};
-	const ConvertJsonSJK = function (serverJson) {
-		const data = serverJson;
-		const convertedJsons = [];
-
-		for (let i = 0; i < data.length; i++) {
-			const convertedJson = {
-				id: data[i].id,
-				title: data[i].title,
-				artist: data[i].artist,
-				author: data[i].artist,
-				cover: data[i].cover,
-				lyric: data[i].lyric,
-				link: atob(data[i].link),
-				fromst: "sjk",
-			};
-			convertedJsons.push(convertedJson);
-		}
-
-		return convertedJsons;
 	};
 
 	const handleSearch = async () => {
@@ -532,10 +474,6 @@ export default function SongSearchTable({ setcanlistplay }) {
 									/>
 									<Tab
 										label="通道三"
-										{...a11yProps(2)}
-									/>
-									<Tab
-										label="通道四"
 										{...a11yProps(2)}
 									/>
 								</Tabs>
@@ -976,141 +914,6 @@ export default function SongSearchTable({ setcanlistplay }) {
 														disabled={disabled}
 														onClick={() => {
 															loadmoresong("migu");
-														}}
-													>
-														<span>加载更多歌曲</span>
-													</Button>
-												</TableBody>
-											</Table>
-										)}
-									</>
-								)}
-							</CustomTabPanel>
-							<CustomTabPanel
-								value={value}
-								index={3}
-							>
-								{issjkLoading ? (
-									<div
-										style={{
-											display: "flex",
-											justifyContent: "center",
-											alignItems: "center",
-											height: "200px",
-										}}
-									>
-										{jzwz4 !==
-										"搜索功能加载完成啦~\n请搜索歌曲哦~" ? (
-											<CircularProgress />
-										) : (
-											<CheckCircleIcon
-												color="success"
-												fontSize="large"
-											/>
-										)}
-										<p
-											style={{
-												marginLeft: "10px",
-												whiteSpace: "pre",
-											}}
-										>
-											{jzwz4}
-										</p>
-									</div>
-								) : (
-									<>
-										{sjk_songs.length === 0 ? (
-											<div
-												style={{
-													textAlign: "center",
-													padding: "20px",
-												}}
-											>
-												<div
-													style={{
-														display: "flex",
-														justifyContent: "center",
-														alignItems: "center",
-														height: "100%",
-													}}
-												>
-													<p
-														style={{
-															marginLeft: "10px",
-															whiteSpace: "pre",
-														}}
-													>
-														未搜索到内容哦，查看一下其他通道吧~
-													</p>
-												</div>
-											</div>
-										) : (
-											<Table>
-												<TableHead>
-													<TableRow>
-														<TableCell>
-															<span>封面</span>
-														</TableCell>
-														<TableCell>
-															<span>标题</span>
-														</TableCell>
-														<TableCell>
-															<span>作者</span>
-														</TableCell>
-														<TableCell>
-															<span>操作</span>
-														</TableCell>
-													</TableRow>
-												</TableHead>
-												<TableBody>
-													{sjk_songs.map((song) => (
-														<TableRow key={song.id}>
-															<TableCell>
-																{song.cover && (
-																	<img
-																		src={song.cover}
-																		alt="CoverImage"
-																		height="64"
-																		onError={() => {}}
-																	/>
-																)}
-															</TableCell>
-															<TableCell>
-																<span>{song.title}</span>
-															</TableCell>
-															<TableCell>
-																<Tooltip title={song.author}>
-																	<span>
-																		{song.author.length <= 8
-																			? song.author
-																			: `${song.author.slice(
-																					0,
-																					8
-																			  )}...`}
-																	</span>
-																</Tooltip>
-															</TableCell>
-															<TableCell>
-																<ButtonGroup>
-																	<Button
-																		onClick={() =>
-																			handleListenClicksjk(
-																				song
-																			)
-																		}
-																		variant="contained"
-																		disabled={disabled}
-																	>
-																		<span>听歌曲</span>
-																	</Button>
-																</ButtonGroup>
-															</TableCell>
-														</TableRow>
-													))}
-													<Button
-														disabled={disabled}
-														onClick={() => {
-															loadmoresong("sjk");
 														}}
 													>
 														<span>加载更多歌曲</span>

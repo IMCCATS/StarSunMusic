@@ -1,4 +1,4 @@
-import supabase from "@/app/api/supabase";
+
 import yuxStorage from "@/app/api/yux-storage";
 import { ExperimentTwoTone } from "@ant-design/icons";
 import {
@@ -159,102 +159,6 @@ const PersonalPlaylist = () => {
 			});
 	};
 
-	const handleCheckUUID = async () => {
-		handleClose();
-		let { data: GedanS, error } = await supabase
-			.from("GedanS")
-			.select("*")
-			.eq("gedanid", uuidtext);
-		if (error) {
-			setOpenDialog(false);
-			messageApi.error("获取歌单失败了哦~请检查是否有问题~");
-			setdisabled(false);
-			return;
-		}
-		if (GedanS && Array.isArray(GedanS)) {
-			if (GedanS.length > 0) {
-				const gedan = GedanS[0].songs;
-				if (Array.isArray(gedan) && gedan.length >= 10) {
-					addSongsToLocalPlaylist(gedan);
-					setuuid("");
-					setOpenDialog(false);
-					setcheckisabled(true);
-					setTimeout(() => {
-						setcheckisabled(false);
-					}, 300000);
-				}
-			} else {
-				messageApi.error("歌单码错误了哦~");
-			}
-		}
-	};
-
-	const handleGetMySongs = async () => {
-		setdisabled(true);
-		yuxStorage.getItem("userprofile").then(async (mobile) => {
-			const emobile = btoa(mobile);
-			let { data: GedanS, error } = await supabase
-				.from("GedanS")
-				.select("*")
-				.eq("mobile", emobile);
-			if (error) {
-				setOpenDialog(false);
-				messageApi.error("获取歌单失败了哦~请检查是否有问题~");
-				setdisabled(false);
-				return;
-			}
-			if (GedanS && Array.isArray(GedanS)) {
-				if (GedanS.length > 0) {
-					const gedan = GedanS[0].songs;
-					if (Array.isArray(gedan) && gedan.length >= 10) {
-						addSongsToLocalPlaylist(gedan);
-						setdisabled(false);
-						setuuid("");
-						setOpenDialog(false);
-						setcheckisabled(true);
-						setTimeout(() => {
-							setcheckisabled(false);
-						}, 300000);
-					}
-				} else {
-					setdisabled(false);
-					messageApi.error("系统发生错误了哦，快试试重新获取一下吧~");
-				}
-			}
-		});
-	};
-
-	const handleShare = async () => {
-		if (playList && Array.isArray(playList) && playList.length >= 10) {
-			setdisabled(true);
-			yuxStorage.getItem("userprofile").then(async (mobile) => {
-				const emobile = btoa(mobile);
-				const { data, error } = await supabase
-					.from("GedanS")
-					.upsert({ songs: playList, mobile: emobile })
-					.select();
-				if (error) {
-					setOpenDialog(false);
-					messageApi.error(
-						"分享歌单失败了哦~可能是您的歌单和别人的重复啦，再去添加一些别的歌曲吧~"
-					);
-					setdisabled(false);
-					return;
-				}
-				if (data && Array.isArray(data)) {
-					const UUID = data[0].gedanid;
-					setgedanidc(UUID);
-					setgedanidshow(true);
-					setdisabled(false);
-					setsharedisabled(true);
-					setTimeout(() => {
-						setsharedisabled(false);
-					}, 300000);
-				}
-			});
-		}
-	};
-
 	// 删除歌曲的函数
 	const handleDeleteClick = (index) => {
 		const newPlayList = [...playList];
@@ -266,39 +170,6 @@ const PersonalPlaylist = () => {
 	return (
 		<>
 			{contextHolder}
-			<Dialog
-				open={openDialog}
-				onClose={handleClose}
-				fullWidth
-			>
-				<DialogTitle>
-					<span>请输入好友分享给你的歌单码</span>
-				</DialogTitle>
-				<DialogContent>
-					<DialogContentText>
-						<span>
-							当好友分享歌单后，会获得一个歌单码。请输入这个歌单码来获取这个歌单。获取成功后，分享的歌单中的歌曲将添加到您的歌单中。
-						</span>
-					</DialogContentText>
-					<TextField
-						margin="dense"
-						label="歌单码"
-						type="text"
-						fullWidth
-						variant="standard"
-						value={uuidtext}
-						onChange={handlechange}
-					/>
-				</DialogContent>
-				<DialogActions>
-					<Button onClick={handleClose}>
-						<span>取消</span>
-					</Button>
-					<Button onClick={handleCheckUUID}>
-						<span>获取歌单内歌曲</span>
-					</Button>
-				</DialogActions>
-			</Dialog>
 			<Paper elevation={3}>
 				<div style={{ margin: "20px" }}>
 					{Array.isArray(playList) && playList.length > 0 ? (
@@ -420,35 +291,6 @@ const PersonalPlaylist = () => {
 									disabled={disabled || playList.length === 0}
 								>
 									<span>清空歌单</span>
-								</Button>
-								<Button
-									onClick={() => {
-										handleShare();
-									}}
-									variant="contained"
-									disabled={
-										disabled ||
-										playList.length === 0 ||
-										playList.length < 10 ||
-										sharedisabled ||
-										!profile
-									}
-								>
-									分享我的歌单
-								</Button>
-								<Button
-									onClick={() => handleGetMySongs()}
-									variant="contained"
-									disabled={disabled || !profile || checkisabled}
-								>
-									获取我的歌单
-								</Button>
-								<Button
-									onClick={() => handleClickOpen()}
-									variant="contained"
-									disabled={disabled || checkisabled}
-								>
-									获取好友的歌单
 								</Button>
 							</ButtonGroup>
 						</CardContent>

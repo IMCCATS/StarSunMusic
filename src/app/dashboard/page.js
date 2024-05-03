@@ -22,7 +22,6 @@ import LikeSongBar from "../../../components/LikeSongsBar";
 import { ConfigProvider, Flex, message } from "antd";
 import { SafeArea, TabBar, Swiper, Image, Skeleton } from "antd-mobile";
 import { UnorderedListOutline, UserOutline } from "antd-mobile-icons";
-import { GetAppData } from "../../../components/common/fetchapi";
 import {
 	Button,
 	Card,
@@ -82,8 +81,6 @@ function StarSunMusic() {
 					setTimeout(() => {
 						router.push("/");
 					}, 5000);
-				} else {
-					GetAppData();
 				}
 			})
 			.catch((e) => {
