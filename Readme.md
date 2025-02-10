@@ -1,3 +1,4 @@
+### Tip:由于一些原因，应用已升级新版本，并更换运营方为 [辉梦未来网络科技工作室](https://www.huimengfuture.xyz) 并已迁移至https://music-online.huimengfuture.xyz/，欢迎访问。
 # 星阳音乐系统
 
 这是一个由中学生制作、基于 Material UI 设计组件和 Next.js 框架的音乐系统。
